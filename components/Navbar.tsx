@@ -22,7 +22,8 @@ import { Button, ListItemIcon } from "@mui/material";
 // import useFetch from "../hooks/useFetch";
 import { Logout } from "@mui/icons-material";
 import { useRouter } from "next/router";
-import { useUser } from "@/hooks/useUser";
+import useUser from "@/hooks/useUser";
+import PersonIcon from "@mui/icons-material/Person";
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -226,6 +227,7 @@ function ResponsiveAppBar() {
               <Link href={"/profile"} style={{ color: "none" }}>
                 <MenuItem>
                   <ListItemIcon>
+                    <PersonIcon />
                     <Typography textAlign="center">Profile</Typography>
                   </ListItemIcon>
                 </MenuItem>
@@ -234,8 +236,8 @@ function ResponsiveAppBar() {
               <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <Logout fontSize="small" />
+                  <Typography textAlign="center">Logout</Typography>
                 </ListItemIcon>
-                Logout
               </MenuItem>
             </Menu>
           </Box>

@@ -20,7 +20,7 @@ import IconButton from "@mui/material/IconButton";
 import useFetch from "../hooks/useFetch";
 import { fetcher } from "@/utils/fetcher";
 import { useForm } from "react-hook-form";
-import { useUser } from "@/hooks/useUser";
+import useUser from "@/hooks/useUser";
 import { useProducts } from "@/hooks/useProducts";
 
 type NewPostProps = {
