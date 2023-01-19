@@ -8,6 +8,7 @@ import Edit from "@mui/icons-material/Edit";
 import { useUserContext } from "../context/UserContext";
 import MainLayout from "@/components/layouts/mainLayout";
 import Image from "next/image";
+import { Button, IconButton } from "@mui/material";
 
 const Profile = () => {
   const { firstName, lastName, profileImage } = useUserContext();
@@ -53,7 +54,17 @@ const Profile = () => {
           }}
         /> */}
           <Image src="/images/colors.png" height={160} width={700} alt="" />
-
+          <IconButton
+            color="primary"
+            aria-label="edit"
+            sx={{
+              position: "relative",
+              ml: { sm: "90%", xs: "87%" },
+              mb: 1,
+            }}
+          >
+            <Edit fontSize="small" />
+          </IconButton>
           <CardMedia
             image={
               profileImage
@@ -69,27 +80,17 @@ const Profile = () => {
               border: 5,
               borderColor: "#8e44ad",
               ml: 5,
-              mt: -9,
+              mt: -12,
             }}
             title="profile"
           />
+
           <Box sx={{ m: 5 }}>
             <Typography variant="h5">
               {firstName} {lastName}
             </Typography>
             <Typography>Full Stack Developer</Typography>
           </Box>
-          <Fab
-            color="primary"
-            aria-label="edit"
-            sx={{
-              position: "relative",
-              ml: { sm: "90%", xs: "87%" },
-              mb: 1,
-            }}
-          >
-            <Edit fontSize="small" />
-          </Fab>
         </Card>
       </Box>
     </MainLayout>

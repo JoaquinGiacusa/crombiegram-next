@@ -28,7 +28,7 @@ const ThemeColorProvider: React.FC<{ children: React.ReactNode }> = ({
 
       setMode(modeStoraged as "dark");
     }
-  });
+  }, []);
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
