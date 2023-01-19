@@ -18,20 +18,25 @@ import Box from "@mui/system/Box";
 import IconButton from "@mui/material/IconButton";
 // import fetchAPI from "../lib/apiFetch";
 import useFetch from "../hooks/useFetch";
-import { useUserContext } from "../context/UserContext";
+import { fetcher } from "@/utils/fetcher";
 import { useForm } from "react-hook-form";
+import { useUser } from "@/hooks/useUser";
+import { useProducts } from "@/hooks/useProducts";
 
 type NewPostProps = {
   onAdd: () => void;
 };
 
 const NewPost: React.FC<NewPostProps> = ({ onAdd }) => {
+  // const NewPost: React.FC = () => {
   const [open, setOpen] = useState(false);
+
   const [file, setFile] = useState<File | null>();
-
-  const { firstName, lastName, profileImage } = useUserContext();
-
   const inputFile = useRef<any>(null);
+
+  const { data, error, isLoading } = useUser();
+  const { mutate } = useProducts();
+
   const {
     register,
     handleSubmit,
@@ -53,17 +58,15 @@ const NewPost: React.FC<NewPostProps> = ({ onAdd }) => {
     };
   };
 
-  const handleFetch = useFetch();
-  const onSubmit = handleSubmit(async (data) => {
-    const jsonResponse = await handleFetch({
-      path: "post",
-      data: { ...data, file },
+  const onSubmit = handleSubmit(async (formData) => {
+    const jsonResponse = await fetcher("/post", {
+      body: JSON.stringify({ ...formData, file }),
       method: "POST",
     });
-
+    console.log(jsonResponse);
     console.log("jsonResponse", jsonResponse);
     if (jsonResponse) {
-      onAdd();
+      mutate();
     }
 
     setOpen(false);
@@ -118,12 +121,12 @@ const NewPost: React.FC<NewPostProps> = ({ onAdd }) => {
             <Avatar
               src={
                 "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
-                profileImage
+                data?.user.profileImage
               }
               sx={{ width: 30, height: 30 }}
             />
             <Typography fontWeight={500}>
-              {firstName} {lastName}
+              {data?.user.firstName} {data?.user.lastName}
             </Typography>
           </Box>
 

@@ -5,13 +5,13 @@ import CardMedia from "@mui/material/CardMedia";
 import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Edit from "@mui/icons-material/Edit";
-import { useUserContext } from "../context/UserContext";
 import MainLayout from "@/components/layouts/mainLayout";
 import Image from "next/image";
+import { useUser } from "@/hooks/useUser";
 
 const Profile = () => {
-  const { firstName, lastName, profileImage } = useUserContext();
-  console.log({ firstName });
+  const { data, error, isLoading } = useUser();
+
   return (
     <MainLayout>
       <Box
@@ -55,14 +55,14 @@ const Profile = () => {
           <Image src="/images/colors.png" height={160} width={700} alt="" />
 
           <CardMedia
+            component="img"
             image={
-              profileImage
-                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
+              data?.user.profileImage
+                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${data?.user.profileImage}`
                 : ""
             }
             sx={{
               position: "relative",
-
               height: { sm: 150, xs: 100 },
               width: { sm: 150, xs: 100 },
               borderRadius: 50,
@@ -75,7 +75,7 @@ const Profile = () => {
           />
           <Box sx={{ m: 5 }}>
             <Typography variant="h5">
-              {firstName} {lastName}
+              {data?.user.firstName} {data?.user.lastName}
             </Typography>
             <Typography>Full Stack Developer</Typography>
           </Box>

@@ -15,14 +15,14 @@ import HomeIcon from "@mui/icons-material/Home";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import GroupIcon from "@mui/icons-material/Group";
 import BottomAppBar from "./BottomAppBar";
-import { useUserContext } from "../context/UserContext";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { styled, alpha } from "@mui/material/styles";
 import { Button, ListItemIcon } from "@mui/material";
-import useFetch from "../hooks/useFetch";
+// import useFetch from "../hooks/useFetch";
 import { Logout } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { useUser } from "@/hooks/useUser";
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -30,7 +30,6 @@ function ResponsiveAppBar() {
   );
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    console.log(event.currentTarget);
     setAnchorElUser(event.currentTarget);
   };
 
@@ -38,23 +37,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const { firstName, profileImage, token, handleSetValues } = useUserContext();
-
-  const handleFetch = useFetch();
-  useEffect(() => {
-    if (token != "") {
-      const jsonResponse = handleFetch({
-        path: "user/me",
-        method: "GET",
-      }).then((res) => {
-        const { user } = res;
-        handleSetValues("firstName", user.firstName);
-        handleSetValues("lastName", user.lastName);
-        handleSetValues("email", user.email);
-        handleSetValues("profileImage", user.profileImage);
-      });
-    }
-  }, [token]);
+  const { data, error, isLoading } = useUser();
 
   const Search = styled("div")(({ theme }) => ({
     position: "relative",
@@ -212,11 +195,11 @@ function ResponsiveAppBar() {
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
-                    alt={firstName}
+                    alt={data?.user.firstName}
                     src={
-                      profileImage
+                      data?.user.profileImage
                         ? "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
-                          profileImage
+                          data?.user.profileImage
                         : ""
                     }
                   />
@@ -240,13 +223,13 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem key="profile">
-                <Link href={"/profile"}>
+              <Link href={"/profile"} style={{ color: "none" }}>
+                <MenuItem>
                   <ListItemIcon>
                     <Typography textAlign="center">Profile</Typography>
                   </ListItemIcon>
-                </Link>
-              </MenuItem>
+                </MenuItem>
+              </Link>
 
               <MenuItem onClick={handleLogout}>
                 <ListItemIcon>

@@ -9,7 +9,6 @@ import Image from "next/image";
 import Title from "../components/Title";
 import Link from "next/link";
 import SwitchTheme from "../components/SwitchTheme";
-import { useUserContext } from "../context/UserContext";
 
 function Start() {
   // const [isRegistered, setIsRegistered] = useState(false);
@@ -25,7 +24,6 @@ function Start() {
   //   }
   // };
 
-  const { token } = useUserContext();
   // if (token) return <Navigate to="/home" />;
 
   return (

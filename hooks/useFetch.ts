@@ -1,5 +1,4 @@
-import React from "react";
-import { useUserContext } from "../context/UserContext";
+import { getSaveToken } from "utils/fetcher";
 
 type FetchParams = {
   path: string;
@@ -8,7 +7,7 @@ type FetchParams = {
 };
 
 const useFetch = () => {
-  const { token } = useUserContext();
+  const token = getSaveToken();
   return async ({ path, data, method }: FetchParams) => {
     try {
       const response = await fetch(`http://localhost:3000/api/${path}`, {
