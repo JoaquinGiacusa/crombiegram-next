@@ -1,17 +1,29 @@
 import React, { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Edit from "@mui/icons-material/Edit";
-import { Modal, Box, Grid, TextField, Button, Alert } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Grid,
+  TextField,
+  Button,
+  Alert,
+  Stack,
+} from "@mui/material";
 import { useRouter } from "next/router";
 import useFetch from "@/hooks/useFetch";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import Image from "next/image";
+import Link from "next/link";
+import AddImage from "./AddImage";
 
 const EditProfile = () => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const { data } = useUser();
+
+  const [reFetchPost, setReFetchPost] = useState(0);
 
   const handleFetch = useFetch();
   const {
@@ -81,6 +93,18 @@ const EditProfile = () => {
             p={3}
             borderRadius={5}
           >
+            <Grid item xs={2} md={1}>
+              <Image
+                src="/images/crombie-logo.png"
+                alt="profile-img"
+                height={250}
+                width={250}
+              />
+            </Grid>
+            <Grid item xs={2} md={1}>
+              <AddImage />
+            </Grid>
+
             <Grid
               container
               columns={2}
@@ -90,6 +114,24 @@ const EditProfile = () => {
             >
               <Grid item xs={2} md={1}>
                 <TextField
+                  label="First Name"
+                  variant="outlined"
+                  {...register("firstName", { required: true })}
+                  fullWidth
+                  defaultValue={data?.user.firstName}
+                />
+              </Grid>
+              <Grid item xs={2} md={1}>
+                <TextField
+                  label="Last Name"
+                  variant="outlined"
+                  {...register("lastName", { required: true })}
+                  fullWidth
+                  defaultValue={data?.user.lastName}
+                />
+              </Grid>
+              <Grid item xs={2} md={1}>
+                <TextField
                   label="Email"
                   variant="outlined"
                   {...register("email", { required: true })}
@@ -97,7 +139,7 @@ const EditProfile = () => {
                   defaultValue={data?.user.email}
                 />
               </Grid>
-              <Grid item xs={2} md={1}>
+              {/* <Grid item xs={2} md={1}>
                 <TextField
                   label="Actual Password"
                   variant="outlined"
@@ -117,25 +159,8 @@ const EditProfile = () => {
                   {...register("repeatPassword", { required: true })}
                   fullWidth
                 />
-              </Grid>
-              <Grid item xs={2} md={1}>
-                <TextField
-                  label="First Name"
-                  variant="outlined"
-                  {...register("firstName", { required: true })}
-                  fullWidth
-                  defaultValue={data?.user.firstName}
-                />
-              </Grid>
-              <Grid item xs={2} md={1}>
-                <TextField
-                  label="Last Name"
-                  variant="outlined"
-                  {...register("lastName", { required: true })}
-                  fullWidth
-                  defaultValue={data?.user.lastName}
-                />
-              </Grid>
+              </Grid> */}
+
               <Grid item xs={2} md={1}>
                 <TextField
                   id="date"
@@ -160,6 +185,14 @@ const EditProfile = () => {
                   fullWidth
                   defaultValue={data?.user.position}
                 />
+              </Grid>
+              <Grid item xs={2} md={1}>
+                <Link
+                  style={{ color: "#fc427b", fontSize: 16, marginLeft: 10 }}
+                  href={"/home"}
+                >
+                  Change Password
+                </Link>
               </Grid>
             </Grid>
             <Button variant="outlined" color="warning" type="submit">

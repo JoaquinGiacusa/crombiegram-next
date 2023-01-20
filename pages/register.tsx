@@ -73,6 +73,22 @@ function Register() {
         >
           <Grid item xs={2} md={1}>
             <TextField
+              label="First Name"
+              variant="outlined"
+              {...register("firstName", { required: true })}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={2} md={1}>
+            <TextField
+              label="Last Name"
+              variant="outlined"
+              {...register("lastName", { required: true })}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={2} md={1}>
+            <TextField
               label="Email"
               variant="outlined"
               {...register("email", { required: true })}
@@ -97,28 +113,12 @@ function Register() {
               fullWidth
             />
           </Grid>
-          <Grid item xs={2} md={1}>
-            <TextField
-              label="First Name"
-              variant="outlined"
-              {...register("firstName", { required: true })}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={2} md={1}>
-            <TextField
-              label="Last Name"
-              variant="outlined"
-              {...register("lastName", { required: true })}
-              fullWidth
-            />
-          </Grid>
+
           <Grid item xs={2} md={1}>
             <TextField
               id="date"
               label="Birthday"
               type="date"
-              defaultValue="2023-01-11"
               InputLabelProps={{
                 shrink: true,
               }}

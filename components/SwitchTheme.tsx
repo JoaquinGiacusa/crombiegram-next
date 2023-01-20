@@ -1,15 +1,14 @@
 import IconButton from "@mui/material/IconButton";
 import { useThemeColorContext } from "../context/ColorModeContext";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import { DarkModeRounded } from "@mui/icons-material";
+import ModeNightIcon from "@mui/icons-material/ModeNight";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 const SwitchTheme = () => {
   const { toggleColorMode, mode } = useThemeColorContext();
 
   return (
     <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
-      {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+      {mode === "light" ? <ModeNightIcon /> : <LightModeIcon />}
     </IconButton>
   );
 };

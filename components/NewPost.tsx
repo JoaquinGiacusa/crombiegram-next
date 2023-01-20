@@ -21,7 +21,7 @@ import useFetch from "../hooks/useFetch";
 import { fetcher } from "@/utils/fetcher";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
-import { useProducts } from "@/hooks/useProducts";
+import { usePost } from "@/hooks/usePost";
 
 type NewPostProps = {
   onAdd: () => void;
@@ -35,7 +35,7 @@ const NewPost: React.FC<NewPostProps> = ({ onAdd }) => {
   const inputFile = useRef<any>(null);
 
   const { data, error, isLoading } = useUser();
-  const { mutate } = useProducts();
+  const { mutate } = usePost();
 
   const {
     register,

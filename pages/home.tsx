@@ -9,7 +9,7 @@ import {
   InferGetServerSidePropsType,
   NextPageContext,
 } from "next";
-import { useProducts } from "@/hooks/useProducts";
+import { usePost } from "@/hooks/usePost";
 
 export type ListPostProps = {
   id: string;
@@ -25,7 +25,7 @@ function Home() {
   const [listPost, setListPost] = useState<ListPostProps>([]);
   const [reFetchPost, setReFetchPost] = useState(0);
 
-  const { data, error, isLoading } = useProducts();
+  const { data, error, isLoading } = usePost();
 
   useEffect(() => {
     if (data) {

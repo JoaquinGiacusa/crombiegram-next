@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/system/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -10,11 +10,18 @@ import Image from "next/image";
 import { Button, IconButton } from "@mui/material";
 import useUser from "@/hooks/useUser";
 import EditProfile from "@/components/EditProfile";
+import NewPost from "@/components/NewPost";
 
 const Profile = () => {
   const { data } = useUser();
+  const [reFetchPost, setReFetchPost] = useState(0);
   return (
     <MainLayout>
+      <NewPost
+        onAdd={() => {
+          setReFetchPost((prev) => prev + 1);
+        }}
+      />
       <Box
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
