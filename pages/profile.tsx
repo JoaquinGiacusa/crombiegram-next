@@ -1,27 +1,21 @@
-import React, { useState } from "react";
+
+import React from "react";
 import Box from "@mui/system/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Edit from "@mui/icons-material/Edit";
+import { useUserContext } from "../context/UserContext";
 import MainLayout from "@/components/layouts/mainLayout";
 import Image from "next/image";
 import { Button, IconButton } from "@mui/material";
-import useUser from "@/hooks/useUser";
-import EditProfile from "@/components/EditProfile";
-import NewPost from "@/components/NewPost";
 
 const Profile = () => {
-  const { data } = useUser();
-  const [reFetchPost, setReFetchPost] = useState(0);
+  const { firstName, lastName, profileImage } = useUserContext();
+  console.log({ firstName });
   return (
     <MainLayout>
-      <NewPost
-        onAdd={() => {
-          setReFetchPost((prev) => prev + 1);
-        }}
-      />
       <Box
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
@@ -32,11 +26,36 @@ const Profile = () => {
             mt: 5,
             maxWidth: 700,
             width: "100%",
+            // ml: "20%",
+            // mr: "20%",
           }}
           elevation={10}
         >
+          {/* <Image
+          src="images/colors.png"
+          height={250}
+          width={1250}
+          fit="fill"
+          duration={0}
+          easing="cubic-bezier(0.7, 0, 0.6, 1)"
+          showLoading={false}
+          errorIcon={true}
+          shift={null}
+          distance="100px"
+          shiftDuration={900}
+          bgColor="inherit"
+        
+        /> */}
+          {/* 
+        <CardMedia
+          image="images/colors.png"
+          sx={{
+            height: { sm: 200, xs: 150 },
+            width: "100%",
+          }}
+        /> */}
           <Image src="/images/colors.png" height={160} width={700} alt="" />
-          {/* <IconButton
+          <IconButton
             color="primary"
             aria-label="edit"
             sx={{
@@ -46,12 +65,11 @@ const Profile = () => {
             }}
           >
             <Edit fontSize="small" />
-          </IconButton> */}
-          <EditProfile />
+          </IconButton>
           <CardMedia
             image={
-              data?.user.profileImage
-                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${data?.user.profileImage}`
+              profileImage
+                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
                 : ""
             }
             sx={{
@@ -70,7 +88,7 @@ const Profile = () => {
 
           <Box sx={{ m: 5 }}>
             <Typography variant="h5">
-              {data?.user.firstName} {data?.user.lastName}
+              {firstName} {lastName}
             </Typography>
             <Typography>Full Stack Developer</Typography>
           </Box>
