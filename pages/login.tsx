@@ -10,7 +10,7 @@ import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useUserContext } from "../context/UserContext";
+
 import useFetch from "../hooks/useFetch";
 import SwitchTheme from "@/components/SwitchTheme";
 import Image from "next/image";
@@ -26,8 +26,6 @@ function Login() {
 
   const handleFetch = useFetch();
 
-  const { handleSetValues } = useUserContext();
-
   const {
     register,
     handleSubmit,
@@ -40,7 +38,7 @@ function Login() {
       data,
       method: "POST",
     });
-    handleSetValues("token", jsonResponse.payload.token);
+    // handleSetValues("token", jsonResponse.payload.token);
     localStorage.setItem("token", jsonResponse.payload.token);
     setTimeout(() => router.push("/home"), 500);
   });

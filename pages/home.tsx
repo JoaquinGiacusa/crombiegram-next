@@ -4,6 +4,12 @@ import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
 import useFetch from "../hooks/useFetch";
 import MainLayout from "@/components/layouts/mainLayout";
+import {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPageContext,
+} from "next";
+import { usePost } from "@/hooks/usePost";
 
 export type ListPostProps = {
   id: string;
@@ -18,21 +24,29 @@ export type ListPostProps = {
 function Home() {
   const [listPost, setListPost] = useState<ListPostProps>([]);
   const [reFetchPost, setReFetchPost] = useState(0);
-  const handleFetch = useFetch();
+
+  const { data, error, isLoading } = usePost();
 
   useEffect(() => {
-    handleFetch({
-      path: "post",
-      method: "GET",
-    }).then((jsonResponse) => {
-      setListPost(jsonResponse);
-      // setReFetchPost((prev) => prev + 1);
-    });
-  }, [reFetchPost]);
+    if (data) {
+      setListPost(data);
+    }
+  }, [data, reFetchPost]);
+
+  // useEffect(() => {
+  //   handleFetch({
+  //     path: "post",
+  //     method: "GET",
+  //   }).then((jsonResponse) => {
+  //     setListPost(jsonResponse);
+  //     // setReFetchPost((prev) => prev + 1);
+  //   });
+  // }, [reFetchPost]);
 
   return (
     <MainLayout>
       <Box>
+        {/* <NewPost /> */}
         <NewPost
           onAdd={() => {
             setReFetchPost((prev) => prev + 1);
@@ -70,3 +84,23 @@ function Home() {
 }
 
 export default Home;
+
+// export async function getStaticProps(context: NextPageContext) {
+//   // useEffect(() => {
+//   //   handleFetch({
+//   //     path: "post",
+//   //     method: "GET",
+//   //   }).then((jsonResponse) => {
+//   //     setListPost(jsonResponse);
+//   //     // setReFetchPost((prev) => prev + 1);
+//   //   });
+//   // }, [reFetchPost]);
+
+//   const res = await fetch(`http://localhost:3000/api/post`);
+//   const data = await res.json();
+
+//   return {
+//     props: { data },
+//     revalidate: 5,
+//   };
+// }
