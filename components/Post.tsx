@@ -12,6 +12,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CardActionArea from "@mui/material/CardActionArea";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import IconButton from "@mui/material/IconButton";
+import SubHeaderPost from "./SubHeaderPost";
 
 export type PostPropsType = {
   id: string;
@@ -20,6 +21,7 @@ export type PostPropsType = {
   contentText: string;
   imageName?: string;
   profileImage: string;
+  createdAt: Date;
 };
 
 const Post: React.FC<PostPropsType> = ({
@@ -29,6 +31,7 @@ const Post: React.FC<PostPropsType> = ({
   contentText,
   imageName,
   profileImage,
+  createdAt,
 }) => {
   // const profileImageSrc = profileImage
   //   ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
@@ -53,7 +56,7 @@ const Post: React.FC<PostPropsType> = ({
           </IconButton>
         }
         title={firstName + lastName}
-        subheader="Full stack developer"
+        subheader={<SubHeaderPost createdAt={createdAt} />}
       />
       {/* <CardActionArea> */}
       {imageName && (

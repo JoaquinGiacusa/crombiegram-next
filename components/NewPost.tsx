@@ -12,7 +12,8 @@ import React, { ChangeEventHandler, useRef, useState, useEffect } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DateRange from "@mui/icons-material/DateRange";
 import EmojiEmotions from "@mui/icons-material/EmojiEmotions";
-import Image from "@mui/icons-material/Image";
+import ImageIcon from "@mui/icons-material/Image";
+import Image from "next/image";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Box from "@mui/system/Box";
 import IconButton from "@mui/material/IconButton";
@@ -23,15 +24,16 @@ import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import { usePost } from "@/hooks/usePost";
 
-type NewPostProps = {
-  onAdd: () => void;
-};
+// type NewPostProps = {
+//   onAdd: () => void;
+// };
 
-const NewPost: React.FC<NewPostProps> = ({ onAdd }) => {
+const NewPost: React.FC = () => {
   // const NewPost: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   const [file, setFile] = useState<File | null>();
+  console.log(file);
   const inputFile = useRef<any>(null);
 
   const { data, error, isLoading } = useUser();
@@ -48,22 +50,30 @@ const NewPost: React.FC<NewPostProps> = ({ onAdd }) => {
     setFile(e.target.files[0]);
   };
 
-  const handleImage = () => {
+  const handleFormData = () => {
     let formData = new FormData(); //formdata object
 
-    formData.append("file", "ABC"); //append the values with key, value pair
-
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-    };
+    if (file) {
+      formData.append("file", file); //append the values with key, value pair
+    }
+    console.log({ formData });
+    return formData;
   };
 
-  const onSubmit = handleSubmit(async (formData) => {
+  const onSubmit = handleSubmit(async (data) => {
+    let formData = handleFormData();
+
+    if (data.contentText) {
+      formData.append("contentText", data.contentText);
+    }
+    // console.log({ formData });
     const jsonResponse = await fetcher("/post", {
-      body: JSON.stringify({ ...formData, file }),
       method: "POST",
+      body: formData,
+      headers: { "content-type": "multipart/form-data" },
     });
-    console.log(jsonResponse);
+    // const jsonData = await response.json();
+
     console.log("jsonResponse", jsonResponse);
     if (jsonResponse) {
       mutate();
@@ -143,7 +153,7 @@ const NewPost: React.FC<NewPostProps> = ({ onAdd }) => {
           />
           {file && (
             <Box>
-              <img
+              <Image
                 src={URL.createObjectURL(
                   new Blob([file], { type: "application/zip" })
                 )}
@@ -167,7 +177,7 @@ const NewPost: React.FC<NewPostProps> = ({ onAdd }) => {
             />
 
             <IconButton onClick={() => inputFile.current!.click()}>
-              <Image color="secondary" />
+              <ImageIcon color="secondary" />
             </IconButton>
 
             <IconButton>

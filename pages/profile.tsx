@@ -14,13 +14,13 @@ import NewPost from "@/components/NewPost";
 
 const Profile = () => {
   const { data } = useUser();
-  const [reFetchPost, setReFetchPost] = useState(0);
+  // const [reFetchPost, setReFetchPost] = useState(0);
   return (
     <MainLayout>
       <NewPost
-        onAdd={() => {
-          setReFetchPost((prev) => prev + 1);
-        }}
+      // onAdd={() => {
+      //   setReFetchPost((prev) => prev + 1);
+      // }}
       />
       <Box
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
@@ -36,17 +36,6 @@ const Profile = () => {
           elevation={10}
         >
           <Image src="/images/colors.png" height={160} width={700} alt="" />
-          {/* <IconButton
-            color="primary"
-            aria-label="edit"
-            sx={{
-              position: "relative",
-              ml: { sm: "90%", xs: "87%" },
-              mb: 1,
-            }}
-          >
-            <Edit fontSize="small" />
-          </IconButton> */}
           <EditProfile />
           <CardMedia
             image={

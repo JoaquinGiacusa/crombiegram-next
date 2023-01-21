@@ -18,9 +18,9 @@ export type ListPostProps = {
   contentText: string;
   imageName?: string;
   profileImage: string;
+  createdAt: Date;
   user: { firstName: ""; lastName: ""; profileImage: "" };
 }[];
-
 function Home() {
   const [listPost, setListPost] = useState<ListPostProps>([]);
   const [reFetchPost, setReFetchPost] = useState(0);
@@ -48,9 +48,9 @@ function Home() {
       <Box>
         {/* <NewPost /> */}
         <NewPost
-          onAdd={() => {
-            setReFetchPost((prev) => prev + 1);
-          }}
+        // onAdd={() => {
+        //   setReFetchPost((prev) => prev + 1);
+        // }}
         />
         <Box
           sx={{
@@ -73,6 +73,7 @@ function Home() {
                     firstName={p.user.firstName}
                     lastName={p.user.lastName}
                     profileImage={p.user.profileImage}
+                    createdAt={p.createdAt}
                   ></Post>
                 );
               })

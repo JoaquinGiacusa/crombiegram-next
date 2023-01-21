@@ -93,18 +93,13 @@ const EditProfile = () => {
             p={3}
             borderRadius={5}
           >
-            <Grid item xs={2} md={1}>
-              <Image
-                src="/images/crombie-logo.png"
-                alt="profile-img"
-                height={250}
-                width={250}
-              />
-            </Grid>
-            <Grid item xs={2} md={1}>
-              <AddImage />
-            </Grid>
-
+            <Image
+              src="/images/crombie-logo.png"
+              alt="profile-img"
+              height={250}
+              width={250}
+            />
+            <AddImage />
             <Grid
               container
               columns={2}

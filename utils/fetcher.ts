@@ -2,13 +2,19 @@ const BASE_URL = "http://localhost:3000/api";
 
 export const fetcher = async (
   path: RequestInfo,
-  params: RequestInit | undefined
+  // params: RequestInit | undefined
+  params: any
 ) => {
   const url = BASE_URL + path;
 
   let options = undefined;
   if (params != undefined) {
     options = params;
+  }
+
+  // @ts-ignore
+  if (params?.body?.formData) {
+    options.body?.formData.append();
   }
 
   const token = getSaveToken();
@@ -22,7 +28,7 @@ export const fetcher = async (
       },
     };
   }
-  console.log("opciones", options);
+  // console.log("opciones", options);
   const res = await fetch(url, options);
   const data = await res.json();
   return data;

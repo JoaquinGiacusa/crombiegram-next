@@ -6,16 +6,7 @@ const AddImage = () => {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button
-        color="primary"
-        aria-label="edit"
-        sx={{
-          position: "relative",
-          ml: { sm: "90%", xs: "87%" },
-          mb: 1,
-        }}
-        onClick={(e) => setOpen(true)}
-      >
+      <Button color="primary" aria-label="edit" onClick={(e) => setOpen(true)}>
         <Add fontSize="small" />
         <Typography>Add Image</Typography>
       </Button>
