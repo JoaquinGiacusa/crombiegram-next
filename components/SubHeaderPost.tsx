@@ -6,7 +6,6 @@ type SubHeaderPostType = {
 };
 
 const SubHeaderPost: React.FC<SubHeaderPostType> = ({ createdAt }) => {
-  console.log(createdAt);
   const timeAgo = moment(createdAt).fromNow();
   return <div>Full stack developer &bull; {timeAgo}</div>;
 };

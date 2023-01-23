@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Edit from "@mui/icons-material/Edit";
 import MainLayout from "@/components/layouts/mainLayout";
 import Image from "next/image";
-import { Button, IconButton } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
 import useUser from "@/hooks/useUser";
 import EditProfile from "@/components/EditProfile";
 import NewPost from "@/components/NewPost";
@@ -37,15 +37,14 @@ const Profile = () => {
         >
           <Image src="/images/colors.png" height={160} width={700} alt="" />
           <EditProfile />
-          <CardMedia
-            image={
+          <Avatar
+            src={
               data?.user.profileImage
                 ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${data?.user.profileImage}`
                 : ""
             }
             sx={{
               position: "relative",
-
               height: { sm: 150, xs: 100 },
               width: { sm: 150, xs: 100 },
               borderRadius: 50,
@@ -54,7 +53,7 @@ const Profile = () => {
               ml: 5,
               mt: -12,
             }}
-            title="profile"
+            alt="Joaquin"
           />
 
           <Box sx={{ m: 5 }}>

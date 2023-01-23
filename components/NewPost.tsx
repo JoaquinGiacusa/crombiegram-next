@@ -24,16 +24,11 @@ import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import { usePost } from "@/hooks/usePost";
 
-// type NewPostProps = {
-//   onAdd: () => void;
-// };
-
 const NewPost: React.FC = () => {
-  // const NewPost: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   const [file, setFile] = useState<File | null>();
-  console.log(file);
+
   const inputFile = useRef<any>(null);
 
   const { data, error, isLoading } = useUser();
@@ -50,31 +45,26 @@ const NewPost: React.FC = () => {
     setFile(e.target.files[0]);
   };
 
-  const handleFormData = () => {
-    let formData = new FormData(); //formdata object
+  const onSubmit = handleSubmit(async (data) => {
+    let formData = new FormData();
 
     if (file) {
-      formData.append("file", file); //append the values with key, value pair
+      formData.append("image", file, file?.name);
     }
-    console.log({ formData });
-    return formData;
-  };
-
-  const onSubmit = handleSubmit(async (data) => {
-    let formData = handleFormData();
 
     if (data.contentText) {
       formData.append("contentText", data.contentText);
     }
-    // console.log({ formData });
-    const jsonResponse = await fetcher("/post", {
-      method: "POST",
-      body: formData,
-      headers: { "content-type": "multipart/form-data" },
-    });
-    // const jsonData = await response.json();
 
-    console.log("jsonResponse", jsonResponse);
+    const jsonResponse = await fetcher(
+      "/post",
+      {
+        method: "POST",
+        body: formData,
+      },
+      true
+    );
+
     if (jsonResponse) {
       mutate();
     }
