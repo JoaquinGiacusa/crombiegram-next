@@ -10,7 +10,7 @@ export type UserCardPropsType = {
   firstName: string;
   lastName: string;
   profileImage?: string;
-  position: string;
+  position?: string;
 };
 
 const UserCard: React.FC<UserCardPropsType> = ({
@@ -20,7 +20,6 @@ const UserCard: React.FC<UserCardPropsType> = ({
   profileImage,
   position,
 }) => {
-  const { data } = useUsers();
   return (
     <Box
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
@@ -38,8 +37,8 @@ const UserCard: React.FC<UserCardPropsType> = ({
         <Stack direction="row">
           <CardMedia
             image={
-              data?.user.profileImage
-                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${data?.user.profileImage}`
+              profileImage
+                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
                 : ""
             }
             sx={{
@@ -57,9 +56,9 @@ const UserCard: React.FC<UserCardPropsType> = ({
           />
           <Stack direction="column" spacing={1} sx={{ m: 3 }}>
             <Typography variant="h5">
-              {data?.user.firstName} {data?.user.lastName}
+              {firstName} {lastName}
             </Typography>
-            <Typography>Full stack developer</Typography>
+            <Typography>{position}</Typography>
           </Stack>
         </Stack>
       </Card>

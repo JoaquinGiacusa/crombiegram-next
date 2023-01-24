@@ -14,7 +14,6 @@ export type ListUserProps = {
 
 function Network() {
   const [listUser, setListUser] = useState<ListUserProps>([]);
-  const [reFetchUsers, setReFetchUsers] = useState(0);
 
   const { data, error, isLoading } = useUsers();
 
@@ -22,7 +21,7 @@ function Network() {
     if (data) {
       setListUser(data);
     }
-  }, [data, reFetchUsers]);
+  }, [data]);
 
   return (
     <MainLayout>
