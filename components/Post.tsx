@@ -55,7 +55,7 @@ const Post: React.FC<PostPropsType> = ({
             <MoreVertIcon />
           </IconButton>
         }
-        title={firstName + lastName}
+        title={firstName + " " + lastName}
         subheader={<SubHeaderPost createdAt={createdAt} />}
       />
       {/* <CardActionArea> */}

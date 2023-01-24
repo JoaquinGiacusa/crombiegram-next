@@ -1,5 +1,5 @@
-import useUser from "@/hooks/useUser";
-import { Box, Card, CardMedia, Typography } from "@mui/material";
+import useUsers from "@/hooks/useUsers";
+import { Box, Card, CardMedia, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
 import NewPost from "./NewPost";
@@ -20,23 +20,22 @@ const UserCard: React.FC<UserCardPropsType> = ({
   profileImage,
   position,
 }) => {
-  const { data } = useUser();
+  const { data } = useUsers();
   return (
-    <MainLayout>
-      <NewPost />
-      <Box
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+    <Box
+      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <Card
+        sx={{
+          borderRadius: 5,
+          m: 1,
+          mt: 5,
+          maxWidth: 700,
+          width: "100%",
+        }}
+        elevation={10}
       >
-        <Card
-          sx={{
-            borderRadius: 5,
-            m: 1,
-            mt: 5,
-            maxWidth: 700,
-            width: "100%",
-          }}
-          elevation={10}
-        >
+        <Stack direction="row">
           <CardMedia
             image={
               data?.user.profileImage
@@ -46,26 +45,25 @@ const UserCard: React.FC<UserCardPropsType> = ({
             sx={{
               position: "relative",
 
-              height: { sm: 150, xs: 100 },
-              width: { sm: 150, xs: 100 },
+              height: { sm: 100, xs: 50 },
+              width: { sm: 100, xs: 50 },
               borderRadius: 50,
               border: 5,
               borderColor: "#8e44ad",
-              ml: 5,
-              mt: -12,
+              ml: 2,
+              mt: 2,
             }}
             title="profile"
           />
-
-          <Box sx={{ m: 5 }}>
+          <Stack direction="column" spacing={1} sx={{ m: 3 }}>
             <Typography variant="h5">
               {data?.user.firstName} {data?.user.lastName}
             </Typography>
-            <Typography>{data?.user.position}</Typography>
-          </Box>
-        </Card>
-      </Box>
-    </MainLayout>
+            <Typography>Full stack developer</Typography>
+          </Stack>
+        </Stack>
+      </Card>
+    </Box>
   );
 };
 

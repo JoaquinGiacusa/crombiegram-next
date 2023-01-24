@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import MainLayout from "@/components/layouts/mainLayout";
-import useUser from "@/hooks/useUser";
+import useUsers from "@/hooks/useUsers";
 import UserCard from "@/components/UserCard";
 
 export type ListUserProps = {
@@ -11,17 +11,18 @@ export type ListUserProps = {
   profileImage: string;
   position: string;
 }[];
+
 function Network() {
   const [listUser, setListUser] = useState<ListUserProps>([]);
-  const [reFetchPost, setReFetchPost] = useState(0);
+  const [reFetchUsers, setReFetchUsers] = useState(0);
 
-  const { data, error, isLoading } = useUser();
+  const { data, error, isLoading } = useUsers();
 
   useEffect(() => {
     if (data) {
       setListUser(data);
     }
-  }, [data, reFetchPost]);
+  }, [data, reFetchUsers]);
 
   return (
     <MainLayout>
