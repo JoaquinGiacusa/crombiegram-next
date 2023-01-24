@@ -161,14 +161,15 @@ function ResponsiveAppBar() {
             <IconButton
               color="primary"
               key="home"
-              // onClick={handleCloseNavMenu}
               href="/home"
+              // onClick={handleCloseNavMenu}
             >
               <HomeIcon fontSize="large" />
             </IconButton>
             <IconButton
               color="primary"
               key="events"
+              href="/events"
               // onClick={handleCloseNavMenu}
             >
               <CalendarMonthIcon fontSize="large" />
@@ -176,6 +177,7 @@ function ResponsiveAppBar() {
             <IconButton
               color="primary"
               key="network"
+              href="/network"
               // onClick={handleCloseNavMenu}
             >
               <GroupIcon fontSize="large" />
