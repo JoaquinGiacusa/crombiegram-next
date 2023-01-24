@@ -21,6 +21,7 @@ export type ListPostProps = {
   createdAt: Date;
   user: { firstName: ""; lastName: ""; profileImage: "" };
 }[];
+
 function Home() {
   const [listPost, setListPost] = useState<ListPostProps>([]);
   const [reFetchPost, setReFetchPost] = useState(0);

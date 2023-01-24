@@ -43,12 +43,12 @@ const BottomAppBar = () => {
             gap: 7,
           }}
         >
-          <Link href={"/home"}>
+          <Link href={"/network"}>
             <IconButton color="primary" key="network">
               <GroupIcon fontSize="large" />
             </IconButton>
           </Link>
-          <Link href={"/home"}>
+          <Link href={"/events"}>
             <IconButton color="primary" key="search">
               <SearchIcon fontSize="large" />
             </IconButton>
