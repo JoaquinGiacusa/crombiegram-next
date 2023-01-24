@@ -1,14 +1,15 @@
-import useUser from “@/hooks/useUser”;
-import { fetcher } from “@/utils/fetcher”;
-import Add from “@mui/icons-material/Add”;
-import { Button, IconButton, Typography } from “@mui/material”;
-import React, { useRef, useState } from “react”;
-import { useForm } from “react-hook-form”;
-import { mutate } from “swr”;
-const AddImage = () => {
+import useUser from "@/hooks/useUser";
+import { fetcher } from "@/utils/fetcher";
+import { Add } from "@mui/icons-material";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { useState, useRef } from "react";
+import { useForm } from "react-hook-form";
+
+const AddImage = (image: File) => {
   const [file, setFile] = useState<File | null>();
   const inputFile = useRef<any>(null);
-  const { data, error, isLoading } = useUser();
+  const { data, error, isLoading, mutate } = useUser();
   const {
     register,
     handleSubmit,
@@ -18,45 +19,41 @@ const AddImage = () => {
     if (!e.target.files?.[0]) return;
     setFile(e.target.files[0]);
   };
-  const handleFormData = () => {
+
+  const onSubmit = handleSubmit(async (data) => {
     let formData = new FormData(); //formdata object
     if (file) {
-      formData.append(“file”, file); //append the values with key, value pair
+      formData.append("file", file, file?.name); //append the values with key, value pair
     }
-    console.log({ formData });
-    return formData;
-  };
-  const onSubmit = handleSubmit(async (data) => {
-    let formData = handleFormData();
-    if (data.contentText) {
-      formData.append(“contentText”, data.contentText);
-    }
+
     // console.log({ formData });
-    const jsonResponse = await fetcher(“/post”, {
-      method: “POST”,
-      body: formData,
-      headers: { “content-type”: “multipart/form-data” },
-    });
-    // const jsonData = await response.json();
-    console.log(“jsonResponse”, jsonResponse);
+    const jsonResponse = await fetcher(
+      "/post",
+      {
+        method: "POST",
+        body: formData,
+      },
+      true
+    );
+
     if (jsonResponse) {
-      //mutate();
+      mutate();
     }
   });
   return (
     <>
       <input
-        style={{ display: “none” }}
-        type=“file”
+        style={{ display: "none" }}
+        type="file"
         onChange={handleChange}
         ref={inputFile}
       />
       <Button
-        color=“primary”
-        aria-label=“edit”
+        color="primary"
+        aria-label="edit"
         onClick={() => inputFile.current!.click()}
       >
-        <Add fontSize=“small” />
+        <Add fontSize="small" />
         <Typography>Add Image</Typography>
       </Button>
     </>

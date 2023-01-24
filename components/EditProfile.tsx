@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Edit from "@mui/icons-material/Edit";
 import {
@@ -9,6 +9,7 @@ import {
   Button,
   Alert,
   Stack,
+  Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import useFetch from "@/hooks/useFetch";
@@ -17,13 +18,44 @@ import useUser from "@/hooks/useUser";
 import Image from "next/image";
 import Link from "next/link";
 import AddImage from "./AddImage";
+import { fetcher } from "@/utils/fetcher";
+import Add from "@mui/icons-material/Add";
 
 const EditProfile = () => {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
-  const { data } = useUser();
 
-  const [reFetchPost, setReFetchPost] = useState(0);
+  const [file, setFile] = useState<File | null>();
+  const inputFile = useRef<any>(null);
+  const { data, error, isLoading, mutate } = useUser();
+  console.log(file);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmitImage = async () => {
+    console.log("HOLAAAAA");
+
+    let formData = new FormData(); //formdata object
+    if (file) {
+      formData.append("profileImage", file, file?.name); //append the values with key, value pair
+    }
+
+    // console.log({ formData });
+    const jsonResponse = await fetcher(
+      "/me/image",
+      {
+        method: "POST",
+        body: formData,
+      },
+      true
+    );
+
+    if (jsonResponse) {
+      mutate();
+    }
+  };
 
   const handleFetch = useFetch();
   const {
@@ -67,7 +99,9 @@ const EditProfile = () => {
           justifyContent: "center",
         }}
         open={open}
-        onClose={(e) => setOpen(false)}
+        onClose={(e) => {
+          return setOpen(false), setFile(null);
+        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -93,13 +127,48 @@ const EditProfile = () => {
             p={3}
             borderRadius={5}
           >
-            <Image
-              src="/images/crombie-logo.png"
-              alt="profile-img"
-              height={250}
-              width={250}
+            {file ? (
+              <Image
+                src={
+                  file
+                    ? URL.createObjectURL(
+                        new Blob([file], { type: "application/zip" })
+                      )
+                    : "/images/crombie-logo.png"
+                }
+                alt="profile-img"
+                height={250}
+                width={250}
+              />
+            ) : (
+              <Image
+                src={
+                  data?.user.profileImage
+                    ? "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
+                      data?.user.profileImage
+                    : "/images/crombie-logo.png"
+                }
+                alt="profile-img"
+                height={250}
+                width={250}
+              />
+            )}
+            <input
+              style={{ display: "none" }}
+              type="file"
+              onChange={handleChange}
+              ref={inputFile}
             />
-            <AddImage />
+            <Button
+              color="primary"
+              aria-label="edit"
+              onClick={
+                file ? handleSubmitImage : () => inputFile.current!.click()
+              }
+            >
+              <Add fontSize="small" />
+              <Typography>{file ? "Submit Image" : "Add Image"}</Typography>
+            </Button>
             <Grid
               container
               columns={2}
