@@ -35,16 +35,13 @@ const EditProfile = () => {
   };
 
   const handleSubmitImage = async () => {
-    console.log("HOLAAAAA");
-
     let formData = new FormData(); //formdata object
     if (file) {
       formData.append("profileImage", file, file?.name); //append the values with key, value pair
     }
 
-    // console.log({ formData });
     const jsonResponse = await fetcher(
-      "/me/image",
+      "/user/me/image",
       {
         method: "POST",
         body: formData,
