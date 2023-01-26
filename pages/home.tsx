@@ -78,7 +78,7 @@ function Home() {
                   ></Post>
                 );
               })
-            : "no hay post disponibles"}
+            : "No post to show."}
         </Box>
       </Box>
     </MainLayout>
