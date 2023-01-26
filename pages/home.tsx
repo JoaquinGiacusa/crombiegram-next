@@ -23,86 +23,70 @@ export type ListPostProps = {
 }[];
 
 function Home() {
-  const [listPost, setListPost] = useState<ListPostProps>([]);
-  const [reFetchPost, setReFetchPost] = useState(0);
+  // const [listPost, setListPost] = useState<ListPostProps>([]);
+  // const [reFetchPost, setReFetchPost] = useState(0);
 
-  const { data, error, isLoading } = usePost();
-
-  useEffect(() => {
-    if (data) {
-      setListPost(data);
-    }
-  }, [data, reFetchPost]);
+  // const { data, error, isLoading } = usePost();
 
   // useEffect(() => {
-  //   handleFetch({
-  //     path: "post",
-  //     method: "GET",
-  //   }).then((jsonResponse) => {
-  //     setListPost(jsonResponse);
-  //     // setReFetchPost((prev) => prev + 1);
-  //   });
-  // }, [reFetchPost]);
+  //   if (data) {
+  //     setListPost(data);
+  //   }
+  // }, [data, reFetchPost]);
 
-  return (
-    <MainLayout>
-      <Box>
-        {/* <NewPost /> */}
-        <NewPost
-        // onAdd={() => {
-        //   setReFetchPost((prev) => prev + 1);
-        // }}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 2,
-            mt: 2,
-          }}
-        >
-          {listPost.length > 0
-            ? listPost.map((p) => {
-                return (
-                  <Post
-                    key={p.id}
-                    id={p.id}
-                    contentText={p.contentText}
-                    imageName={p.imageName}
-                    firstName={p.user.firstName}
-                    lastName={p.user.lastName}
-                    profileImage={p.user.profileImage}
-                    createdAt={p.createdAt}
-                  ></Post>
-                );
-              })
-            : "no hay post disponibles"}
-        </Box>
-      </Box>
-    </MainLayout>
-  );
+  // return (
+  //   <MainLayout>
+  //     <Box>
+  //       <NewPost />
+  //       <Box
+  //         sx={{
+  //           display: "flex",
+  //           flexDirection: "column",
+  //           alignItems: "center",
+  //           justifyContent: "center",
+  //           gap: 2,
+  //           mt: 2,
+  //         }}
+  //       >
+  //         {listPost.length > 0
+  //           ? listPost.map((p) => {
+  //               return (
+  //                 <Post
+  //                   key={p.id}
+  //                   id={p.id}
+  //                   contentText={p.contentText}
+  //                   imageName={p.imageName}
+  //                   firstName={p.user.firstName}
+  //                   lastName={p.user.lastName}
+  //                   profileImage={p.user.profileImage}
+  //                   createdAt={p.createdAt}
+  //                 ></Post>
+  //               );
+  //             })
+  //           : "no hay post disponibles"}
+  //       </Box>
+  //     </Box>
+  //   </MainLayout>
+  // );
+  return <div>home</div>;
 }
 
 export default Home;
 
-// export async function getStaticProps(context: NextPageContext) {
-//   // useEffect(() => {
-//   //   handleFetch({
-//   //     path: "post",
-//   //     method: "GET",
-//   //   }).then((jsonResponse) => {
-//   //     setListPost(jsonResponse);
-//   //     // setReFetchPost((prev) => prev + 1);
-//   //   });
-//   // }, [reFetchPost]);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookies = context.req.cookies;
+  console.log(cookies.token);
 
-//   const res = await fetch(`http://localhost:3000/api/post`);
-//   const data = await res.json();
+  // if (cookies.userToken != "asde") {
+  //   return {
+  //     redirect: {
+  //       destination: "/",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-//   return {
-//     props: { data },
-//     revalidate: 5,
-//   };
-// }
+  return {
+    props: {},
+  };
+};

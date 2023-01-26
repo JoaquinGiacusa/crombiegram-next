@@ -15,6 +15,7 @@ import useFetch from "../hooks/useFetch";
 import SwitchTheme from "@/components/SwitchTheme";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { fetcher } from "@/utils/fetcher";
 
 interface IFormInput {
   email: string;
@@ -24,8 +25,6 @@ interface IFormInput {
 function Login() {
   const router = useRouter();
 
-  const handleFetch = useFetch();
-
   const {
     register,
     handleSubmit,
@@ -33,14 +32,18 @@ function Login() {
   } = useForm({ defaultValues: { email: "", password: "" } });
 
   const onSubmit = handleSubmit(async (data) => {
-    const jsonResponse = await handleFetch({
-      path: "auth/login",
-      data,
+    const jsonResponse = await fetcher("/auth/login", {
       method: "POST",
+      body: JSON.stringify(data),
+      credentials: "include",
     });
+
     // handleSetValues("token", jsonResponse.payload.token);
-    localStorage.setItem("token", jsonResponse.payload.token);
-    setTimeout(() => router.push("/home"), 500);
+    // localStorage.setItem("token", jsonResponse.payload.token);
+    console.log("xd", jsonResponse);
+    if (jsonResponse.message == "Login successful") {
+      setTimeout(() => router.push("/home"));
+    }
   });
 
   const [showPassword, setShowPassword] = useState(false);
