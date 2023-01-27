@@ -18,6 +18,7 @@ import { userAgent } from "next/server";
 import { Stack } from "@mui/system";
 const Profile = () => {
   const { data, error, isLoading, mutate } = useUser();
+  console.log(data?.userPosts);
 
   return (
     <MainLayout>

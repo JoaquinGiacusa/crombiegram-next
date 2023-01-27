@@ -13,6 +13,10 @@ import CardActionArea from "@mui/material/CardActionArea";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import IconButton from "@mui/material/IconButton";
 import SubHeaderPost from "./SubHeaderPost";
+import { fetcher } from "@/utils/fetcher";
+import { usePost } from "@/hooks/usePost";
+import { ListItemIcon, Menu, MenuItem } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 
 export type PostPropsType = {
   id: string;
@@ -37,6 +41,29 @@ const Post: React.FC<PostPropsType> = ({
   //   ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
   //   : "";
 
+  const { mutate } = usePost();
+
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleDelete = async () => {
+    const jsonResponse = await fetcher(`/post/${id}`, {
+      method: "DELETE",
+    });
+
+    if (jsonResponse) {
+      mutate();
+    }
+  };
+
   return (
     <Card sx={{ width: "100%", maxWidth: "500px" }}>
       <CardHeader
@@ -51,7 +78,7 @@ const Post: React.FC<PostPropsType> = ({
           />
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
             <MoreVertIcon />
           </IconButton>
         }
@@ -81,6 +108,30 @@ const Post: React.FC<PostPropsType> = ({
           </IconButton>
         </CardActions>
       </CardContent>
+
+      <Menu
+        sx={{ mt: "45px" }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        <MenuItem onClick={handleDelete}>
+          <ListItemIcon>
+            <Delete fontSize="small" />
+            <Typography textAlign="center">Delete</Typography>
+          </ListItemIcon>
+        </MenuItem>
+      </Menu>
       {/* </CardActionArea> */}
     </Card>
   );
