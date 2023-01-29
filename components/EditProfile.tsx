@@ -19,6 +19,8 @@ import Link from "next/link";
 import AddImage from "./AddImage";
 import { fetcher } from "@/utils/fetcher";
 import Add from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import moment from "moment";
 
 const EditProfile = () => {
   const [open, setOpen] = useState(false);
@@ -26,7 +28,7 @@ const EditProfile = () => {
   const [file, setFile] = useState<File | null>();
   const inputFile = useRef<any>(null);
   const { data, error, isLoading, mutate } = useUser();
-  console.log(file);
+  console.log("FECHA", moment(data?.user.birthday).format("DD-MM-YYYY"));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
@@ -39,7 +41,6 @@ const EditProfile = () => {
       formData.append("profileImage", file, file?.name); //append the values with key, value pair
     }
 
-    // console.log({ formData });
     const jsonResponse = await fetcher(
       "/user/me/image",
       {
@@ -62,7 +63,6 @@ const EditProfile = () => {
   } = useForm<any>({ defaultValues: { password: "" } });
   //   const navigate = useNavigate();
   const [alert, setAlert] = useState(false);
-  console.log(getValues());
 
   const onSubmit = handleSubmit(async (data) => {
     const jsonResponse = await fetcher("/user/me", {
@@ -73,6 +73,7 @@ const EditProfile = () => {
     setAlert(jsonResponse.message);
     setOpen(false);
   });
+  console.log(data?.user.birthday);
   return (
     <>
       <IconButton
@@ -154,16 +155,31 @@ const EditProfile = () => {
               onChange={handleChange}
               ref={inputFile}
             />
-            <Button
-              color="primary"
-              aria-label="edit"
-              onClick={
-                file ? handleSubmitImage : () => inputFile.current!.click()
-              }
-            >
-              <Add fontSize="small" />
-              <Typography>{file ? "Submit Image" : "Add Image"}</Typography>
-            </Button>
+            <Stack direction="row" spacing={1}>
+              <Button
+                color="primary"
+                aria-label="edit"
+                onClick={() => inputFile.current!.click()}
+              >
+                {file ? (
+                  <EditIcon fontSize="small" />
+                ) : (
+                  <Add fontSize="small" />
+                )}
+              </Button>
+
+              {file ? (
+                <Button
+                  color="primary"
+                  aria-label="edit"
+                  onClick={handleSubmitImage}
+                >
+                  <Add fontSize="small" />
+                </Button>
+              ) : (
+                ""
+              )}
+            </Stack>
             <Grid
               container
               columns={2}
@@ -198,28 +214,6 @@ const EditProfile = () => {
                   defaultValue={data?.user.email}
                 />
               </Grid>
-              {/* <Grid item xs={2} md={1}>
-                <TextField
-                  label="Actual Password"
-                  variant="outlined"
-                  type="password"
-                  {...register("password", { required: false })}
-                  fullWidth
-                  inputProps={{
-                    autocomplete: "new-password",
-                  }}
-                />
-              </Grid>
-              <Grid item xs={2} md={1}>
-                <TextField
-                  label="New Password"
-                  variant="outlined"
-                  type="password"
-                  {...register("repeatPassword", { required: true })}
-                  fullWidth
-                />
-              </Grid> */}
-
               <Grid item xs={2} md={1}>
                 <TextField
                   id="date"
@@ -230,9 +224,12 @@ const EditProfile = () => {
                   }}
                   {...register("birthday", { required: true })}
                   fullWidth
-                  defaultValue={data?.user.birthday}
+                  defaultValue={moment(data?.user.birthday).format(
+                    "DD-MM-YYYY"
+                  )}
                 />
               </Grid>
+
               <Grid item xs={2} md={1}>
                 <TextField
                   id="position"
@@ -248,7 +245,7 @@ const EditProfile = () => {
               <Grid item xs={2} md={1}>
                 <Link
                   style={{ color: "#fc427b", fontSize: 16, marginLeft: 10 }}
-                  href={"/home"}
+                  href={"/"}
                 >
                   Change Password
                 </Link>
