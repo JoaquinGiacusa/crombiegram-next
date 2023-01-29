@@ -19,11 +19,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { styled, alpha } from "@mui/material/styles";
 import { Button, ListItemIcon } from "@mui/material";
-// import useFetch from "../hooks/useFetch";
 import { Logout } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import useUser from "@/hooks/useUser";
 import PersonIcon from "@mui/icons-material/Person";
+import { deleteCookie } from "cookies-next";
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -39,7 +39,7 @@ function ResponsiveAppBar() {
   };
 
   const { data, error, isLoading } = useUser();
-
+  // console.log(data);
   const Search = styled("div")(({ theme }) => ({
     position: "relative",
     borderRadius: theme.shape.borderRadius,
@@ -83,11 +83,9 @@ function ResponsiveAppBar() {
 
   const router = useRouter();
   const handleLogout = () => {
-    // const jsonResponse = handleFetch({
-    //   path: "auth/login",
-    //   method: "DELETE",
-    // });
-    localStorage.removeItem("token");
+    deleteCookie("authToken");
+    deleteCookie("authExpires");
+
     router.push("/");
   };
 

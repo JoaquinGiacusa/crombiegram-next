@@ -3,6 +3,9 @@ import Box from "@mui/material/Box";
 import MainLayout from "@/components/layouts/mainLayout";
 import useUsers from "@/hooks/useUsers";
 import UserCard from "@/components/UserCard";
+import { GetServerSideProps } from "next";
+import { getCookie } from "cookies-next";
+import revalitaToken from "@/utils/revalidateAuth";
 
 export type ListUserProps = {
   id: string;
@@ -56,3 +59,23 @@ function Network() {
 }
 
 export default Network;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const authToken = getCookie("authToken", context) as string;
+  const authExpires = getCookie("authExpires", context) as string;
+
+  if (!authToken || !authExpires) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  await revalitaToken(authToken, authExpires, context);
+
+  return {
+    props: {},
+  };
+};

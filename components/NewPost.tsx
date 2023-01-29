@@ -17,8 +17,6 @@ import Image from "next/image";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Box from "@mui/system/Box";
 import IconButton from "@mui/material/IconButton";
-// import fetchAPI from "../lib/apiFetch";
-import useFetch from "../hooks/useFetch";
 import { fetcher } from "@/utils/fetcher";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";

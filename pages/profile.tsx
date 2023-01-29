@@ -11,6 +11,9 @@ import Avatar from "@mui/material/Avatar";
 import useUser from "@/hooks/useUser";
 import EditProfile from "@/components/EditProfile";
 import NewPost from "@/components/NewPost";
+import { GetServerSideProps } from "next";
+import { getCookie } from "cookies-next";
+import revalitaToken from "@/utils/revalidateAuth";
 import { usePost } from "@/hooks/usePost";
 import { ListPostProps } from "./home";
 import Post from "@/components/Post";
@@ -101,3 +104,23 @@ const Profile = () => {
 };
 
 export default Profile;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const authToken = getCookie("authToken", context) as string;
+  const authExpires = getCookie("authExpires", context) as string;
+
+  if (!authToken || !authExpires) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  await revalitaToken(authToken, authExpires, context);
+
+  return {
+    props: {},
+  };
+};

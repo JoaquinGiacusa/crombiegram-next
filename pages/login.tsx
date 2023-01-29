@@ -11,10 +11,12 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import useFetch from "../hooks/useFetch";
 import SwitchTheme from "@/components/SwitchTheme";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { fetcher } from "@/utils/fetcher";
+import { setCookie } from "cookies-next";
+import moment from "moment";
 
 interface IFormInput {
   email: string;
@@ -24,8 +26,6 @@ interface IFormInput {
 function Login() {
   const router = useRouter();
 
-  const handleFetch = useFetch();
-
   const {
     register,
     handleSubmit,
@@ -33,14 +33,20 @@ function Login() {
   } = useForm({ defaultValues: { email: "", password: "" } });
 
   const onSubmit = handleSubmit(async (data) => {
-    const jsonResponse = await handleFetch({
-      path: "auth/login",
-      data,
+    const jsonResponse = await fetcher("/auth/login", {
       method: "POST",
+      body: JSON.stringify(data),
+      credentials: "include",
     });
-    // handleSetValues("token", jsonResponse.payload.token);
-    localStorage.setItem("token", jsonResponse.payload.token);
-    setTimeout(() => router.push("/home"), 500);
+
+    const { payload } = jsonResponse;
+
+    if (jsonResponse.message == "Login successful") {
+      setCookie("authToken", payload.authCookie);
+      setCookie("authExpires", payload.expires);
+
+      router.push("/home");
+    }
   });
 
   const [showPassword, setShowPassword] = useState(false);

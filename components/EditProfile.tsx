@@ -12,7 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import useFetch from "@/hooks/useFetch";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import Image from "next/image";
@@ -56,7 +55,6 @@ const EditProfile = () => {
     }
   };
 
-  const handleFetch = useFetch();
   const {
     register,
     handleSubmit,
@@ -67,10 +65,9 @@ const EditProfile = () => {
   const [alert, setAlert] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
-    const jsonResponse = await handleFetch({
-      path: "user/me",
-      data,
+    const jsonResponse = await fetcher("/user/me", {
       method: "PUT",
+      body: JSON.stringify(data),
     });
 
     setAlert(jsonResponse.message);

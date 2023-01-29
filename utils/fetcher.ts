@@ -12,23 +12,25 @@ export const fetcher = async (
     options = params;
   }
 
-  const token = getSaveToken();
+  // const token = getSaveToken();
   // console.log(token);
-  if (token) {
-    options = {
-      ...options,
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-    };
-  }
+  // if (token) {
+  options = {
+    ...options,
+    headers: {
+      "content-type": "application/json",
+      // credentials: "same-origin",
+      // authorization: `Bearer ${token}`,
+    },
+    credentials: "include" as RequestCredentials,
+  };
+  // }
 
   if (isFormData) {
     options = {
       ...options,
       headers: {
-        authorization: `Bearer ${token}`,
+        // authorization: `Bearer ${token}`,
       },
     };
   }
@@ -38,10 +40,10 @@ export const fetcher = async (
   return data;
 };
 
-export function getSaveToken() {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("token");
-  } else {
-    false;
-  }
-}
+// export function getSaveToken() {
+//   if (typeof window !== "undefined") {
+//     return localStorage.getItem("token");
+//   } else {
+//     false;
+//   }
+// }

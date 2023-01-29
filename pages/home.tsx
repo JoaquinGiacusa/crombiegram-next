@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
-import useFetch from "../hooks/useFetch";
+
 import MainLayout from "@/components/layouts/mainLayout";
 import {
   GetServerSideProps,
@@ -10,6 +10,9 @@ import {
   NextPageContext,
 } from "next";
 import { usePost } from "@/hooks/usePost";
+import { getCookie, setCookie } from "cookies-next";
+import moment from "moment";
+import revalitaToken from "@/utils/revalidateAuth";
 
 export type ListPostProps = {
   id: string;
@@ -23,36 +26,12 @@ export type ListPostProps = {
 }[];
 
 function Home() {
-  const [listPost, setListPost] = useState<ListPostProps>([]);
-  const [reFetchPost, setReFetchPost] = useState(0);
-
   const { data, error, isLoading } = usePost();
-
-  useEffect(() => {
-    if (data) {
-      setListPost(data);
-    }
-  }, [data, reFetchPost]);
-
-  // useEffect(() => {
-  //   handleFetch({
-  //     path: "post",
-  //     method: "GET",
-  //   }).then((jsonResponse) => {
-  //     setListPost(jsonResponse);
-  //     // setReFetchPost((prev) => prev + 1);
-  //   });
-  // }, [reFetchPost]);
 
   return (
     <MainLayout>
       <Box>
-        {/* <NewPost /> */}
-        <NewPost
-        // onAdd={() => {
-        //   setReFetchPost((prev) => prev + 1);
-        // }}
-        />
+        <NewPost />
         <Box
           sx={{
             display: "flex",
@@ -63,8 +42,8 @@ function Home() {
             mt: 2,
           }}
         >
-          {listPost.length > 0
-            ? listPost.map((p) => {
+          {data && data?.length > 0
+            ? data?.map((p) => {
                 return (
                   <Post
                     key={p.id}
@@ -87,22 +66,22 @@ function Home() {
 
 export default Home;
 
-// export async function getStaticProps(context: NextPageContext) {
-//   // useEffect(() => {
-//   //   handleFetch({
-//   //     path: "post",
-//   //     method: "GET",
-//   //   }).then((jsonResponse) => {
-//   //     setListPost(jsonResponse);
-//   //     // setReFetchPost((prev) => prev + 1);
-//   //   });
-//   // }, [reFetchPost]);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const authToken = getCookie("authToken", context) as string;
+  const authExpires = getCookie("authExpires", context) as string;
 
-//   const res = await fetch(`http://localhost:3000/api/post`);
-//   const data = await res.json();
+  if (!authToken || !authExpires) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
-//   return {
-//     props: { data },
-//     revalidate: 5,
-//   };
-// }
+  await revalitaToken(authToken, authExpires, context);
+
+  return {
+    props: {},
+  };
+};

@@ -11,21 +11,6 @@ import Link from "next/link";
 import SwitchTheme from "../components/SwitchTheme";
 
 function Start() {
-  // const [isRegistered, setIsRegistered] = useState(false);
-
-  // const handleClick = (event: { currentTarget: { id: string } }) => {
-  //   if (event.currentTarget.id === "login") {
-  //     setIsRegistered(true);
-  //     console.log(isRegistered);
-  //   } else if (event.currentTarget.id === "register") {
-  //     setIsRegistered(false);
-
-  //     console.log(isRegistered);
-  //   }
-  // };
-
-  // if (token) return <Navigate to="/home" />;
-
   return (
     <Box
       sx={{
