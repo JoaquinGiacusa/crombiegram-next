@@ -2,22 +2,18 @@ import React, { useState } from "react";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
+
 import TextField from "@mui/material/TextField";
-import useFetch from "../hooks/useFetch";
 import { useForm } from "react-hook-form";
 import Grid from "@mui/material/Grid";
 import SwitchTheme from "@/components/SwitchTheme";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { fetcher } from "@/utils/fetcher";
 
 function Register() {
   const router = useRouter();
 
-  const handleFetch = useFetch();
   const {
     register,
     handleSubmit,
@@ -27,10 +23,9 @@ function Register() {
   const [alert, setAlert] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
-    const jsonResponse = await handleFetch({
-      path: "auth/signup",
-      data,
+    const jsonResponse = await fetcher("/auth/signup", {
       method: "POST",
+      body: JSON.stringify(data),
     });
 
     setAlert(jsonResponse.message);

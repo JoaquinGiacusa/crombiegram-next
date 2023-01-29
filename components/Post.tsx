@@ -13,6 +13,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import IconButton from "@mui/material/IconButton";
 import SubHeaderPost from "./SubHeaderPost";
+import Image from "next/image";
 
 export type PostPropsType = {
   id: string;
@@ -60,11 +61,10 @@ const Post: React.FC<PostPropsType> = ({
       />
       {/* <CardActionArea> */}
       {imageName && (
-        <CardMedia
-          component="img"
-          image={
-            "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" + imageName
-          }
+        <Image
+          width={500}
+          height={500}
+          src={"https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" + imageName}
           alt="foto"
         />
       )}

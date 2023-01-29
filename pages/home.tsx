@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
-import useFetch from "../hooks/useFetch";
+
 import MainLayout from "@/components/layouts/mainLayout";
 import {
   GetServerSideProps,
@@ -10,6 +10,9 @@ import {
   NextPageContext,
 } from "next";
 import { usePost } from "@/hooks/usePost";
+import { getCookie, setCookie } from "cookies-next";
+import moment from "moment";
+import revalitaToken from "@/utils/revalidateAuth";
 
 export type ListPostProps = {
   id: string;
@@ -23,68 +26,60 @@ export type ListPostProps = {
 }[];
 
 function Home() {
-  // const [listPost, setListPost] = useState<ListPostProps>([]);
-  // const [reFetchPost, setReFetchPost] = useState(0);
+  const { data, error, isLoading } = usePost();
 
-  // const { data, error, isLoading } = usePost();
-
-  // useEffect(() => {
-  //   if (data) {
-  //     setListPost(data);
-  //   }
-  // }, [data, reFetchPost]);
-
-  // return (
-  //   <MainLayout>
-  //     <Box>
-  //       <NewPost />
-  //       <Box
-  //         sx={{
-  //           display: "flex",
-  //           flexDirection: "column",
-  //           alignItems: "center",
-  //           justifyContent: "center",
-  //           gap: 2,
-  //           mt: 2,
-  //         }}
-  //       >
-  //         {listPost.length > 0
-  //           ? listPost.map((p) => {
-  //               return (
-  //                 <Post
-  //                   key={p.id}
-  //                   id={p.id}
-  //                   contentText={p.contentText}
-  //                   imageName={p.imageName}
-  //                   firstName={p.user.firstName}
-  //                   lastName={p.user.lastName}
-  //                   profileImage={p.user.profileImage}
-  //                   createdAt={p.createdAt}
-  //                 ></Post>
-  //               );
-  //             })
-  //           : "no hay post disponibles"}
-  //       </Box>
-  //     </Box>
-  //   </MainLayout>
-  // );
-  return <div>home</div>;
+  return (
+    <MainLayout>
+      <Box>
+        <NewPost />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
+            mt: 2,
+          }}
+        >
+          {data && data?.length > 0
+            ? data?.map((p) => {
+                return (
+                  <Post
+                    key={p.id}
+                    id={p.id}
+                    contentText={p.contentText}
+                    imageName={p.imageName}
+                    firstName={p.user.firstName}
+                    lastName={p.user.lastName}
+                    profileImage={p.user.profileImage}
+                    createdAt={p.createdAt}
+                  ></Post>
+                );
+              })
+            : "no hay post disponibles"}
+        </Box>
+      </Box>
+    </MainLayout>
+  );
 }
 
 export default Home;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cookies = context.req.cookies;
-  console.log(cookies.token);
+  const authToken = getCookie("authToken", context) as string;
+  const authExpires = getCookie("authExpires", context) as string;
 
-  // if (cookies.userToken != "asde") {
-  //   return {
-  //     redirect: {
-  //       destination: "/",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (!authToken || !authExpires) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  await revalitaToken(authToken, authExpires, context);
 
   return {
     props: {},
