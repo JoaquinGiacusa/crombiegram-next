@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/system/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -11,10 +11,15 @@ import Avatar from "@mui/material/Avatar";
 import useUser from "@/hooks/useUser";
 import EditProfile from "@/components/EditProfile";
 import NewPost from "@/components/NewPost";
-
+import { usePost } from "@/hooks/usePost";
+import { ListPostProps } from "./home";
+import Post from "@/components/Post";
+import { userAgent } from "next/server";
+import { Stack } from "@mui/system";
 const Profile = () => {
-  const { data } = useUser();
-  // const [reFetchPost, setReFetchPost] = useState(0);
+  const { data, error, isLoading, mutate } = useUser();
+  console.log(data?.userPosts);
+
   return (
     <MainLayout>
       <NewPost
@@ -53,17 +58,44 @@ const Profile = () => {
               ml: 5,
               mt: -12,
             }}
-            alt="Joaquin"
+            alt="ProfileAvatar"
           />
 
           <Box sx={{ m: 5 }}>
             <Typography variant="h5">
               {data?.user.firstName} {data?.user.lastName}
             </Typography>
-            <Typography>Full Stack Developer</Typography>
+            <Typography>{data?.user.position}</Typography>
           </Box>
         </Card>
       </Box>
+      <Stack
+        direction="column"
+        spacing={3}
+        sx={{
+          mt: 3,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {data?.userPosts?.length > 0
+          ? data?.userPosts?.map((p) => {
+              return (
+                <Post
+                  key={p.id}
+                  id={p.id}
+                  contentText={p.contentText}
+                  imageName={p.imageName}
+                  firstName={p.user.firstName}
+                  lastName={p.user.lastName}
+                  profileImage={p.user.profileImage}
+                  createdAt={p.createdAt}
+                />
+              );
+            })
+          : "No post to show"}
+      </Stack>
     </MainLayout>
   );
 };
