@@ -27,6 +27,7 @@ export type PostPropsType = {
   imageName?: string;
   profileImage: string;
   createdAt: Date;
+  position?: string;
 };
 
 const Post: React.FC<PostPropsType> = ({
@@ -37,6 +38,7 @@ const Post: React.FC<PostPropsType> = ({
   imageName,
   profileImage,
   createdAt,
+  position,
 }) => {
   // const profileImageSrc = profileImage
   //   ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
@@ -84,7 +86,7 @@ const Post: React.FC<PostPropsType> = ({
           </IconButton>
         }
         title={firstName + " " + lastName}
-        subheader={<SubHeaderPost createdAt={createdAt} />}
+        subheader={<SubHeaderPost createdAt={createdAt} position={position} />}
       />
       {/* <CardActionArea> */}
       {imageName && (

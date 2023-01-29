@@ -16,15 +16,8 @@ export type ListUserProps = {
 }[];
 
 function Network() {
-  const [listUser, setListUser] = useState<ListUserProps>([]);
-
   const { data, error, isLoading } = useUsers();
-
-  useEffect(() => {
-    if (data) {
-      setListUser(data);
-    }
-  }, [data]);
+  console.log({ data });
 
   return (
     <MainLayout>
@@ -39,8 +32,8 @@ function Network() {
             mt: 2,
           }}
         >
-          {listUser.length > 0
-            ? listUser.map((user) => {
+          {data && data?.length > 0
+            ? data.map((user) => {
                 return (
                   <UserCard
                     key={user.id}
@@ -48,6 +41,7 @@ function Network() {
                     firstName={user.firstName}
                     lastName={user.lastName}
                     position={user.position}
+                    profileImage={user.profileImage}
                   />
                 );
               })

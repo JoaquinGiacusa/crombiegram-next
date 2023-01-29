@@ -24,6 +24,7 @@ export type UserDataProps = {
       firstName: string;
       lastName: string;
       profileImage: string;
+      position?: string;
     };
   }[];
 };

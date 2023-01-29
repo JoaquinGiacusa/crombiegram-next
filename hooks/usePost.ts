@@ -8,7 +8,12 @@ type PostProps = {
   imageName: string;
   updatedAt: string;
   userId: string;
-  user: { firstName: string; lastName: string; profileImage: string };
+  user: {
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+    position?: string;
+  };
 }[];
 
 export const usePost = () => {

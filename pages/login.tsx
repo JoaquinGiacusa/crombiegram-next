@@ -45,7 +45,7 @@ function Login() {
       setCookie("authToken", payload.authCookie);
       setCookie("authExpires", payload.expires);
 
-      router.push("/home");
+      setTimeout(() => router.push("/home"), 500);
     }
   });
 

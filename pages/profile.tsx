@@ -82,7 +82,7 @@ const Profile = () => {
           justifyContent: "center",
         }}
       >
-        {data?.userPosts?.length > 0
+        {data && data?.userPosts?.length > 0
           ? data?.userPosts?.map((p) => {
               return (
                 <Post
@@ -94,6 +94,7 @@ const Profile = () => {
                   lastName={p.user.lastName}
                   profileImage={p.user.profileImage}
                   createdAt={p.createdAt}
+                  position={p.user.position}
                 />
               );
             })

@@ -54,6 +54,7 @@ function Home() {
                     lastName={p.user.lastName}
                     profileImage={p.user.profileImage}
                     createdAt={p.createdAt}
+                    position={p.user.position}
                   ></Post>
                 );
               })
