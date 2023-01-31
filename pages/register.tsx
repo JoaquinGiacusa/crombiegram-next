@@ -10,26 +10,64 @@ import SwitchTheme from "@/components/SwitchTheme";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { fetcher } from "@/utils/fetcher";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import moment from "moment";
+import IconButton from "@mui/material/IconButton";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
+
+interface FormRegister {
+  email: string;
+  password: string;
+  repeatPassword: string;
+  firstName: string;
+  lastName: string;
+  birthday: Date;
+}
+
+const registerSchema = yup.object({
+  email: yup
+    .string()
+    .required("Email is a required field.")
+    .email("Invalid email address."),
+  password: yup
+    .string()
+    .required("Password is a required field.")
+    .min(8, "Password must contain 8 or more characters")
+    .matches(/[0-9]/, "Password requires a number")
+    .matches(/[a-z]/, "Password requires a lowercase letter")
+    .matches(/[A-Z]/, "Password requires an uppercase letter")
+    .matches(/[^\w]/, "Password requires a symbol"),
+  repeatPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .required("Repeat password is a required field."),
+  firstName: yup.string().required("Firstname is a required field."),
+  lastName: yup.string().required("Lastname is a required field."),
+  birthday: yup.string().required("Birthday is a required field."),
+});
 
 function Register() {
   const router = useRouter();
-
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  //   const navigate = useNavigate();
+  } = useForm<FormRegister>({ resolver: yupResolver(registerSchema) });
   const [alert, setAlert] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
+    // moment(data.birthday).format()
+
     const jsonResponse = await fetcher("/auth/signup", {
       method: "POST",
       body: JSON.stringify(data),
     });
 
     setAlert(jsonResponse.message);
-    setTimeout(() => router.push("/login"), 1000);
+    setTimeout(() => router.push("/login"), 500);
   });
   return (
     <Box
@@ -52,67 +90,107 @@ function Register() {
         component={"form"}
         onSubmit={onSubmit}
         sx={{
+          width: "100%",
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
           alignItems: "center",
           gap: 2,
+          pl: 1,
+          pr: 1,
+          pb: 3,
         }}
       >
-        <Grid
-          container
-          columns={2}
-          maxWidth={900}
-          spacing={2}
-          padding="0px 50px"
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: "center",
+            gap: { xs: 2, md: 3 },
+          }}
         >
-          <Grid item xs={2} md={1}>
+          <Box
+            sx={{
+              maxWidth: 380,
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
             <TextField
-              label="First Name"
-              variant="outlined"
-              {...register("firstName", { required: true })}
               fullWidth
-            />
-          </Grid>
-          <Grid item xs={2} md={1}>
-            <TextField
-              label="Last Name"
-              variant="outlined"
-              {...register("lastName", { required: true })}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={2} md={1}>
-            <TextField
-              label="Email"
-              variant="outlined"
+              helperText={!errors.email ? " " : errors.email?.message}
+              error={errors?.email?.message ? true : false}
               {...register("email", { required: true })}
-              fullWidth
+              type={"email"}
+              label="Email"
             />
-          </Grid>
-          <Grid item xs={2} md={1}>
+
             <TextField
-              label="Password"
-              variant="outlined"
-              type="password"
-              {...register("password", { required: true })}
               fullWidth
+              type={showPassword ? "text" : "password"}
+              label="Password"
+              error={errors?.password?.message ? true : false}
+              helperText={!errors.password ? " " : errors.password?.message}
+              {...register("password", { required: true })}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                ),
+              }}
             />
-          </Grid>
-          <Grid item xs={2} md={1}>
+
             <TextField
               label="Repeat Password"
+              helperText={
+                !errors.repeatPassword ? " " : errors.repeatPassword?.message
+              }
+              error={errors?.repeatPassword?.message ? true : false}
               variant="outlined"
               type="password"
               {...register("repeatPassword", { required: true })}
               fullWidth
             />
-          </Grid>
-
-          <Grid item xs={2} md={1}>
+          </Box>
+          <Box
+            sx={{
+              maxWidth: 380,
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <TextField
+              label="First Name"
+              variant="outlined"
+              helperText={!errors.firstName ? " " : errors.firstName?.message}
+              error={errors?.firstName?.message ? true : false}
+              {...register("firstName", { required: true })}
+              fullWidth
+            />
+            <TextField
+              label="Last Name"
+              variant="outlined"
+              helperText={!errors.lastName ? " " : errors.lastName?.message}
+              error={errors?.lastName?.message ? true : false}
+              {...register("lastName", { required: true })}
+              fullWidth
+            />
             <TextField
               id="date"
               label="Birthday"
+              helperText={!errors.birthday ? " " : errors.birthday?.message}
+              error={errors?.birthday?.message ? true : false}
               type="date"
               InputLabelProps={{
                 shrink: true,
@@ -120,8 +198,8 @@ function Register() {
               {...register("birthday", { required: true })}
               fullWidth
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
         <Button variant="outlined" color="secondary" type="submit">
           Register
         </Button>

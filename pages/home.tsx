@@ -2,16 +2,10 @@ import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
-
 import MainLayout from "@/components/layouts/mainLayout";
-import {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPageContext,
-} from "next";
+import { GetServerSideProps } from "next";
 import { usePost } from "@/hooks/usePost";
 import { getCookie, setCookie } from "cookies-next";
-import moment from "moment";
 import revalitaToken from "@/utils/revalidateAuth";
 
 export type ListPostProps = {
@@ -27,7 +21,6 @@ export type ListPostProps = {
 
 function Home() {
   const { data, error, isLoading } = usePost();
-
   return (
     <MainLayout>
       <Box>
@@ -58,7 +51,7 @@ function Home() {
                   ></Post>
                 );
               })
-            : "No post to show."}
+            : !isLoading && "No post to show."}
         </Box>
       </Box>
     </MainLayout>

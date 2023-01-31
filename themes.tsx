@@ -60,7 +60,7 @@ const ThemeContext: React.FC<{ children: React.ReactNode }> = ({
         defaultProps: {
           style: {
             textTransform: "none",
-            width: "150px",
+            width: "180px",
           },
         },
       },
@@ -68,6 +68,13 @@ const ThemeContext: React.FC<{ children: React.ReactNode }> = ({
         styleOverrides: {
           colorPrimary: {
             backgroundColor: mode === "light" ? themePalette.GREY2 : "",
+          },
+        },
+      },
+      MuiFormHelperText: {
+        styleOverrides: {
+          root: {
+            color: "#ee2e2e",
           },
         },
       },
