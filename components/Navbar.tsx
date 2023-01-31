@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import SwitchTheme from "./SwitchTheme";
 import AppBar from "@mui/material/AppBar";
@@ -18,7 +18,7 @@ import BottomAppBar from "./BottomAppBar";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { styled, alpha } from "@mui/material/styles";
-import { Button, ListItemIcon } from "@mui/material";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import { Logout } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import useUser from "@/hooks/useUser";

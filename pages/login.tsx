@@ -2,12 +2,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -20,7 +15,7 @@ import Alert from "@mui/material/Alert";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { Backdrop, FormHelperText, TextField } from "@mui/material";
+import { Backdrop, Snackbar, TextField } from "@mui/material";
 
 const loginSchema = yup.object({
   email: yup
@@ -31,7 +26,7 @@ const loginSchema = yup.object({
     .string()
     .required("Password is a required field.")
     .min(8, "Password must contain 8 or more characters")
-    .matches(/[0-9]/, "Password requires a number")
+    .matches(/\d/, "Password requires a number")
     .matches(/[a-z]/, "Password requires a lowercase letter")
     .matches(/[A-Z]/, "Password requires an uppercase letter")
     .matches(/[^\w]/, "Password requires a symbol"),
@@ -53,6 +48,7 @@ function Login() {
   const router = useRouter();
 
   const [open, setOpen] = React.useState(false);
+  const [severity, setSeverity] = useState(true);
 
   const onSubmit = handleSubmit(async (data) => {
     setOpen(true);
@@ -69,6 +65,12 @@ function Login() {
           setAlert(data.message);
           setCookie("authToken", payload.authCookie);
           setCookie("authExpires", payload.expires);
+          setSeverity(true);
+          setOpen(true);
+        } else {
+          setAlert(data.message);
+          setSeverity(false);
+          setOpen(true);
         }
       })
       .then(() => {
@@ -77,6 +79,17 @@ function Login() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   return (
     <Box
@@ -135,9 +148,11 @@ function Login() {
           Login
         </Button>
         {alert && (
-          <Alert variant="outlined" severity="success">
-            {alert}
-          </Alert>
+          <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+            <Alert variant="outlined" severity={severity ? "success" : "error"}>
+              {alert}
+            </Alert>
+          </Snackbar>
         )}
       </Box>
       <Backdrop

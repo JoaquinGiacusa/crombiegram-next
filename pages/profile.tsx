@@ -14,10 +14,7 @@ import NewPost from "@/components/NewPost";
 import { GetServerSideProps } from "next";
 import { getCookie } from "cookies-next";
 import revalitaToken from "@/utils/revalidateAuth";
-import { usePost } from "@/hooks/usePost";
-import { ListPostProps } from "./home";
 import Post from "@/components/Post";
-import { userAgent } from "next/server";
 import { Stack } from "@mui/system";
 const Profile = () => {
   const { data, error, isLoading, mutate } = useUser();

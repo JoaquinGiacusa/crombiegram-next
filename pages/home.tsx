@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
 import MainLayout from "@/components/layouts/mainLayout";
 import { GetServerSideProps } from "next";
 import { usePost } from "@/hooks/usePost";
-import { getCookie, setCookie } from "cookies-next";
 import revalitaToken from "@/utils/revalidateAuth";
+import { getCookie } from "cookies-next";
 
 export type ListPostProps = {
   id: string;

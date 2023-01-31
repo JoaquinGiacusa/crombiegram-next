@@ -2,20 +2,18 @@ import React, { useState } from "react";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-
 import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
-import Grid from "@mui/material/Grid";
 import SwitchTheme from "@/components/SwitchTheme";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { fetcher } from "@/utils/fetcher";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import moment from "moment";
 import IconButton from "@mui/material/IconButton";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
+import { Snackbar } from "@mui/material";
 
 interface FormRegister {
   email: string;
@@ -35,7 +33,7 @@ const registerSchema = yup.object({
     .string()
     .required("Password is a required field.")
     .min(8, "Password must contain 8 or more characters")
-    .matches(/[0-9]/, "Password requires a number")
+    .matches(/\d/, "Password requires a number")
     .matches(/[a-z]/, "Password requires a lowercase letter")
     .matches(/[A-Z]/, "Password requires an uppercase letter")
     .matches(/[^\w]/, "Password requires a symbol"),
@@ -57,6 +55,7 @@ function Register() {
     formState: { errors },
   } = useForm<FormRegister>({ resolver: yupResolver(registerSchema) });
   const [alert, setAlert] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
     // moment(data.birthday).format()
@@ -67,8 +66,20 @@ function Register() {
     });
 
     setAlert(jsonResponse.message);
+    setOpen(true);
     setTimeout(() => router.push("/login"), 500);
   });
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
   return (
     <Box
       sx={{
@@ -204,7 +215,13 @@ function Register() {
           Register
         </Button>
       </Box>
-      {alert && <Alert severity="success">{alert}</Alert>}
+      {alert && (
+        <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+          <Alert variant="outlined" severity="success">
+            {alert}
+          </Alert>
+        </Snackbar>
+      )}
     </Box>
   );
 }

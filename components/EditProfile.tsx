@@ -4,23 +4,17 @@ import Edit from "@mui/icons-material/Edit";
 import {
   Modal,
   Box,
-  Grid,
   TextField,
   Button,
   Alert,
   Stack,
-  Typography,
   Snackbar,
 } from "@mui/material";
-import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import Image from "next/image";
-import Link from "next/link";
 import { fetcher } from "@/utils/fetcher";
 import Add from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import moment from "moment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import * as yup from "yup";
@@ -119,13 +113,13 @@ const EditProfile = () => {
   } = useForm<FormEditUser>({ resolver: yupResolver(editUserSchema) });
 
   const onSubmit = handleSubmit(async (data) => {
-    const jsonResponse = await fetcher("/user/me", {
+    await fetcher("/user/me", {
       method: "PUT",
       body: JSON.stringify(data),
+    }).then((data) => {
+      setOpen(true);
+      setAlert(data.message);
     });
-
-    setAlert(jsonResponse.message);
-    setOpen(false);
   });
 
   const handleTogglePassword = () => {
@@ -145,13 +139,27 @@ const EditProfile = () => {
     })
       .then((data) => {
         if (data.message == "Your password has been updated!") {
+          setAlert(data.message);
+          setOpen(true);
         }
       })
       .then(() => {
         setModalPswOpen(false);
+
         setOpen(false);
       });
   });
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   return (
     <>
@@ -229,7 +237,7 @@ const EditProfile = () => {
               aria-label="edit"
               onClick={() => inputFile.current!.click()}
             >
-              {file ? <EditIcon fontSize="small" /> : <Add fontSize="small" />}
+              {file ? <Edit fontSize="small" /> : <Add fontSize="small" />}
             </Button>
 
             <Button
@@ -434,6 +442,13 @@ const EditProfile = () => {
           >
             Update password
           </Button>
+          {alert && (
+            <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+              <Alert variant="outlined" severity="success">
+                {alert}
+              </Alert>
+            </Snackbar>
+          )}
         </Box>
       </Modal>
     </>

@@ -3,7 +3,7 @@ const BASE_URL = "http://localhost:3000/api";
 export const fetcher = async (
   path: RequestInfo,
   params: RequestInit | undefined,
-  isFormData?: Boolean
+  isFormData?: true | false
 ) => {
   const url = BASE_URL + path;
 
