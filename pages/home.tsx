@@ -22,7 +22,7 @@ import { getCookie } from "cookies-next";
 
 function Home() {
   const { data, error, isLoading } = usePost();
-  // console.log(data);
+
   return (
     <MainLayout>
       <Box>

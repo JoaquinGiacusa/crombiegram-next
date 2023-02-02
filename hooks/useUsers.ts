@@ -14,11 +14,11 @@ export type UsersDataProps = {
 }[];
 
 const useUsers = () => {
-  const { data, error, isLoading } = useSWR<UsersDataProps>(
+  const { data, error, isLoading, mutate } = useSWR<UsersDataProps>(
     "/user/network",
     fetcher
   );
 
-  return { data, error, isLoading };
+  return { data, error, isLoading, mutate };
 };
 export default useUsers;

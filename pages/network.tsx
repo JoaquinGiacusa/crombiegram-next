@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import MainLayout from "@/components/layouts/mainLayout";
-import useUsers from "@/hooks/useUsers";
 import UserCard from "@/components/UserCard";
 import { GetServerSideProps } from "next";
 import { getCookie } from "cookies-next";
 import revalitaToken from "@/utils/revalidateAuth";
+import useUsers from "@/hooks/useUsers";
+import NewPost from "@/components/NewPost";
 
 export type ListUserProps = {
   id: string;
@@ -17,11 +18,11 @@ export type ListUserProps = {
 
 function Network() {
   const { data, error, isLoading } = useUsers();
-  console.log({ data });
 
   return (
     <MainLayout>
       <Box>
+        <NewPost />
         <Box
           sx={{
             display: "flex",
@@ -33,15 +34,15 @@ function Network() {
           }}
         >
           {data && data?.length > 0
-            ? data.map((user) => {
+            ? data.map((contact) => {
                 return (
                   <UserCard
-                    key={user.id}
-                    id={user.id}
-                    firstName={user.firstName}
-                    lastName={user.lastName}
-                    position={user.position}
-                    profileImage={user.profileImage}
+                    key={contact.id}
+                    id={contact.id}
+                    firstName={contact.firstName}
+                    lastName={contact.lastName}
+                    position={contact.position}
+                    profileImage={contact.profileImage}
                   />
                 );
               })
