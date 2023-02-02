@@ -14,6 +14,19 @@ type PostProps = {
     profileImage: string;
     position?: string;
   };
+  comment: {
+    id: string;
+    comment: string;
+    userId: string;
+    postId: string;
+    createdAt: Date;
+    user: {
+      firstName: string;
+      lastName: string;
+      profileImage?: string;
+      position?: string;
+    };
+  }[];
 }[];
 
 export const usePost = () => {
