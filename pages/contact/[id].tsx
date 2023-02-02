@@ -86,6 +86,7 @@ const Contact = () => {
                   profileImage={data.profileImage}
                   createdAt={p.createdAt}
                   position={data.position}
+                  comment={p.comment}
                 />
               );
             })

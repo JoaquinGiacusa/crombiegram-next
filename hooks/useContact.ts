@@ -21,6 +21,19 @@ export type ContactDataProps = {
       userId: string;
       createdAt: Date;
       updatedAt: Date;
+      comment: {
+        id: string;
+        comment: string;
+        userId: string;
+        postId: string;
+        createdAt: Date;
+        user: {
+          firstName: string;
+          lastName: string;
+          profileImage?: string;
+          position?: string;
+        };
+      }[];
     }
   ];
 };
