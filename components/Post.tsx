@@ -55,10 +55,6 @@ const Post: React.FC<PostPropsType> = ({
   position,
   comment,
 }) => {
-  // const profileImageSrc = profileImage
-  //   ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
-  //   : "";
-
   const { mutate } = usePost();
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -126,7 +122,7 @@ const Post: React.FC<PostPropsType> = ({
         title={firstName + " " + lastName}
         subheader={<SubHeaderPost createdAt={createdAt} position={position} />}
       />
-      {/* <CardActionArea> */}
+
       {imageName && (
         <Image
           width={500}
@@ -172,7 +168,7 @@ const Post: React.FC<PostPropsType> = ({
           </ListItemIcon>
         </MenuItem>
       </Menu>
-      {/* </CardActionArea> */}
+
       {comment && comment?.length > 0 && (
         <CommentList comments={comment}></CommentList>
       )}

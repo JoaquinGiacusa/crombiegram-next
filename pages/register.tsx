@@ -58,8 +58,6 @@ function Register() {
   const [open, setOpen] = React.useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
-    // moment(data.birthday).format()
-
     const jsonResponse = await fetcher("/auth/signup", {
       method: "POST",
       body: JSON.stringify(data),

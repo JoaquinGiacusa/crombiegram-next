@@ -19,17 +19,10 @@ import { Stack } from "@mui/system";
 
 const Profile = () => {
   const { data, error, isLoading, mutate } = useUser();
-  console.log(data);
-
-  // const { data: dataPost, error: errorPost } = usePostProfile(id);
 
   return (
     <MainLayout>
-      <NewPost
-      // onAdd={() => {
-      //   setReFetchPost((prev) => prev + 1);
-      // }}
-      />
+      <NewPost />
       <Box
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >

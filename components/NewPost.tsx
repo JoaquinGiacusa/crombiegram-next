@@ -103,9 +103,6 @@ const NewPost: React.FC = () => {
           p={3}
           borderRadius={5}
         >
-          {/* <Typography variant="h6" color="gray" textAlign="center">
-            Create post
-          </Typography> */}
           <Box
             sx={{
               display: "flex",
@@ -131,7 +128,6 @@ const NewPost: React.FC = () => {
             sx={{ width: "100%" }}
             id="standard-multiline-static"
             multiline
-            // rows={3}
             minRows={3}
             maxRows={7}
             placeholder="What's on your mind?"
@@ -171,10 +167,6 @@ const NewPost: React.FC = () => {
             </IconButton>
           </Stack>
           <Box
-            // variant="contained"
-            // size="medium"
-            // fullWidth
-            // aria-label="outlined primary button group"
             sx={{
               width: "100%",
               display: "flex",

@@ -13,7 +13,6 @@ import revalitaToken from "@/utils/revalidateAuth";
 import Post from "@/components/Post";
 import { Stack } from "@mui/system";
 import useContact from "@/hooks/useContact";
-import { useRouter } from "next/router";
 
 const Contact = () => {
   const { data, error, isLoading } = useContact();

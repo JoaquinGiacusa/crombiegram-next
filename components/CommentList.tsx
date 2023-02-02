@@ -3,12 +3,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
-import Divider from "@mui/material/Divider";
-import TextField from "@mui/material/TextField";
-import { Box, Button, IconButton, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
-import SendIcon from "@mui/icons-material/Send";
-import { fetcher } from "@/utils/fetcher";
+import { Box, Typography } from "@mui/material";
 import moment from "moment";
 
 type CommentListProps = {
