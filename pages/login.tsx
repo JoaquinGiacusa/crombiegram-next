@@ -22,14 +22,7 @@ const loginSchema = yup.object({
     .string()
     .required("Email is a required field.")
     .email("Invalid email address."),
-  password: yup
-    .string()
-    .required("Password is a required field.")
-    .min(8, "Password must contain 8 or more characters")
-    .matches(/\d/, "Password requires a number")
-    .matches(/[a-z]/, "Password requires a lowercase letter")
-    .matches(/[A-Z]/, "Password requires an uppercase letter")
-    .matches(/[^\w]/, "Password requires a symbol"),
+  password: yup.string().required("Password is a required field."),
 });
 
 interface FormLogin {
@@ -47,7 +40,8 @@ function Login() {
 
   const router = useRouter();
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState(true);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -57,39 +51,38 @@ function Login() {
       method: "POST",
       body: JSON.stringify(data),
       credentials: "include",
-    })
-      .then((data) => {
-        const { payload } = data;
+    }).then((data) => {
+      const { payload } = data;
 
-        if (data.message == "Login successful") {
-          setAlert(data.message);
-          setCookie("authToken", payload.authCookie);
-          setCookie("authExpires", payload.expires);
-          setSeverity(true);
-          setOpen(true);
-        } else {
-          setAlert(data.message);
-          setSeverity(false);
-          setOpen(true);
-        }
-      })
-      .then(() => {
+      if (data.message == "Login successful") {
+        setOpenAlert(true);
+        setAlert(data.message);
+        setCookie("authToken", payload.authCookie);
+        setCookie("authExpires", payload.expires);
+        setSeverity(true);
+        setOpen(true);
         router.push("/home");
-      });
+      } else {
+        setOpenAlert(true);
+        setAlert(data.message);
+        setSeverity(false);
+        setOpen(false);
+      }
+    });
   });
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
+  // const handleClose = (
+  //   event?: React.SyntheticEvent | Event,
+  //   reason?: string
+  // ) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
 
-    setOpen(false);
-  };
+  //   setOpenAlert(false);
+  // };
 
   return (
     <Box
@@ -118,6 +111,7 @@ function Login() {
           maxWidth: 380,
           width: "100%",
           gap: 2,
+          padding: 1,
         }}
       >
         <TextField
@@ -147,13 +141,25 @@ function Login() {
         <Button variant="outlined" color="primary" type="submit">
           Login
         </Button>
-        {alert && (
-          <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
-            <Alert variant="outlined" severity={severity ? "success" : "error"}>
-              {alert}
-            </Alert>
-          </Snackbar>
-        )}
+
+        <Snackbar
+          sx={{ alignItems: "center", justifyContent: "center" }}
+          open={openAlert}
+          autoHideDuration={2000}
+          onClose={() => setOpenAlert(false)}
+        >
+          <Alert
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            variant="outlined"
+            severity={severity ? "success" : "error"}
+          >
+            {alert}
+          </Alert>
+        </Snackbar>
       </Box>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

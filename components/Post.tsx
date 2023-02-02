@@ -13,8 +13,12 @@ import SubHeaderPost from "./SubHeaderPost";
 import Image from "next/image";
 import { fetcher } from "@/utils/fetcher";
 import { usePost } from "@/hooks/usePost";
-import { ListItemIcon, Menu, MenuItem } from "@mui/material";
+import { ListItemIcon, Menu, MenuItem, TextField } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import CommentList from "./CommentList";
+import SendIcon from "@mui/icons-material/Send";
+import Box from "@mui/system/Box";
+import { useForm } from "react-hook-form";
 
 export type PostPropsType = {
   id: string;
@@ -25,6 +29,19 @@ export type PostPropsType = {
   profileImage: string;
   createdAt: Date;
   position?: string;
+  comment: {
+    id: string;
+    comment: string;
+    userId: string;
+    postId: string;
+    createdAt: Date;
+    user: {
+      firstName: string;
+      lastName: string;
+      profileImage?: string;
+      position?: string;
+    };
+  }[];
 };
 
 const Post: React.FC<PostPropsType> = ({
@@ -36,6 +53,7 @@ const Post: React.FC<PostPropsType> = ({
   profileImage,
   createdAt,
   position,
+  comment,
 }) => {
   // const profileImageSrc = profileImage
   //   ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
@@ -63,6 +81,29 @@ const Post: React.FC<PostPropsType> = ({
       mutate();
     }
   };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = handleSubmit(async (data) => {
+    const body = {
+      comment: data.comment,
+      postId: id,
+    };
+    reset();
+    await fetcher("/comment", {
+      method: "POST",
+      body: JSON.stringify(body),
+      credentials: "include",
+    }).then((data) => {
+      console.log(data);
+      mutate();
+    });
+  });
 
   return (
     <Card sx={{ width: "100%", maxWidth: "500px" }}>
@@ -132,6 +173,23 @@ const Post: React.FC<PostPropsType> = ({
         </MenuItem>
       </Menu>
       {/* </CardActionArea> */}
+      {comment && comment?.length > 0 && (
+        <CommentList comments={comment}></CommentList>
+      )}
+      <Box component={"form"} onSubmit={onSubmit}>
+        <TextField
+          fullWidth
+          sx={{ p: 1 }}
+          {...register("comment", { required: true })}
+          InputProps={{
+            endAdornment: (
+              <IconButton type="submit">
+                <SendIcon />
+              </IconButton>
+            ),
+          }}
+        ></TextField>
+      </Box>
     </Card>
   );
 };

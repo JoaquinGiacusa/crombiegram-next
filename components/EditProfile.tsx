@@ -4,32 +4,36 @@ import Edit from "@mui/icons-material/Edit";
 import {
   Modal,
   Box,
+  Grid,
   TextField,
   Button,
   Alert,
   Stack,
+  Typography,
   Snackbar,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+import { Controller, useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import Image from "next/image";
 import { fetcher } from "@/utils/fetcher";
 import Add from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import moment from "moment";
 interface FormEditUser {
   email: string;
-  // password: string;
-  // repeatPassword: string;
   position: string;
   firstName: string;
   lastName: string;
   birthday: Date;
 }
-
 interface FormEditPassword {
   currPassword: string;
   newPassword: string;
@@ -44,7 +48,7 @@ const editUserSchema = yup.object({
   position: yup.string(),
   firstName: yup.string().required("Firstname is a required field."),
   lastName: yup.string().required("Lastname is a required field."),
-  birthday: yup.string().required("Birthday is a required field."),
+  birthday: yup.date().required().typeError("Birthday is invalid."),
 });
 
 const editPasswordSchema = yup.object({
@@ -69,7 +73,6 @@ const editPasswordSchema = yup.object({
     .oneOf([yup.ref("newPassword"), null], "Passwords must match")
     .required("Repeat password is a required field."),
 });
-
 const EditProfile = () => {
   const [open, setOpen] = useState(false);
   const [alert, setAlert] = useState(false);
@@ -78,7 +81,8 @@ const EditProfile = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [file, setFile] = useState<File | null>();
   const inputFile = useRef<any>(null);
-
+  const [openAlert, setOpenAlert] = useState(false);
+  const [severity, setSeverity] = useState(true);
   const { data, error, isLoading, mutate } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +95,6 @@ const EditProfile = () => {
     if (file) {
       formData.append("profileImage", file, file?.name); //append the values with key, value pair
     }
-
     const jsonResponse = await fetcher(
       "/user/me/image",
       {
@@ -100,38 +103,44 @@ const EditProfile = () => {
       },
       true
     );
-
     if (jsonResponse) {
       mutate();
     }
   };
-
   const {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<FormEditUser>({ resolver: yupResolver(editUserSchema) });
-
   const onSubmit = handleSubmit(async (data) => {
+    // console.log(data);
     await fetcher("/user/me", {
       method: "PUT",
       body: JSON.stringify(data),
     }).then((data) => {
-      setOpen(true);
+      console.log(data);
+
       setAlert(data.message);
+      setOpenAlert(true);
+      if (data.message == "Your account has been updated!") {
+        mutate();
+        setOpen(false);
+      } else {
+        setSeverity(false);
+        setOpen(false);
+      }
+      // setAlert(data.message);
     });
   });
-
   const handleTogglePassword = () => {
     setModalPswOpen(!modalPswOpen);
   };
-
   const {
     register: registerPsw,
     handleSubmit: handleSubmitPsw,
     formState: { errors: errorsPws },
   } = useForm<FormEditPassword>({ resolver: yupResolver(editPasswordSchema) });
-
   const onSubmitFormPassword = handleSubmitPsw(async (data) => {
     await fetcher("/user/me/password", {
       method: "PATCH",
@@ -139,28 +148,13 @@ const EditProfile = () => {
     })
       .then((data) => {
         if (data.message == "Your password has been updated!") {
-          setAlert(data.message);
-          setOpen(true);
         }
       })
       .then(() => {
         setModalPswOpen(false);
-
         setOpen(false);
       });
   });
-
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-
   return (
     <>
       <IconButton
@@ -194,6 +188,7 @@ const EditProfile = () => {
           p={3}
           borderRadius={5}
           sx={{
+            height: { xs: "100vh", md: "auto" },
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -231,15 +226,14 @@ const EditProfile = () => {
             onChange={handleChange}
             ref={inputFile}
           />
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} mt={1} mb={4}>
             <Button
               color="primary"
               aria-label="edit"
               onClick={() => inputFile.current!.click()}
             >
-              {file ? <Edit fontSize="small" /> : <Add fontSize="small" />}
+              {file ? <EditIcon fontSize="small" /> : <Add fontSize="small" />}
             </Button>
-
             <Button
               color="primary"
               aria-label="edit"
@@ -288,6 +282,7 @@ const EditProfile = () => {
                   helperText={!errors.email ? " " : errors.email?.message}
                   error={errors?.email?.message ? true : false}
                   {...register("email", { required: true })}
+                  defaultValue={data?.user?.email}
                   type={"email"}
                   label="Email"
                 />
@@ -299,6 +294,7 @@ const EditProfile = () => {
                   }
                   error={errors?.firstName?.message ? true : false}
                   {...register("firstName", { required: true })}
+                  defaultValue={data?.user?.firstName}
                   fullWidth
                 />
                 <TextField
@@ -307,6 +303,7 @@ const EditProfile = () => {
                   helperText={!errors.lastName ? " " : errors.lastName?.message}
                   error={errors?.lastName?.message ? true : false}
                   {...register("lastName", { required: true })}
+                  defaultValue={data?.user?.lastName}
                   fullWidth
                 />
               </Box>
@@ -314,12 +311,8 @@ const EditProfile = () => {
                 sx={{
                   maxWidth: 380,
                   width: "100%",
-                  // height: "250px",
                   display: "flex",
-                  // alignItems: "flex-start",
                   flexDirection: "column",
-                  // justifyContent: "start",
-                  // alignItems: "center",
                   gap: 2,
                 }}
               >
@@ -332,18 +325,35 @@ const EditProfile = () => {
                   fullWidth
                   defaultValue={data?.user.position}
                 />
-                <TextField
-                  id="date"
-                  label="Birthday"
-                  helperText={!errors.birthday ? " " : errors.birthday?.message}
-                  error={errors?.birthday?.message ? true : false}
-                  type="date"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  {...register("birthday", { required: true })}
-                  fullWidth
+
+                <Controller
+                  name={"birthday"}
+                  control={control}
+                  defaultValue={data?.user.birthday}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                      <DesktopDatePicker
+                        label={"Birthday"}
+                        inputFormat="DD-MM-yyyy"
+                        value={value}
+                        onChange={(event) => {
+                          onChange(event);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
                 />
+
                 <Button
                   color="info"
                   type="button"
@@ -357,7 +367,7 @@ const EditProfile = () => {
               Update
             </Button>
           </Box>
-          {alert && <Alert severity="success">{alert}</Alert>}
+          {/* {alert && <Alert severity="success">{alert}</Alert>} */}
         </Box>
       </Modal>
       <Modal
@@ -442,17 +452,27 @@ const EditProfile = () => {
           >
             Update password
           </Button>
-          {alert && (
-            <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
-              <Alert variant="outlined" severity="success">
-                {alert}
-              </Alert>
-            </Snackbar>
-          )}
         </Box>
       </Modal>
+      <Snackbar
+        sx={{ alignItems: "center", justifyContent: "center" }}
+        open={openAlert}
+        autoHideDuration={2000}
+        onClose={() => setOpenAlert(false)}
+      >
+        <Alert
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          variant="outlined"
+          severity={severity ? "success" : "error"}
+        >
+          {alert}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
-
 export default EditProfile;

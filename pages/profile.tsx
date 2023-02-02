@@ -16,9 +16,12 @@ import { getCookie } from "cookies-next";
 import revalitaToken from "@/utils/revalidateAuth";
 import Post from "@/components/Post";
 import { Stack } from "@mui/system";
+
 const Profile = () => {
   const { data, error, isLoading, mutate } = useUser();
-  console.log(data?.userPosts);
+  console.log(data);
+
+  // const { data: dataPost, error: errorPost } = usePostProfile(id);
 
   return (
     <MainLayout>
@@ -92,6 +95,7 @@ const Profile = () => {
                   profileImage={p.user.profileImage}
                   createdAt={p.createdAt}
                   position={p.user.position}
+                  comment={p.comment}
                 />
               );
             })
