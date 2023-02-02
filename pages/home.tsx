@@ -1,33 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
-
 import MainLayout from "@/components/layouts/mainLayout";
-import {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPageContext,
-} from "next";
+import { GetServerSideProps } from "next";
 import { usePost } from "@/hooks/usePost";
-import { getCookie, setCookie } from "cookies-next";
-import moment from "moment";
 import revalitaToken from "@/utils/revalidateAuth";
+import { getCookie } from "cookies-next";
 
-export type ListPostProps = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  contentText: string;
-  imageName?: string;
-  profileImage: string;
-  createdAt: Date;
-  user: { firstName: ""; lastName: ""; profileImage: "" };
-}[];
+// export type ListPostProps = {
+//   id: string;
+//   firstName: string;
+//   lastName: string;
+//   contentText: string;
+//   imageName?: string;
+//   profileImage: string;
+//   createdAt: Date;
+//   userId: string;
+//   user: { firstName: ""; lastName: ""; profileImage: "" };
+// }[];
 
 function Home() {
   const { data, error, isLoading } = usePost();
-
+  // console.log(data);
   return (
     <MainLayout>
       <Box>
@@ -44,6 +39,8 @@ function Home() {
         >
           {data && data?.length > 0
             ? data?.map((p) => {
+                console.log(p);
+
                 return (
                   <Post
                     key={p.id}
@@ -55,10 +52,11 @@ function Home() {
                     profileImage={p.user.profileImage}
                     createdAt={p.createdAt}
                     position={p.user.position}
+                    comment={p.comment}
                   ></Post>
                 );
               })
-            : "No post to show."}
+            : !isLoading && "No post to show."}
         </Box>
       </Box>
     </MainLayout>

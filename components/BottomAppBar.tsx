@@ -7,7 +7,6 @@ import GroupIcon from "@mui/icons-material/Group";
 import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { Toolbar } from "@mui/material";
-// import NewPost from "./NewPost";
 import Link from "next/link";
 
 const BottomAppBar = () => {

@@ -1,10 +1,7 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
 import Stack from "@mui/system/Stack";
-import React, { useState } from "react";
-// import { Navigate, Outlet, Route } from "react-router-dom";
+import React from "react";
 import Image from "next/image";
 import Title from "../components/Title";
 import Link from "next/link";

@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useContext,
 } from "react";
+import { setCookie, getCookie } from "cookies-next";
 
 export const ThemeColorContext = createContext({
   toggleColorMode: () => {},
@@ -16,25 +17,17 @@ const ThemeColorProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [mode, setMode] = useState<"light" | "dark">("dark");
 
-  // useEffect(() => {
-  //   const modeStoraged = localStorage.getItem("mode");
-  //   console.log(modeStoraged);
-  //   setMode(modeStoraged as "dark");
-  // }, []);
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const modeStoraged = localStorage.getItem("mode");
-
-      setMode(modeStoraged as "dark");
-    }
+    const modeStoraged = getCookie("mode");
+    setMode(modeStoraged as "dark");
   }, []);
+
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         const prevMode = mode == "dark" ? "light" : "dark";
         setMode(prevMode);
-        localStorage.setItem("mode", prevMode);
+        setCookie("mode", prevMode);
       },
     }),
     [mode]

@@ -2,60 +2,87 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-
+import CircularProgress from "@mui/material/CircularProgress";
 import SwitchTheme from "@/components/SwitchTheme";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { fetcher } from "@/utils/fetcher";
 import { setCookie } from "cookies-next";
-import moment from "moment";
+import Alert from "@mui/material/Alert";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-interface IFormInput {
+import { Backdrop, Snackbar, TextField } from "@mui/material";
+
+const loginSchema = yup.object({
+  email: yup
+    .string()
+    .required("Email is a required field.")
+    .email("Invalid email address."),
+  password: yup.string().required("Password is a required field."),
+});
+
+interface FormLogin {
   email: string;
   password: string;
 }
 
 function Login() {
-  const router = useRouter();
-
+  const [alert, setAlert] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { email: "", password: "" } });
+  } = useForm<FormLogin>({ resolver: yupResolver(loginSchema) });
+
+  const router = useRouter();
+
+  const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [severity, setSeverity] = useState(true);
 
   const onSubmit = handleSubmit(async (data) => {
-    const jsonResponse = await fetcher("/auth/login", {
+    setOpen(true);
+
+    await fetcher("/auth/login", {
       method: "POST",
       body: JSON.stringify(data),
       credentials: "include",
+    }).then((data) => {
+      const { payload } = data;
+
+      if (data.message == "Login successful") {
+        setOpenAlert(true);
+        setAlert(data.message);
+        setCookie("authToken", payload.authCookie);
+        setCookie("authExpires", payload.expires);
+        setSeverity(true);
+        setOpen(true);
+        router.push("/home");
+      } else {
+        setOpenAlert(true);
+        setAlert(data.message);
+        setSeverity(false);
+        setOpen(false);
+      }
     });
-
-    const { payload } = jsonResponse;
-
-    if (jsonResponse.message == "Login successful") {
-      setCookie("authToken", payload.authCookie);
-      setCookie("authExpires", payload.expires);
-
-      setTimeout(() => router.push("/home"), 500);
-    }
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
+
+  // const handleClose = (
+  //   event?: React.SyntheticEvent | Event,
+  //   reason?: string
+  // ) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
+
+  //   setOpenAlert(false);
+  // };
 
   return (
     <Box
@@ -81,49 +108,65 @@ function Login() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          maxWidth: 500,
-          ml: 1,
-          mr: 1,
+          maxWidth: 380,
+          width: "100%",
+          gap: 2,
+          padding: 1,
         }}
       >
-        <FormControl sx={{ m: 1 }} fullWidth variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Email</InputLabel>
-          <OutlinedInput
-            {...register("email", { required: true })}
-            // id="outlined-adornment-email"
-            type={"text"}
-            label="Email"
-          />
-        </FormControl>
-
-        <FormControl sx={{ m: 1 }} fullWidth variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">
-            Password
-          </InputLabel>
-          <OutlinedInput
-            {...register("password", { required: true })}
-            id="outlined-adornment-password"
-            type={showPassword ? "text" : "password"}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-          />
-        </FormControl>
+        <TextField
+          fullWidth
+          helperText={!errors.email ? " " : errors.email?.message}
+          error={errors?.email?.message ? true : false}
+          {...register("email", { required: true })}
+          type={"email"}
+          label="Email"
+        />
+        <TextField
+          fullWidth
+          type={showPassword ? "text" : "password"}
+          label="Password"
+          error={errors?.password?.message ? true : false}
+          helperText={!errors.password ? " " : errors.password?.message}
+          {...register("password", { required: true })}
+          InputProps={{
+            endAdornment: (
+              <IconButton onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            ),
+          }}
+        />
 
         <Button variant="outlined" color="primary" type="submit">
           Login
         </Button>
+
+        <Snackbar
+          sx={{ alignItems: "center", justifyContent: "center" }}
+          open={openAlert}
+          autoHideDuration={2000}
+          onClose={() => setOpenAlert(false)}
+        >
+          <Alert
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            variant="outlined"
+            severity={severity ? "success" : "error"}
+          >
+            {alert}
+          </Alert>
+        </Snackbar>
       </Box>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 }

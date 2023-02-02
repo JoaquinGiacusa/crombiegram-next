@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "cookies-next";
+import { setCookie } from "cookies-next";
 import moment from "moment";
 import { GetServerSidePropsContext } from "next";
 import { fetcher } from "./fetcher";
