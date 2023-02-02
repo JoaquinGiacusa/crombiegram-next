@@ -1,9 +1,10 @@
-import useUsers from "@/hooks/useUsers";
+import useUsers from "@/hooks/useContact";
 import { Avatar, Box, Card, CardMedia, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
 import NewPost from "./NewPost";
 import MainLayout from "@/components/layouts/mainLayout";
+import { useRouter } from "next/router";
 
 export type UserCardPropsType = {
   id: string;
@@ -20,21 +21,27 @@ const UserCard: React.FC<UserCardPropsType> = ({
   profileImage,
   position,
 }) => {
+  const router = useRouter();
+
   return (
     <Card
       sx={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-evenly",
+        // justifyContent: "space-evenly",
         flexDirection: "row",
         borderRadius: 5,
         width: "100%",
         maxWidth: 500,
         // minWidth: 350,
         padding: 1,
-        // pl: 8,
+        pl: 5,
+        cursor: "pointer",
       }}
       elevation={10}
+      onClick={() => {
+        router.push(`/contact/${id}`);
+      }}
     >
       <Avatar
         src={

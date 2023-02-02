@@ -21,6 +21,7 @@ export type ListPostProps = {
 
 function Home() {
   const { data, error, isLoading } = usePost();
+
   return (
     <MainLayout>
       <Box>

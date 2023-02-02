@@ -24,6 +24,7 @@ import { useRouter } from "next/router";
 import useUser from "@/hooks/useUser";
 import PersonIcon from "@mui/icons-material/Person";
 import { deleteCookie } from "cookies-next";
+import Image from "next/image";
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -102,8 +103,20 @@ function ResponsiveAppBar() {
           pr: 2,
         }}
       >
-        <Box sx={{ display: "flex" }}>
-          <Avatar src="images/crombie-logo.png" variant="square" />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Image
+            src="/images/crombie-logo.png"
+            alt="Crombie-logo"
+            width={40}
+            height={40}
+          />
+
           <Typography
             variant="h6"
             sx={{
