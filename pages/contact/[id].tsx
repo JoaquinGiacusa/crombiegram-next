@@ -14,10 +14,13 @@ import Post from "@/components/Post";
 import { Stack } from "@mui/system";
 import useContact from "@/hooks/useContact";
 import LoadingProfile from "@/components/LoadingProfile";
+import { log } from "console";
+import useContactPost from "@/hooks/useContactPost";
 
 const Contact = () => {
   const { data, error, isLoading } = useContact();
-
+  const { data: contactPost } = useContactPost();
+  console.log("Datita", data);
   return (
     <MainLayout>
       <NewPost />
@@ -75,24 +78,28 @@ const Contact = () => {
       >
         {isLoading && <LoadingProfile loading />}
 
-        {data && data?.post?.length > 0
-          ? data?.post?.map((p) => {
-              return (
-                <Post
-                  key={p.id}
-                  id={p.id}
-                  contentText={p.contentText}
-                  imageName={p.imageName}
-                  firstName={data.firstName}
-                  lastName={data.lastName}
-                  profileImage={data.profileImage}
-                  createdAt={p.createdAt}
-                  position={data.position}
-                  comment={p.comment}
-                />
-              );
-            })
-          : "No post to show"}
+        {data &&
+          contactPost &&
+          contactPost?.map((p) => {
+            return (
+              <Post
+                key={p.id}
+                id={p.id}
+                contentText={p.contentText}
+                imageName={p.imageName}
+                firstName={data.firstName}
+                lastName={data.lastName}
+                profileImage={data.profileImage}
+                createdAt={p.createdAt}
+                position={data.position}
+                comment={p.comment}
+                like={p.like}
+                userId={p.userId}
+              />
+            );
+          })}
+
+        {!isLoading && !data && "No posts."}
       </Stack>
     </MainLayout>
   );

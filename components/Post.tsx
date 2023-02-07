@@ -113,6 +113,7 @@ const Post: React.FC<PostPropsType> = ({
   });
 
   const handleClickLike = async () => {
+    setIsLiked(true);
     if (!isLiked) {
       const res = await fetcher(`/like/post/${id}`, {
         method: "POST",
@@ -122,12 +123,12 @@ const Post: React.FC<PostPropsType> = ({
       });
 
       if (res.like) {
-        setIsLiked(true);
         mutate();
       }
     }
 
     if (isLiked) {
+      setIsLiked(false);
       const res = await fetcher(`/like/post/${id}`, {
         method: "DELETE",
         body: JSON.stringify({
@@ -135,7 +136,6 @@ const Post: React.FC<PostPropsType> = ({
         }),
       });
       if (res.message == "like has been destroyed") {
-        setIsLiked(false);
         mutate();
       }
     }

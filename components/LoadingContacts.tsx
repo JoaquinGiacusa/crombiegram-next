@@ -16,9 +16,9 @@ function LoadingContacts(props: MediaProps) {
 
   return (
     <>
-      {contactsNumber.map(() => {
+      {contactsNumber.map((_, index) => {
         return (
-          <Card sx={{ width: 500, height: 100, m: 2 }} key="contact-skeleton">
+          <Card sx={{ width: 500, height: 100, m: 2 }} key={index}>
             <CardHeader
               avatar={
                 <Skeleton
