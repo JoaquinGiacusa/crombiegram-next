@@ -27,7 +27,6 @@ function Home() {
           }}
         >
           {isLoading && <LoadingPost loading />}
-
           {data &&
             data?.map((p) => {
               return (
@@ -42,10 +41,11 @@ function Home() {
                   createdAt={p.createdAt}
                   position={p.user.position}
                   comment={p.comment}
+                  like={p.like}
+                  userId={p.userId}
                 ></Post>
               );
             })}
-
           {!data && !isLoading && "No posts."}
         </Box>
       </Box>

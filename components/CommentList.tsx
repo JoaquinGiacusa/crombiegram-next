@@ -3,8 +3,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
-import { Box, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
+import { fetcher } from "@/utils/fetcher";
+import { usePost } from "@/hooks/usePost";
+import useUser from "@/hooks/useUser";
 
 type CommentListProps = {
   comments: {
@@ -23,13 +27,25 @@ type CommentListProps = {
 };
 
 const CommentList: React.FC<CommentListProps> = ({ comments }) => {
+  const { mutate } = usePost();
+  const { data } = useUser();
+  const handleDeleteComment = async (commentId: string) => {
+    const resDeleteComment = await fetcher(`/comment/${commentId}`, {
+      method: "DELETE",
+    });
+    console.log({ resDeleteComment });
+    if (resDeleteComment.message == "comment deleted") {
+      mutate();
+    }
+  };
+
   return (
     <>
       <List>
         {comments.map((comment) => {
           return (
             <Box key={comment.id}>
-              {/* <Divider /> */}
+              <Divider />
               <ListItem key={comment.id} alignItems="flex-start">
                 <ListItemAvatar>
                   <Avatar
@@ -42,10 +58,13 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
                   />
                 </ListItemAvatar>
                 <ListItemText
+                  sx={{ margin: 0 }}
                   primary={
                     <>
-                      {`${comment.user.firstName} ${comment.user.lastName}`}
-                      {" - "}
+                      <Typography sx={{ fontSize: 18 }} display="inline">
+                        {`${comment.user.firstName} ${comment.user.lastName}`}
+                        {" - "}
+                      </Typography>
                       <Typography
                         sx={{ fontSize: 14, color: "gray" }}
                         display="inline"
@@ -56,8 +75,12 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
                   }
                   secondary={comment.comment}
                 />
+                {data?.user.id === comment.userId && (
+                  <IconButton onClick={() => handleDeleteComment(comment.id)}>
+                    <DeleteIcon sx={{ fontSize: 18 }}></DeleteIcon>
+                  </IconButton>
+                )}
               </ListItem>
-              {/* <Divider variant="inset" component="li" /> */}
             </Box>
           );
         })}

@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Box from "@mui/system/Box";
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
-import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
-import Edit from "@mui/icons-material/Edit";
 import MainLayout from "@/components/layouts/mainLayout";
 import Image from "next/image";
 import Avatar from "@mui/material/Avatar";
@@ -92,6 +89,8 @@ const Profile = () => {
                 createdAt={p.createdAt}
                 position={p.user.position}
                 comment={p.comment}
+                like={p.like}
+                userId={p.userId}
               />
             );
           })}

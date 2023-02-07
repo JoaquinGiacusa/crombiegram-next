@@ -15,6 +15,7 @@ export const fetcher = async (
   options = {
     ...options,
     headers: {
+      ...options?.headers,
       "content-type": "application/json",
     },
     credentials: "include" as RequestCredentials,

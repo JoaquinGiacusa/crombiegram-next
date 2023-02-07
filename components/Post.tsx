@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
@@ -19,9 +19,11 @@ import CommentList from "./CommentList";
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/system/Box";
 import { useForm } from "react-hook-form";
+import useUser from "@/hooks/useUser";
 
 export type PostPropsType = {
   id: string;
+  userId: string;
   firstName: string;
   lastName: string;
   contentText: string;
@@ -29,6 +31,12 @@ export type PostPropsType = {
   profileImage: string;
   createdAt: Date;
   position?: string;
+  like: {
+    id: string;
+    postId: string;
+    user: { firstName: string; lastName: string; profileImage: string };
+    userId: string;
+  }[];
   comment: {
     id: string;
     comment: string;
@@ -46,6 +54,7 @@ export type PostPropsType = {
 
 const Post: React.FC<PostPropsType> = ({
   id,
+  userId,
   firstName,
   lastName,
   contentText,
@@ -54,8 +63,11 @@ const Post: React.FC<PostPropsType> = ({
   createdAt,
   position,
   comment,
+  like,
 }) => {
   const { mutate } = usePost();
+  const { data } = useUser();
+  const [isLiked, setIsLiked] = useState<boolean>();
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
@@ -96,10 +108,44 @@ const Post: React.FC<PostPropsType> = ({
       body: JSON.stringify(body),
       credentials: "include",
     }).then((data) => {
-      console.log(data);
       mutate();
     });
   });
+
+  const handleClickLike = async () => {
+    if (!isLiked) {
+      const res = await fetcher(`/like/post/${id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          userId: data?.user.id,
+        }),
+      });
+
+      if (res.like) {
+        setIsLiked(true);
+        mutate();
+      }
+    }
+
+    if (isLiked) {
+      const res = await fetcher(`/like/post/${id}`, {
+        method: "DELETE",
+        body: JSON.stringify({
+          userId: data?.user.id,
+        }),
+      });
+      if (res.message == "like has been destroyed") {
+        setIsLiked(false);
+        mutate();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (like.some((l) => l.userId === data?.user.id)) {
+      setIsLiked(true);
+    }
+  }, [like, data?.user.id]);
 
   return (
     <Card sx={{ width: "100%", maxWidth: "500px" }}>
@@ -115,9 +161,13 @@ const Post: React.FC<PostPropsType> = ({
           />
         }
         action={
-          <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
-            <MoreVertIcon />
-          </IconButton>
+          <>
+            {data?.user.id === userId && (
+              <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
+                <MoreVertIcon />
+              </IconButton>
+            )}
+          </>
         }
         title={firstName + " " + lastName}
         subheader={<SubHeaderPost createdAt={createdAt} position={position} />}
@@ -131,13 +181,35 @@ const Post: React.FC<PostPropsType> = ({
           alt="foto"
         />
       )}
-      <CardContent>
+      <CardContent sx={{ pb: 0 }}>
         <Typography variant="body2" color="text.secondary">
           {contentText}
         </Typography>
-        <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
+
+        {like.length > 0 && (
+          <Box mt={1} sx={{ display: "flex" }}>
+            {like.length === 1 && (
+              <Typography key={like[0].id} fontSize={14}>
+                {`${like[0].user.firstName} ${like[0].user.lastName} likes this post.`}
+              </Typography>
+            )}
+            {like.length == 2 && (
+              <Typography fontSize={14}>
+                {`${like[0].user.firstName} ${like[0].user.lastName} and ${like[1].user.firstName} ${like[1].user.lastName} like this post.`}
+              </Typography>
+            )}
+            {like.length > 2 && (
+              <Typography fontSize={14}>
+                {`${like[0].user.firstName} ${like[0].user.lastName}, ${
+                  like[1].user.firstName
+                } ${like[1].user.lastName} and ${like.length - 2} others.`}
+              </Typography>
+            )}
+          </Box>
+        )}
+        <CardActions disableSpacing sx={{ p: 0 }}>
+          <IconButton aria-label="add to favorites" onClick={handleClickLike}>
+            <FavoriteIcon sx={{ color: isLiked ? "#e91e63" : "inherit" }} />
           </IconButton>
           <IconButton aria-label="share">
             <ChatBubbleIcon />
