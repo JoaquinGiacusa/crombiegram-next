@@ -12,7 +12,7 @@ function LoadingPost(props: MediaProps) {
   const { loading = false } = props;
 
   return (
-    <Card sx={{ width: 700, m: 2 }}>
+    <Card sx={{ width: 500, m: 2 }}>
       <CardHeader
         avatar={
           <Skeleton
@@ -26,7 +26,7 @@ function LoadingPost(props: MediaProps) {
         title={
           <Skeleton
             animation="wave"
-            height={10}
+            height={40}
             width="100%"
             style={{ marginBottom: 6 }}
           />
@@ -34,7 +34,7 @@ function LoadingPost(props: MediaProps) {
         subheader={<Skeleton animation="wave" height={10} width="40%" />}
       />
 
-      <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
+      <Skeleton sx={{ height: 400 }} animation="wave" variant="rectangular" />
 
       <CardContent>
         <React.Fragment>

@@ -57,8 +57,12 @@ function Login() {
       if (data.message == "Login successful") {
         setOpenAlert(true);
         setAlert(data.message);
-        setCookie("authToken", payload.authCookie);
-        setCookie("authExpires", payload.expires);
+        setCookie("authToken", payload.authCookie, {
+          maxAge: 60 * 60 * 24 * 7,
+        });
+        setCookie("authExpires", payload.expires, {
+          maxAge: 60 * 60 * 24 * 7,
+        });
         setSeverity(true);
         setOpen(true);
         router.push("/home");

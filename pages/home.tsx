@@ -33,6 +33,7 @@ function Home() {
                   <Post
                     key={p.id}
                     id={p.id}
+                    userId={p.userId}
                     contentText={p.contentText}
                     imageName={p.imageName}
                     firstName={p.user.firstName}
@@ -41,6 +42,7 @@ function Home() {
                     createdAt={p.createdAt}
                     position={p.user.position}
                     comment={p.comment}
+                    like={p.like}
                   ></Post>
                 );
               })

@@ -9,19 +9,27 @@ const revalitaToken = async (
   context?: GetServerSidePropsContext
 ) => {
   const isBefore = moment(Number(authExpires)).isBefore(Date.now());
+
   if (isBefore) {
+    console.log(authToken);
     const refreshTokenRes = await fetcher("/auth/revalidate", {
       method: "POST",
       headers: {
-        Cookie: `authToken=${authToken}; authExpires=${authExpires}`,
+        Cookie: `authToken=${authToken};`,
       },
       credentials: "include",
     });
 
     const { payload } = refreshTokenRes;
 
-    setCookie("authToken", payload.authCookie, context);
-    setCookie("authExpires", payload.expires, context);
+    setCookie("authToken", payload.authCookie, {
+      ...context,
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    setCookie("authExpires", payload.expires, {
+      ...context,
+      maxAge: 60 * 60 * 24 * 7,
+    });
 
     return true;
   }

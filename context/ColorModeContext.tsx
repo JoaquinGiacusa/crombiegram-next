@@ -15,10 +15,15 @@ export const ThemeColorContext = createContext({
 const ThemeColorProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [mode, setMode] = useState<"light" | "dark">("dark");
+  const [mode, setMode] = useState("dark");
 
   useEffect(() => {
     const modeStoraged = getCookie("mode");
+
+    if (!modeStoraged) {
+      return setCookie("mode", "dark", { maxAge: 60 * 60 * 24 * 30 });
+    }
+
     setMode(modeStoraged as "dark");
   }, []);
 
@@ -27,7 +32,7 @@ const ThemeColorProvider: React.FC<{ children: React.ReactNode }> = ({
       toggleColorMode: () => {
         const prevMode = mode == "dark" ? "light" : "dark";
         setMode(prevMode);
-        setCookie("mode", prevMode);
+        setCookie("mode", prevMode, { maxAge: 60 * 60 * 24 * 30 });
       },
     }),
     [mode]

@@ -14,6 +14,13 @@ type PostProps = {
     profileImage: string;
     position?: string;
   };
+
+  like: {
+    id: string;
+    postId: string;
+    user: { firstName: string; lastName: string; profileImage: string };
+    userId: string;
+  }[];
   comment: {
     id: string;
     comment: string;
@@ -34,6 +41,5 @@ export const usePost = () => {
     "/post",
     fetcher
   );
-
   return { data, error, isLoading, mutate };
 };
