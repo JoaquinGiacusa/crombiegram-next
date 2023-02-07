@@ -161,9 +161,13 @@ const Post: React.FC<PostPropsType> = ({
           />
         }
         action={
-          <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
-            <MoreVertIcon />
-          </IconButton>
+          <>
+            {data?.user.id === userId && (
+              <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
+                <MoreVertIcon />
+              </IconButton>
+            )}
+          </>
         }
         title={firstName + " " + lastName}
         subheader={<SubHeaderPost createdAt={createdAt} position={position} />}
@@ -213,33 +217,29 @@ const Post: React.FC<PostPropsType> = ({
         </CardActions>
       </CardContent>
 
-      {data?.user.id === userId ? (
-        <Menu
-          sx={{ mt: "45px" }}
-          id="menu-appbar"
-          anchorEl={anchorElUser}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={Boolean(anchorElUser)}
-          onClose={handleCloseUserMenu}
-        >
-          <MenuItem onClick={handleDelete}>
-            <ListItemIcon>
-              <Delete fontSize="small" />
-              <Typography textAlign="center">Delete</Typography>
-            </ListItemIcon>
-          </MenuItem>
-        </Menu>
-      ) : (
-        ""
-      )}
+      <Menu
+        sx={{ mt: "45px" }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        <MenuItem onClick={handleDelete}>
+          <ListItemIcon>
+            <Delete fontSize="small" />
+            <Typography textAlign="center">Delete</Typography>
+          </ListItemIcon>
+        </MenuItem>
+      </Menu>
 
       {comment && comment?.length > 0 && (
         <CommentList comments={comment}></CommentList>

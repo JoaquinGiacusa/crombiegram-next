@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import { fetcher } from "@/utils/fetcher";
 import { usePost } from "@/hooks/usePost";
+import useUser from "@/hooks/useUser";
 
 type CommentListProps = {
   comments: {
@@ -27,7 +28,7 @@ type CommentListProps = {
 
 const CommentList: React.FC<CommentListProps> = ({ comments }) => {
   const { mutate } = usePost();
-
+  const { data } = useUser();
   const handleDeleteComment = async (commentId: string) => {
     const resDeleteComment = await fetcher(`/comment/${commentId}`, {
       method: "DELETE",
@@ -74,9 +75,11 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
                   }
                   secondary={comment.comment}
                 />
-                <IconButton onClick={() => handleDeleteComment(comment.id)}>
-                  <DeleteIcon sx={{ fontSize: 18 }}></DeleteIcon>
-                </IconButton>
+                {data?.user.id === comment.userId && (
+                  <IconButton onClick={() => handleDeleteComment(comment.id)}>
+                    <DeleteIcon sx={{ fontSize: 18 }}></DeleteIcon>
+                  </IconButton>
+                )}
               </ListItem>
             </Box>
           );
