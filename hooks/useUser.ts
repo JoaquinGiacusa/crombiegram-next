@@ -39,6 +39,12 @@ export type UserDataProps = {
       profileImage: string;
       position?: string;
     };
+    like: {
+      id: string;
+      postId: string;
+      user: { firstName: string; lastName: string; profileImage: string };
+      userId: string;
+    }[];
   }[];
 };
 

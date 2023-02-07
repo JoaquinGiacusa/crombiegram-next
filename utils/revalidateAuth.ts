@@ -11,7 +11,6 @@ const revalitaToken = async (
   const isBefore = moment(Number(authExpires)).isBefore(Date.now());
 
   if (isBefore) {
-    console.log(authToken);
     const refreshTokenRes = await fetcher("/auth/revalidate", {
       method: "POST",
       headers: {

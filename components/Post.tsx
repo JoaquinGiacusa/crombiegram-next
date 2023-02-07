@@ -108,12 +108,10 @@ const Post: React.FC<PostPropsType> = ({
       body: JSON.stringify(body),
       credentials: "include",
     }).then((data) => {
-      console.log(data);
       mutate();
     });
   });
 
-  // console.log({isLiked});
   const handleClickLike = async () => {
     if (!isLiked) {
       const res = await fetcher(`/like/post/${id}`, {
@@ -136,14 +134,13 @@ const Post: React.FC<PostPropsType> = ({
           userId: data?.user.id,
         }),
       });
-      console.log(res);
       if (res.message == "like has been destroyed") {
         setIsLiked(false);
         mutate();
       }
     }
   };
-  console.log("length", like.length);
+
   useEffect(() => {
     if (like.some((l) => l.userId === data?.user.id)) {
       setIsLiked(true);

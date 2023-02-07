@@ -81,6 +81,7 @@ const Profile = () => {
                 <Post
                   key={p.id}
                   id={p.id}
+                  userId={p.userId}
                   contentText={p.contentText}
                   imageName={p.imageName}
                   firstName={p.user.firstName}
@@ -89,6 +90,7 @@ const Profile = () => {
                   createdAt={p.createdAt}
                   position={p.user.position}
                   comment={p.comment}
+                  like={p.like}
                 />
               );
             })
