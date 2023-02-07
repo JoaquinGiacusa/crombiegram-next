@@ -27,24 +27,26 @@ function Home() {
           }}
         >
           {isLoading && <LoadingPost loading />}
-          {data && data?.length > 0
-            ? data?.map((p) => {
-                return (
-                  <Post
-                    key={p.id}
-                    id={p.id}
-                    contentText={p.contentText}
-                    imageName={p.imageName}
-                    firstName={p.user.firstName}
-                    lastName={p.user.lastName}
-                    profileImage={p.user.profileImage}
-                    createdAt={p.createdAt}
-                    position={p.user.position}
-                    comment={p.comment}
-                  ></Post>
-                );
-              })
-            : !isLoading && "No post to show."}
+
+          {data &&
+            data?.map((p) => {
+              return (
+                <Post
+                  key={p.id}
+                  id={p.id}
+                  contentText={p.contentText}
+                  imageName={p.imageName}
+                  firstName={p.user.firstName}
+                  lastName={p.user.lastName}
+                  profileImage={p.user.profileImage}
+                  createdAt={p.createdAt}
+                  position={p.user.position}
+                  comment={p.comment}
+                ></Post>
+              );
+            })}
+
+          {!data && !isLoading && "No posts."}
         </Box>
       </Box>
     </MainLayout>

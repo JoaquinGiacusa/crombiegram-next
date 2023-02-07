@@ -8,12 +8,12 @@ interface MediaProps {
   loading?: boolean;
 }
 
-function LoadingPost(props: MediaProps) {
+function LoadingProfile(props: MediaProps) {
   const { loading = false } = props;
 
   return (
     <>
-      <Card sx={{ width: 500, m: 2 }}>
+      <Card sx={{ width: 700, m: 2 }}>
         <CardHeader
           avatar={
             <Skeleton
@@ -23,20 +23,7 @@ function LoadingPost(props: MediaProps) {
               height={40}
             />
           }
-          action={null}
-          title={
-            <Skeleton
-              animation="wave"
-              height={10}
-              width="100%"
-              style={{ marginBottom: 6 }}
-            />
-          }
-          subheader={<Skeleton animation="wave" height={10} width="40%" />}
         />
-
-        <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-
         <CardContent>
           <React.Fragment>
             <Skeleton
@@ -48,6 +35,7 @@ function LoadingPost(props: MediaProps) {
           </React.Fragment>
         </CardContent>
       </Card>
+
       <Card sx={{ width: 500, m: 2 }}>
         <CardHeader
           avatar={
@@ -86,4 +74,4 @@ function LoadingPost(props: MediaProps) {
     </>
   );
 }
-export default LoadingPost;
+export default LoadingProfile;

@@ -16,6 +16,7 @@ import { getCookie } from "cookies-next";
 import revalitaToken from "@/utils/revalidateAuth";
 import Post from "@/components/Post";
 import { Stack } from "@mui/system";
+import LoadingProfile from "@/components/LoadingProfile";
 
 const Profile = () => {
   const { data, error, isLoading, mutate } = useUser();
@@ -75,24 +76,27 @@ const Profile = () => {
           justifyContent: "center",
         }}
       >
-        {data && data?.userPosts?.length > 0
-          ? data?.userPosts?.map((p) => {
-              return (
-                <Post
-                  key={p.id}
-                  id={p.id}
-                  contentText={p.contentText}
-                  imageName={p.imageName}
-                  firstName={p.user.firstName}
-                  lastName={p.user.lastName}
-                  profileImage={p.user.profileImage}
-                  createdAt={p.createdAt}
-                  position={p.user.position}
-                  comment={p.comment}
-                />
-              );
-            })
-          : "No post to show"}
+        {isLoading && <LoadingProfile loading />}
+
+        {data &&
+          data?.userPosts?.map((p) => {
+            return (
+              <Post
+                key={p.id}
+                id={p.id}
+                contentText={p.contentText}
+                imageName={p.imageName}
+                firstName={p.user.firstName}
+                lastName={p.user.lastName}
+                profileImage={p.user.profileImage}
+                createdAt={p.createdAt}
+                position={p.user.position}
+                comment={p.comment}
+              />
+            );
+          })}
+
+        {!data && !isLoading && "No posts."}
       </Stack>
     </MainLayout>
   );

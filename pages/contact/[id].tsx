@@ -13,6 +13,7 @@ import revalitaToken from "@/utils/revalidateAuth";
 import Post from "@/components/Post";
 import { Stack } from "@mui/system";
 import useContact from "@/hooks/useContact";
+import LoadingProfile from "@/components/LoadingProfile";
 
 const Contact = () => {
   const { data, error, isLoading } = useContact();
@@ -34,7 +35,7 @@ const Contact = () => {
           elevation={10}
         >
           <Image src="/images/colors.png" height={160} width={700} alt="" />
-          <EditProfile />
+
           <Avatar
             src={
               data?.profileImage
@@ -72,6 +73,8 @@ const Contact = () => {
           justifyContent: "center",
         }}
       >
+        {isLoading && <LoadingProfile loading />}
+
         {data && data?.post?.length > 0
           ? data?.post?.map((p) => {
               return (
