@@ -1,9 +1,5 @@
-import useUsers from "@/hooks/useContact";
-import { Avatar, Box, Card, CardMedia, Stack, Typography } from "@mui/material";
-import Image from "next/image";
+import { Avatar, Card, Stack, Typography } from "@mui/material";
 import React from "react";
-import NewPost from "./NewPost";
-import MainLayout from "@/components/layouts/mainLayout";
 import { useRouter } from "next/router";
 
 export type UserCardPropsType = {
@@ -28,12 +24,10 @@ const UserCard: React.FC<UserCardPropsType> = ({
       sx={{
         display: "flex",
         alignItems: "center",
-        // justifyContent: "space-evenly",
         flexDirection: "row",
         borderRadius: 5,
         width: "100%",
         maxWidth: 500,
-        // minWidth: 350,
         padding: 1,
         pl: 5,
         cursor: "pointer",
@@ -51,7 +45,6 @@ const UserCard: React.FC<UserCardPropsType> = ({
         }
         sx={{
           position: "relative",
-
           height: { sm: 100, xs: 80 },
           width: { sm: 100, xs: 80 },
           borderRadius: 50,

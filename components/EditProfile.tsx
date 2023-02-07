@@ -4,21 +4,17 @@ import Edit from "@mui/icons-material/Edit";
 import {
   Modal,
   Box,
-  Grid,
   TextField,
   Button,
   Alert,
   Stack,
-  Typography,
   Snackbar,
 } from "@mui/material";
-import { useRouter } from "next/router";
 import { Controller, useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import Image from "next/image";
 import { fetcher } from "@/utils/fetcher";
 import Add from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import * as yup from "yup";
@@ -26,7 +22,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import moment from "moment";
 interface FormEditUser {
   email: string;
   position: string;
@@ -56,7 +51,7 @@ const editPasswordSchema = yup.object({
     .string()
     .required("Password is a required field.")
     .min(8, "Password must contain 8 or more characters")
-    .matches(/[0-9]/, "Password requires a number")
+    .matches(/\d/, "Password requires a number")
     .matches(/[a-z]/, "Password requires a lowercase letter")
     .matches(/[A-Z]/, "Password requires an uppercase letter")
     .matches(/[^\w]/, "Password requires a symbol"),
@@ -64,7 +59,7 @@ const editPasswordSchema = yup.object({
     .string()
     .required("Password is a required field.")
     .min(8, "Password must contain 8 or more characters")
-    .matches(/[0-9]/, "Password requires a number")
+    .matches(/\d/, "Password requires a number")
     .matches(/[a-z]/, "Password requires a lowercase letter")
     .matches(/[A-Z]/, "Password requires an uppercase letter")
     .matches(/[^\w]/, "Password requires a symbol"),
@@ -232,7 +227,7 @@ const EditProfile = () => {
               aria-label="edit"
               onClick={() => inputFile.current!.click()}
             >
-              {file ? <EditIcon fontSize="small" /> : <Add fontSize="small" />}
+              {file ? <Edit fontSize="small" /> : <Add fontSize="small" />}
             </Button>
             <Button
               color="primary"

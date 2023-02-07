@@ -73,17 +73,6 @@ function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  // const handleClose = (
-  //   event?: React.SyntheticEvent | Event,
-  //   reason?: string
-  // ) => {
-  //   if (reason === "clickaway") {
-  //     return;
-  //   }
-
-  //   setOpenAlert(false);
-  // };
-
   return (
     <Box
       sx={{
