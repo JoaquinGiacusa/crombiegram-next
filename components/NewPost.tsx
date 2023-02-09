@@ -114,12 +114,12 @@ const NewPost: React.FC = () => {
             <Avatar
               src={
                 "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
-                data?.user.profileImage
+                data?.profileImage
               }
               sx={{ width: 30, height: 30 }}
             />
             <Typography fontWeight={500}>
-              {data?.user.firstName} {data?.user.lastName}
+              {data?.firstName} {data?.lastName}
             </Typography>
           </Box>
 

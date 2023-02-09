@@ -209,11 +209,11 @@ function ResponsiveAppBar() {
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
-                    alt={data?.user.firstName}
+                    alt={data?.firstName}
                     src={
-                      data?.user.profileImage
+                      data?.profileImage
                         ? "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
-                          data?.user.profileImage
+                          data?.profileImage
                         : ""
                     }
                   />

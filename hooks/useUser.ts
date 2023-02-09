@@ -2,50 +2,15 @@ import { fetcher } from "@/utils/fetcher";
 import useSWR from "swr";
 
 export type UserDataProps = {
-  user: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    birthday: Date;
-    profileImage: string;
-    position: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  userPosts: {
-    id: string;
-    contentText: string;
-    imageName: string;
-    userId: string;
-    createdAt: Date;
-    updatedAt: Date;
-    comment: {
-      id: string;
-      comment: string;
-      userId: string;
-      postId: string;
-      createdAt: Date;
-      user: {
-        firstName: string;
-        lastName: string;
-        profileImage?: string;
-        position?: string;
-      };
-    }[];
-    user: {
-      firstName: string;
-      lastName: string;
-      profileImage: string;
-      position?: string;
-    };
-    like: {
-      id: string;
-      postId: string;
-      user: { firstName: string; lastName: string; profileImage: string };
-      userId: string;
-    }[];
-  }[];
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  birthday: Date;
+  profileImage: string;
+  position: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 const useUser = () => {

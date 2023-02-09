@@ -15,24 +15,19 @@ import useUser from "@/hooks/useUser";
 import Image from "next/image";
 import { fetcher } from "@/utils/fetcher";
 import Add from "@mui/icons-material/Add";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import ChangePassword from "./ChangePassword";
 interface FormEditUser {
   email: string;
   position: string;
   firstName: string;
   lastName: string;
   birthday: Date;
-}
-interface FormEditPassword {
-  currPassword: string;
-  newPassword: string;
-  repeatedNewPassword: string;
 }
 
 const editUserSchema = yup.object({
@@ -46,34 +41,9 @@ const editUserSchema = yup.object({
   birthday: yup.date().required().typeError("Birthday is invalid."),
 });
 
-const editPasswordSchema = yup.object({
-  currPassword: yup
-    .string()
-    .required("Password is a required field.")
-    .min(8, "Password must contain 8 or more characters")
-    .matches(/\d/, "Password requires a number")
-    .matches(/[a-z]/, "Password requires a lowercase letter")
-    .matches(/[A-Z]/, "Password requires an uppercase letter")
-    .matches(/[^\w]/, "Password requires a symbol"),
-  newPassword: yup
-    .string()
-    .required("Password is a required field.")
-    .min(8, "Password must contain 8 or more characters")
-    .matches(/\d/, "Password requires a number")
-    .matches(/[a-z]/, "Password requires a lowercase letter")
-    .matches(/[A-Z]/, "Password requires an uppercase letter")
-    .matches(/[^\w]/, "Password requires a symbol"),
-  repeatedNewPassword: yup
-    .string()
-    .oneOf([yup.ref("newPassword"), null], "Passwords must match")
-    .required("Repeat password is a required field."),
-});
 const EditProfile = () => {
   const [open, setOpen] = useState(false);
   const [alert, setAlert] = useState(false);
-  const [modalPswOpen, setModalPswOpen] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
   const [file, setFile] = useState<File | null>();
   const inputFile = useRef<any>(null);
   const [openAlert, setOpenAlert] = useState(false);
@@ -109,13 +79,10 @@ const EditProfile = () => {
     control,
   } = useForm<FormEditUser>({ resolver: yupResolver(editUserSchema) });
   const onSubmit = handleSubmit(async (data) => {
-    // console.log(data);
     await fetcher("/user/me", {
       method: "PUT",
       body: JSON.stringify(data),
     }).then((data) => {
-      console.log(data);
-
       setAlert(data.message);
       setOpenAlert(true);
       if (data.message == "Your account has been updated!") {
@@ -128,28 +95,7 @@ const EditProfile = () => {
       // setAlert(data.message);
     });
   });
-  const handleTogglePassword = () => {
-    setModalPswOpen(!modalPswOpen);
-  };
-  const {
-    register: registerPsw,
-    handleSubmit: handleSubmitPsw,
-    formState: { errors: errorsPws },
-  } = useForm<FormEditPassword>({ resolver: yupResolver(editPasswordSchema) });
-  const onSubmitFormPassword = handleSubmitPsw(async (data) => {
-    await fetcher("/user/me/password", {
-      method: "PATCH",
-      body: JSON.stringify(data),
-    })
-      .then((data) => {
-        if (data.message == "Your password has been updated!") {
-        }
-      })
-      .then(() => {
-        setModalPswOpen(false);
-        setOpen(false);
-      });
-  });
+
   return (
     <>
       <IconButton
@@ -205,9 +151,9 @@ const EditProfile = () => {
           ) : (
             <Image
               src={
-                data?.user.profileImage
+                data?.profileImage
                   ? "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
-                    data?.user.profileImage
+                    data?.profileImage
                   : "/images/crombie-logo.png"
               }
               alt="profile-img"
@@ -236,10 +182,10 @@ const EditProfile = () => {
               disabled={file ? false : true}
               onClick={handleSubmitImage}
             >
-              {/* <Add fontSize="small" /> */}
               Update Image
             </Button>
           </Stack>
+
           <Box
             component={"form"}
             onSubmit={onSubmit}
@@ -249,6 +195,7 @@ const EditProfile = () => {
               flexDirection: "column",
               alignItems: "center",
               gap: 2,
+              mb: 2,
             }}
           >
             <Box
@@ -277,7 +224,7 @@ const EditProfile = () => {
                   helperText={!errors.email ? " " : errors.email?.message}
                   error={errors?.email?.message ? true : false}
                   {...register("email", { required: true })}
-                  defaultValue={data?.user?.email}
+                  defaultValue={data?.email}
                   type={"email"}
                   label="Email"
                 />
@@ -289,7 +236,7 @@ const EditProfile = () => {
                   }
                   error={errors?.firstName?.message ? true : false}
                   {...register("firstName", { required: true })}
-                  defaultValue={data?.user?.firstName}
+                  defaultValue={data?.firstName}
                   fullWidth
                 />
                 <TextField
@@ -298,7 +245,7 @@ const EditProfile = () => {
                   helperText={!errors.lastName ? " " : errors.lastName?.message}
                   error={errors?.lastName?.message ? true : false}
                   {...register("lastName", { required: true })}
-                  defaultValue={data?.user?.lastName}
+                  defaultValue={data?.lastName}
                   fullWidth
                 />
               </Box>
@@ -318,13 +265,13 @@ const EditProfile = () => {
                   helperText={!errors.position ? " " : errors.position?.message}
                   {...register("position")}
                   fullWidth
-                  defaultValue={data?.user.position}
+                  defaultValue={data?.position}
                 />
 
                 <Controller
                   name={"birthday"}
                   control={control}
-                  defaultValue={data?.user.birthday}
+                  defaultValue={data?.birthday}
                   render={({
                     field: { onChange, value },
                     fieldState: { error },
@@ -348,107 +295,17 @@ const EditProfile = () => {
                     </LocalizationProvider>
                   )}
                 />
-
-                <Button
-                  color="info"
-                  type="button"
-                  onClick={handleTogglePassword}
-                >
-                  Change password
-                </Button>
               </Box>
             </Box>
             <Button variant="outlined" color="warning" type="submit">
               Update
             </Button>
           </Box>
-          {/* {alert && <Alert severity="success">{alert}</Alert>} */}
+
+          <ChangePassword />
         </Box>
       </Modal>
-      <Modal
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        open={modalPswOpen}
-        onClose={(e) => setModalPswOpen(false)}
-        // aria-labelledby="modal-modal-title"
-        // aria-describedby="modal-modal-description"
-      >
-        <Box
-          component={"form"}
-          onSubmit={onSubmitFormPassword}
-          bgcolor={"background.default"}
-          color={"text.primary"}
-          p={3}
-          borderRadius={5}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            // alignItems: "center",
-          }}
-        >
-          <TextField
-            fullWidth
-            type={showPassword ? "text" : "password"}
-            label="Actual password"
-            error={errorsPws?.currPassword?.message ? true : false}
-            helperText={
-              !errorsPws.currPassword ? " " : errorsPws.currPassword?.message
-            }
-            {...registerPsw("currPassword", { required: true })}
-            InputProps={{
-              endAdornment: (
-                <IconButton onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              ),
-            }}
-          />
-          <TextField
-            fullWidth
-            type={showNewPassword ? "text" : "password"}
-            label="New password"
-            error={errorsPws?.newPassword?.message ? true : false}
-            helperText={
-              !errorsPws.newPassword ? " " : errorsPws.newPassword?.message
-            }
-            {...registerPsw("newPassword", { required: true })}
-            InputProps={{
-              endAdornment: (
-                <IconButton
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                >
-                  {showNewPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              ),
-            }}
-          />
-          <TextField
-            label="Repeated new password"
-            helperText={
-              !errorsPws.repeatedNewPassword
-                ? " "
-                : errorsPws.repeatedNewPassword?.message
-            }
-            error={errorsPws?.repeatedNewPassword?.message ? true : false}
-            variant="outlined"
-            type="password"
-            {...registerPsw("repeatedNewPassword", { required: true })}
-            fullWidth
-          />
-          <Button
-            sx={{ margin: "0 auto" }}
-            variant="outlined"
-            color="info"
-            type="submit"
-          >
-            Update password
-          </Button>
-        </Box>
-      </Modal>
+
       <Snackbar
         sx={{ alignItems: "center", justifyContent: "center" }}
         open={openAlert}

@@ -3,7 +3,7 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import SwitchTheme from "@/components/SwitchTheme";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -14,6 +14,9 @@ import IconButton from "@mui/material/IconButton";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import { Snackbar } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 interface FormRegister {
   email: string;
@@ -53,6 +56,7 @@ function Register() {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<FormRegister>({ resolver: yupResolver(registerSchema) });
   const [alert, setAlert] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -195,17 +199,31 @@ function Register() {
               {...register("lastName", { required: true })}
               fullWidth
             />
-            <TextField
-              id="date"
-              label="Birthday"
-              helperText={!errors.birthday ? " " : errors.birthday?.message}
-              error={errors?.birthday?.message ? true : false}
-              type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              {...register("birthday", { required: true })}
-              fullWidth
+            <Controller
+              name={"birthday"}
+              control={control}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DesktopDatePicker
+                    label={"Birthday"}
+                    inputFormat="DD-MM-yyyy"
+                    value={value}
+                    onChange={(event) => {
+                      onChange(event);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        error={!!error}
+                        helperText={error?.message || " "}
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
+              )}
             />
           </Box>
         </Box>

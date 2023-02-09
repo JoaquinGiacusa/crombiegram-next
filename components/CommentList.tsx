@@ -33,7 +33,6 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
     const resDeleteComment = await fetcher(`/comment/${commentId}`, {
       method: "DELETE",
     });
-    console.log({ resDeleteComment });
     if (resDeleteComment.message == "comment deleted") {
       mutate();
     }
@@ -75,7 +74,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
                   }
                   secondary={comment.comment}
                 />
-                {data?.user.id === comment.userId && (
+                {data?.id === comment.userId && (
                   <IconButton onClick={() => handleDeleteComment(comment.id)}>
                     <DeleteIcon sx={{ fontSize: 18 }}></DeleteIcon>
                   </IconButton>

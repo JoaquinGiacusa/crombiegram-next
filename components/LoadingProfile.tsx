@@ -4,36 +4,21 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Skeleton from "@mui/material/Skeleton";
 
-interface MediaProps {
-  loading?: boolean;
-}
-
-function LoadingProfile(props: MediaProps) {
-  const { loading = false } = props;
-
+function LoadingProfile() {
   return (
     <>
-      <Card sx={{ width: 700, m: 2 }}>
-        <CardHeader
-          avatar={
-            <Skeleton
-              animation="wave"
-              variant="circular"
-              width={40}
-              height={40}
-            />
-          }
-        />
-        <CardContent>
-          <React.Fragment>
-            <Skeleton
-              animation="wave"
-              height={10}
-              style={{ marginBottom: 6 }}
-            />
-            <Skeleton animation="wave" height={10} width="80%" />
-          </React.Fragment>
-        </CardContent>
+      <Card
+        sx={{
+          borderRadius: 5,
+          m: 1,
+          mt: 5,
+          maxWidth: 700,
+          width: "100%",
+          p: 2,
+        }}
+      >
+        <Skeleton animation="wave" height={160} />
+        <Skeleton animation="wave" height={220} />
       </Card>
 
       <Card sx={{ width: 500, m: 2 }}>

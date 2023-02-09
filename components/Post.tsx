@@ -84,7 +84,6 @@ const Post: React.FC<PostPropsType> = ({
     const jsonResponse = await fetcher(`/post/${id}`, {
       method: "DELETE",
     });
-
     if (jsonResponse) {
       mutate();
     }
@@ -118,7 +117,7 @@ const Post: React.FC<PostPropsType> = ({
       const res = await fetcher(`/like/post/${id}`, {
         method: "POST",
         body: JSON.stringify({
-          userId: data?.user.id,
+          userId: data?.id,
         }),
       });
 
@@ -132,7 +131,7 @@ const Post: React.FC<PostPropsType> = ({
       const res = await fetcher(`/like/post/${id}`, {
         method: "DELETE",
         body: JSON.stringify({
-          userId: data?.user.id,
+          userId: data?.id,
         }),
       });
       if (res.message == "like has been destroyed") {
@@ -142,10 +141,10 @@ const Post: React.FC<PostPropsType> = ({
   };
 
   useEffect(() => {
-    if (like.some((l) => l.userId === data?.user.id)) {
+    if (like.some((l) => l.userId === data?.id)) {
       setIsLiked(true);
     }
-  }, [like, data?.user.id]);
+  }, [like, data?.id]);
 
   return (
     <Card sx={{ width: "100%", maxWidth: "500px" }}>
@@ -162,7 +161,7 @@ const Post: React.FC<PostPropsType> = ({
         }
         action={
           <>
-            {data?.user.id === userId && (
+            {data?.id === userId && (
               <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
                 <MoreVertIcon />
               </IconButton>

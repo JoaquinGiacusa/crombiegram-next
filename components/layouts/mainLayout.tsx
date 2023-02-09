@@ -1,10 +1,20 @@
+import { ReactComponentElement, ReactNode } from "react";
+import { SWRConfig, SWRConfiguration } from "swr";
 import ResponsiveAppBar from "../Navbar";
 
-export const MainLayout = ({ children }: any) => {
+export const MainLayout = ({
+  children,
+  fallback,
+}: {
+  children: ReactNode;
+  fallback: SWRConfiguration;
+}) => {
   return (
     <>
-      <ResponsiveAppBar></ResponsiveAppBar>
-      {children}
+      <SWRConfig value={{ fallback }}>
+        <ResponsiveAppBar></ResponsiveAppBar>
+        {children}
+      </SWRConfig>
     </>
   );
 };

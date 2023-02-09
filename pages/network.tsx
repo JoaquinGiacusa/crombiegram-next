@@ -8,6 +8,8 @@ import revalitaToken from "@/utils/revalidateAuth";
 import useUsers from "@/hooks/useUsers";
 import NewPost from "@/components/NewPost";
 import LoadingContacts from "@/components/LoadingContacts";
+import { fetcher } from "@/utils/fetcher";
+import { SWRConfiguration } from "swr";
 
 export type ListUserProps = {
   id: string;
@@ -17,11 +19,11 @@ export type ListUserProps = {
   position: string;
 }[];
 
-function Network() {
+function Network({ fallback }: { fallback: SWRConfiguration }) {
   const { data, error, isLoading } = useUsers();
 
   return (
-    <MainLayout>
+    <MainLayout fallback={fallback}>
       <Box>
         <NewPost />
         <Box
@@ -74,7 +76,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   await revalitaToken(authToken, authExpires, context);
 
+  const me = await fetcher("/user/me", {
+    method: "GET",
+    headers: {
+      Cookie: `authToken=${authToken};`,
+    },
+    credentials: "include",
+  });
+
   return {
-    props: {},
+    props: {
+      fallback: {
+        "/user/me": me,
+      },
+    },
   };
 };
