@@ -106,7 +106,9 @@ function ResponsiveAppBar() {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: { xs: "center", md: "start" },
+
+            width: { xs: "100%", md: "200px" },
             alignItems: "center",
           }}
         >
@@ -121,12 +123,13 @@ function ResponsiveAppBar() {
             variant="h6"
             sx={{
               ml: 1,
-              display: { xs: "none", md: "inherit" },
+              display: "inherit",
               fontFamily: "VT323",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "primary",
               textDecoration: "none",
+              justifyItems: "start",
             }}
           >
             <Link style={{ color: "white " }} href={"/home"}>
@@ -134,7 +137,12 @@ function ResponsiveAppBar() {
             </Link>
           </Typography>
         </Box>
-        <Search>
+        <Search
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", md: "flex" },
+          }}
+        >
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>

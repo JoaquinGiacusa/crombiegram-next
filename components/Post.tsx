@@ -20,6 +20,7 @@ import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/system/Box";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
+import { useRouter } from "next/router";
 
 export type PostPropsType = {
   id: string;
@@ -68,7 +69,7 @@ const Post: React.FC<PostPropsType> = ({
   const { mutate } = usePost();
   const { data } = useUser();
   const [isLiked, setIsLiked] = useState<boolean>();
-
+  const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -170,6 +171,8 @@ const Post: React.FC<PostPropsType> = ({
         }
         title={firstName + " " + lastName}
         subheader={<SubHeaderPost createdAt={createdAt} position={position} />}
+        onClick={() => router.push(`/contact/${id}`)}
+        sx={{ cursor: "pointer" }}
       />
 
       {imageName && (
