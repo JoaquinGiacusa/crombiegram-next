@@ -14,15 +14,16 @@ import Post from "@/components/Post";
 import { Stack } from "@mui/system";
 import useContact from "@/hooks/useContact";
 import LoadingProfile from "@/components/LoadingProfile";
-import { log } from "console";
 import useContactPost from "@/hooks/useContactPost";
+import { fetcher } from "@/utils/fetcher";
+import { SWRConfiguration } from "swr";
 
-const Contact = () => {
+const Contact = ({ fallback }: { fallback: SWRConfiguration }) => {
   const { data, error, isLoading } = useContact();
   const { data: contactPost } = useContactPost();
-  console.log("Datita", data);
+
   return (
-    <MainLayout>
+    <MainLayout fallback={fallback}>
       <NewPost />
       <Box
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
@@ -76,7 +77,7 @@ const Contact = () => {
           justifyContent: "center",
         }}
       >
-        {isLoading && <LoadingProfile loading />}
+        {isLoading && <LoadingProfile />}
 
         {data &&
           contactPost &&
@@ -122,7 +123,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   await revalitaToken(authToken, authExpires, context);
 
+  const me = await fetcher("/user/me", {
+    method: "GET",
+    headers: {
+      Cookie: `authToken=${authToken};`,
+    },
+    credentials: "include",
+  });
+
   return {
-    props: {},
+    props: {
+      fallback: {
+        "/user/me": me,
+      },
+    },
   };
 };

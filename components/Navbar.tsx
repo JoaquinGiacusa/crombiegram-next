@@ -106,7 +106,9 @@ function ResponsiveAppBar() {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: { xs: "center", md: "start" },
+
+            width: { xs: "100%", md: "200px" },
             alignItems: "center",
           }}
         >
@@ -121,12 +123,13 @@ function ResponsiveAppBar() {
             variant="h6"
             sx={{
               ml: 1,
-              display: { xs: "none", md: "inherit" },
+              display: "inherit",
               fontFamily: "VT323",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "primary",
               textDecoration: "none",
+              justifyItems: "start",
             }}
           >
             <Link style={{ color: "white " }} href={"/home"}>
@@ -134,7 +137,12 @@ function ResponsiveAppBar() {
             </Link>
           </Typography>
         </Box>
-        <Search>
+        <Search
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", md: "flex" },
+          }}
+        >
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
@@ -209,11 +217,11 @@ function ResponsiveAppBar() {
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
-                    alt={data?.user.firstName}
+                    alt={data?.firstName}
                     src={
-                      data?.user.profileImage
+                      data?.profileImage
                         ? "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
-                          data?.user.profileImage
+                          data?.profileImage
                         : ""
                     }
                   />

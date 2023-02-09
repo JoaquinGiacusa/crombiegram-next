@@ -8,12 +8,14 @@ import { usePost } from "@/hooks/usePost";
 import revalitaToken from "@/utils/revalidateAuth";
 import { getCookie } from "cookies-next";
 import LoadingPost from "@/components/LoadingPost";
+import { fetcher } from "@/utils/fetcher";
+import { SWRConfiguration } from "swr";
 
-function Home() {
+function Home({ fallback }: { fallback: SWRConfiguration }) {
   const { data, error, isLoading } = usePost();
 
   return (
-    <MainLayout>
+    <MainLayout fallback={fallback}>
       <Box>
         <NewPost />
         <Box
@@ -70,7 +72,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   await revalitaToken(authToken, authExpires, context);
 
+  const me = await fetcher("/user/me", {
+    method: "GET",
+    headers: {
+      Cookie: `authToken=${authToken};`,
+    },
+    credentials: "include",
+  });
+
   return {
-    props: {},
+    props: {
+      fallback: {
+        "/user/me": me,
+      },
+    },
   };
 };

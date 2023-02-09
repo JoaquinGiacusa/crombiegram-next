@@ -20,6 +20,7 @@ import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/system/Box";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
+import { useRouter } from "next/router";
 
 export type PostPropsType = {
   id: string;
@@ -68,7 +69,7 @@ const Post: React.FC<PostPropsType> = ({
   const { mutate } = usePost();
   const { data } = useUser();
   const [isLiked, setIsLiked] = useState<boolean>();
-
+  const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -84,7 +85,6 @@ const Post: React.FC<PostPropsType> = ({
     const jsonResponse = await fetcher(`/post/${id}`, {
       method: "DELETE",
     });
-
     if (jsonResponse) {
       mutate();
     }
@@ -118,7 +118,7 @@ const Post: React.FC<PostPropsType> = ({
       const res = await fetcher(`/like/post/${id}`, {
         method: "POST",
         body: JSON.stringify({
-          userId: data?.user.id,
+          userId: data?.id,
         }),
       });
 
@@ -132,7 +132,7 @@ const Post: React.FC<PostPropsType> = ({
       const res = await fetcher(`/like/post/${id}`, {
         method: "DELETE",
         body: JSON.stringify({
-          userId: data?.user.id,
+          userId: data?.id,
         }),
       });
       if (res.message == "like has been destroyed") {
@@ -142,10 +142,10 @@ const Post: React.FC<PostPropsType> = ({
   };
 
   useEffect(() => {
-    if (like.some((l) => l.userId === data?.user.id)) {
+    if (like.some((l) => l.userId === data?.id)) {
       setIsLiked(true);
     }
-  }, [like, data?.user.id]);
+  }, [like, data?.id]);
 
   return (
     <Card sx={{ width: "100%", maxWidth: "500px" }}>
@@ -162,7 +162,7 @@ const Post: React.FC<PostPropsType> = ({
         }
         action={
           <>
-            {data?.user.id === userId && (
+            {data?.id === userId && (
               <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
                 <MoreVertIcon />
               </IconButton>
@@ -171,6 +171,8 @@ const Post: React.FC<PostPropsType> = ({
         }
         title={firstName + " " + lastName}
         subheader={<SubHeaderPost createdAt={createdAt} position={position} />}
+        onClick={() => router.push(`/contact/${id}`)}
+        sx={{ cursor: "pointer" }}
       />
 
       {imageName && (

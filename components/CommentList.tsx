@@ -9,6 +9,7 @@ import moment from "moment";
 import { fetcher } from "@/utils/fetcher";
 import { usePost } from "@/hooks/usePost";
 import useUser from "@/hooks/useUser";
+import { useRouter } from "next/router";
 
 type CommentListProps = {
   comments: {
@@ -29,11 +30,12 @@ type CommentListProps = {
 const CommentList: React.FC<CommentListProps> = ({ comments }) => {
   const { mutate } = usePost();
   const { data } = useUser();
+
+  const router = useRouter();
   const handleDeleteComment = async (commentId: string) => {
     const resDeleteComment = await fetcher(`/comment/${commentId}`, {
       method: "DELETE",
     });
-    console.log({ resDeleteComment });
     if (resDeleteComment.message == "comment deleted") {
       mutate();
     }
@@ -47,7 +49,10 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
             <Box key={comment.id}>
               <Divider />
               <ListItem key={comment.id} alignItems="flex-start">
-                <ListItemAvatar>
+                <ListItemAvatar
+                  onClick={() => router.push(`/contact/${comment.userId}`)}
+                  sx={{ cursor: "pointer" }}
+                >
                   <Avatar
                     alt="profile-avatar"
                     src={
@@ -75,7 +80,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
                   }
                   secondary={comment.comment}
                 />
-                {data?.user.id === comment.userId && (
+                {data?.id === comment.userId && (
                   <IconButton onClick={() => handleDeleteComment(comment.id)}>
                     <DeleteIcon sx={{ fontSize: 18 }}></DeleteIcon>
                   </IconButton>

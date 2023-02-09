@@ -14,13 +14,18 @@ import revalitaToken from "@/utils/revalidateAuth";
 import Post from "@/components/Post";
 import { Stack } from "@mui/system";
 import LoadingProfile from "@/components/LoadingProfile";
+import { fetcher } from "@/utils/fetcher";
+import useMyPost from "@/hooks/useMyPost";
+import { SWRConfiguration } from "swr";
 
-const Profile = () => {
-  const { data, error, isLoading, mutate } = useUser();
+const Profile = ({ fallback }: { fallback: SWRConfiguration }) => {
+  const { data, isLoading, error } = useUser();
+  const { allMyPost, isLoadingMyPost } = useMyPost();
 
   return (
-    <MainLayout>
+    <MainLayout fallback={fallback}>
       <NewPost />
+
       <Box
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
@@ -38,8 +43,8 @@ const Profile = () => {
           <EditProfile />
           <Avatar
             src={
-              data?.user.profileImage
-                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${data?.user.profileImage}`
+              data?.profileImage
+                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${data?.profileImage}`
                 : ""
             }
             sx={{
@@ -57,9 +62,9 @@ const Profile = () => {
 
           <Box sx={{ m: 5 }}>
             <Typography variant="h5">
-              {data?.user.firstName} {data?.user.lastName}
+              {data?.firstName} {data?.lastName}
             </Typography>
-            <Typography>{data?.user.position}</Typography>
+            <Typography>{data?.position}</Typography>
           </Box>
         </Card>
       </Box>
@@ -73,10 +78,10 @@ const Profile = () => {
           justifyContent: "center",
         }}
       >
-        {isLoading && <LoadingProfile loading />}
+        {/* {isLoading && <LoadingProfile />} */}
 
-        {data &&
-          data?.userPosts?.map((p) => {
+        {allMyPost &&
+          allMyPost.map((p) => {
             return (
               <Post
                 key={p.id}
@@ -95,7 +100,7 @@ const Profile = () => {
             );
           })}
 
-        {!data && !isLoading && "No posts."}
+        {!allMyPost && !isLoadingMyPost && "No posts."}
       </Stack>
     </MainLayout>
   );
@@ -118,7 +123,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   await revalitaToken(authToken, authExpires, context);
 
+  const me = await fetcher("/user/me", {
+    method: "GET",
+    headers: {
+      Cookie: `authToken=${authToken};`,
+    },
+    credentials: "include",
+  });
+
   return {
-    props: {},
+    props: {
+      fallback: {
+        "/user/me": me,
+      },
+    },
   };
 };
