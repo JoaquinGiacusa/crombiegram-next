@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
@@ -12,12 +12,18 @@ import { fetcher } from "@/utils/fetcher";
 import { SWRConfiguration } from "swr";
 
 function Home({ fallback }: { fallback: SWRConfiguration }) {
-  const { data, error, isLoading } = usePost();
+  const { data, error, isLoading, size, setSize } = usePost();
+  //@ts-ignore
+  const dataFlated = data?.flat();
+  console.log("sad", dataFlated);
 
+  //useEffect(()=>)
   return (
     <MainLayout fallback={fallback}>
       <Box>
         <NewPost />
+
+        <button onClick={() => setSize(size + 1)}>see more</button>
         <Box
           sx={{
             display: "flex",
@@ -30,7 +36,8 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
         >
           {isLoading && <LoadingPost loading />}
           {data &&
-            data?.map((p) => {
+            //data?.postList.map((p) => {
+            data?.flat().map((p) => {
               return (
                 <Post
                   key={p.id}
@@ -48,7 +55,7 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
                 ></Post>
               );
             })}
-          {!data && !isLoading && "No posts."}
+          {/* {!data?.postList && !isLoading && "No posts."} */}
         </Box>
       </Box>
     </MainLayout>
