@@ -5,14 +5,15 @@ import { useThemeColorContext } from "./context/ColorModeContext";
 
 export enum themePalette {
   BLACK = "#000000",
-  PINK = "#fc427b",
+  PINK = "#f4326b",
   WHITE = "#FFFFFF",
-  GREEN = "#1abc9c",
-  PURPLE = "#8e44ad",
-  YELLOW = "#f1c40f",
+  GREEN = "#19bc5f",
+  PURPLE = "#8031a2",
+  YELLOW = "#feb829",
   GREY = "#a5b1c2",
   GREY2 = "#95a5a6",
   BLUE = "#273c75",
+  LIGHTBLUE = "#26B8E9",
   FONT_GLOBAL = "'Noto Sans JP', sans-serif",
 }
 
@@ -41,7 +42,7 @@ const ThemeContext: React.FC<{ children: React.ReactNode }> = ({
         : {
             //Palette color LIGHT
             primary: {
-              main: themePalette.PURPLE,
+              main: themePalette.LIGHTBLUE,
             },
             secondary: {
               main: themePalette.YELLOW,

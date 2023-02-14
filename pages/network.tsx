@@ -4,7 +4,7 @@ import MainLayout from "@/components/layouts/mainLayout";
 import UserCard from "@/components/UserCard";
 import { GetServerSideProps } from "next";
 import { getCookie } from "cookies-next";
-import revalitaToken from "@/utils/revalidateAuth";
+import revalidateToken from "@/utils/revalidateAuth";
 import useUsers from "@/hooks/useUsers";
 import NewPost from "@/components/NewPost";
 import LoadingContacts from "@/components/LoadingContacts";
@@ -74,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  await revalitaToken(authToken, authExpires, context);
+  await revalidateToken(authToken, authExpires, context);
 
   const me = await fetcher("/user/me", {
     method: "GET",

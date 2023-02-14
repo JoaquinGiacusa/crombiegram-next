@@ -9,7 +9,7 @@ import EditProfile from "@/components/EditProfile";
 import NewPost from "@/components/NewPost";
 import { GetServerSideProps } from "next";
 import { getCookie } from "cookies-next";
-import revalitaToken from "@/utils/revalidateAuth";
+import revalidateToken from "@/utils/revalidateAuth";
 import Post from "@/components/Post";
 import { Stack } from "@mui/system";
 import useContact from "@/hooks/useContact";
@@ -121,7 +121,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  await revalitaToken(authToken, authExpires, context);
+  await revalidateToken(authToken, authExpires, context);
 
   const me = await fetcher("/user/me", {
     method: "GET",

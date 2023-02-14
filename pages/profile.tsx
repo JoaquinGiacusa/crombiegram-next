@@ -10,7 +10,7 @@ import EditProfile from "@/components/EditProfile";
 import NewPost from "@/components/NewPost";
 import { GetServerSideProps } from "next";
 import { getCookie } from "cookies-next";
-import revalitaToken from "@/utils/revalidateAuth";
+import revalidateToken from "@/utils/revalidateAuth";
 import Post from "@/components/Post";
 import { Stack } from "@mui/system";
 import LoadingProfile from "@/components/LoadingProfile";
@@ -53,7 +53,7 @@ const Profile = ({ fallback }: { fallback: SWRConfiguration }) => {
               width: { sm: 150, xs: 100 },
               borderRadius: 50,
               border: 5,
-              borderColor: "#8e44ad",
+              borderColor: "#26B8E9",
               ml: 5,
               mt: -12,
             }}
@@ -121,7 +121,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  await revalitaToken(authToken, authExpires, context);
+  await revalidateToken(authToken, authExpires, context);
 
   const me = await fetcher("/user/me", {
     method: "GET",
