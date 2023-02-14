@@ -5,7 +5,7 @@ import NewPost from "../components/NewPost";
 import MainLayout from "@/components/layouts/mainLayout";
 import { GetServerSideProps } from "next";
 import { usePost } from "@/hooks/usePost";
-import revalitaToken from "@/utils/revalidateAuth";
+import revalidateToken from "@/utils/revalidateAuth";
 import { getCookie } from "cookies-next";
 import LoadingPost from "@/components/LoadingPost";
 import { fetcher } from "@/utils/fetcher";
@@ -70,7 +70,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  await revalitaToken(authToken, authExpires, context);
+  await revalidateToken(authToken, authExpires, context);
 
   const me = await fetcher("/user/me", {
     method: "GET",

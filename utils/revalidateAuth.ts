@@ -3,7 +3,7 @@ import moment from "moment";
 import { GetServerSidePropsContext } from "next";
 import { fetcher } from "./fetcher";
 
-const revalitaToken = async (
+const revalidateToken = async (
   authToken: string,
   authExpires: string,
   context?: GetServerSidePropsContext
@@ -36,4 +36,4 @@ const revalitaToken = async (
   return false;
 };
 
-export default revalitaToken;
+export default revalidateToken;
