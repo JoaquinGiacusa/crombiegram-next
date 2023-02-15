@@ -34,6 +34,7 @@ const NewPost: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({ defaultValues: { contentText: "" } });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,6 +66,7 @@ const NewPost: React.FC = () => {
       mutate();
     }
 
+    reset();
     setOpen(false);
   });
 
@@ -91,7 +93,9 @@ const NewPost: React.FC = () => {
           justifyContent: "center",
         }}
         open={open}
-        onClose={(e) => setOpen(false)}
+        onClose={(e) => {
+          setOpen(false), reset();
+        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >

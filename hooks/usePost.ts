@@ -45,7 +45,7 @@ export const usePost = () => {
   const getKey = (pageIndex: number, previousPageData: any) => {
     //if (previousPageData && !previousPageData.length) return null;
     pageIndex = pageIndex + 1;
-    return `/post?page=${pageIndex}&size=2`;
+    return `/post?page=${pageIndex}&size=5`;
   };
 
   const { data, error, isLoading, isValidating, mutate, size, setSize } =

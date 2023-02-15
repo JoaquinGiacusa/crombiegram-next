@@ -37,7 +37,7 @@ export const fetcher = async (
   if (isFormData) {
     options = {
       ...options,
-      headers: undefined,
+      headers: { authorization: `Bearer ${token}` },
     };
   }
   console.log(options);
