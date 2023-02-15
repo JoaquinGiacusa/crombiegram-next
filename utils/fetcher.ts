@@ -1,6 +1,6 @@
-const BASE_URL = "http://ec2-34-201-161-29.compute-1.amazonaws.com/api";
+//const BASE_URL = "http://ec2-34-201-161-29.compute-1.amazonaws.com/api";
 //const BASE_URL = "http://34.201.161.29/api";
-//const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = "http://localhost:3000/api";
 
 export function getSaveToken() {
   if (typeof window !== "undefined") {
@@ -40,7 +40,7 @@ export const fetcher = async (
       headers: { authorization: `Bearer ${token}` },
     };
   }
-  console.log(options);
+
   const res = await fetch(url, options);
   const data = await res.json();
   return data;

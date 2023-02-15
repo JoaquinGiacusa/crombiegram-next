@@ -100,10 +100,9 @@ const Post: React.FC<PostPropsType> = ({
   const onSubmit = handleSubmit(async (data) => {
     const body = {
       comment: data.comment,
-      postId: id,
     };
     reset();
-    await fetcher("/comment", {
+    await fetcher(`/comment/post/${id}`, {
       method: "POST",
       body: JSON.stringify(body),
       credentials: "include",
@@ -246,6 +245,16 @@ const Post: React.FC<PostPropsType> = ({
       {comment && comment?.length > 0 && (
         <CommentList comments={comment}></CommentList>
       )}
+      {comment?.length == 2 && (
+        <Typography
+          onClick={() => {
+            console.log("show more");
+          }}
+        >
+          show more
+        </Typography>
+      )}
+
       <Box component={"form"} onSubmit={onSubmit}>
         <TextField
           fullWidth
