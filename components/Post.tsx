@@ -21,6 +21,7 @@ import Box from "@mui/system/Box";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/router";
+import ModalPost from "./ModalPost";
 
 export type PostPropsType = {
   id: string;
@@ -38,7 +39,7 @@ export type PostPropsType = {
     user: { firstName: string; lastName: string; profileImage: string };
     userId: string;
   }[];
-  comment: {
+  comment?: {
     id: string;
     comment: string;
     userId: string;
@@ -69,6 +70,7 @@ const Post: React.FC<PostPropsType> = ({
   const { mutate } = usePost();
   const { data } = useUser();
   const [isLiked, setIsLiked] = useState<boolean>();
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
@@ -146,130 +148,157 @@ const Post: React.FC<PostPropsType> = ({
     }
   }, [like, data?.id]);
 
-  return (
-    <Card sx={{ width: "100%", maxWidth: "500px" }}>
-      <CardHeader
-        avatar={
-          <Avatar
-            src={
-              profileImage
-                ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
-                : ""
-            }
-            sx={{ width: 30, height: 30 }}
-          />
-        }
-        action={
-          <>
-            {data?.id === userId && (
-              <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
-                <MoreVertIcon />
-              </IconButton>
-            )}
-          </>
-        }
-        title={firstName + " " + lastName}
-        subheader={<SubHeaderPost createdAt={createdAt} position={position} />}
-        onClick={() => router.push(`/contact/${id}`)}
-        sx={{ cursor: "pointer" }}
-      />
+  const handleClickImage = () => {
+    setOpen(true);
+  };
 
-      {imageName && (
-        <Image
-          width={500}
-          height={500}
-          src={"https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" + imageName}
-          alt="foto"
+  return (
+    <>
+      <Card sx={{ width: "100%", maxWidth: "500px" }}>
+        <CardHeader
+          avatar={
+            <Avatar
+              src={
+                profileImage
+                  ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
+                  : ""
+              }
+              sx={{ width: 30, height: 30 }}
+            />
+          }
+          action={
+            <>
+              {data?.id === userId && (
+                <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
+                  <MoreVertIcon />
+                </IconButton>
+              )}
+            </>
+          }
+          title={firstName + " " + lastName}
+          subheader={
+            <SubHeaderPost createdAt={createdAt} position={position} />
+          }
+          onClick={() => router.push(`/contact/${id}`)}
+          sx={{ cursor: "pointer" }}
+        />
+
+        {imageName && (
+          <Image
+            width={500}
+            height={500}
+            src={
+              "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" + imageName
+            }
+            alt="foto"
+            onClick={handleClickImage}
+          />
+        )}
+        <CardContent sx={{ pb: 0 }}>
+          <Typography variant="body2" color="text.secondary">
+            {contentText}
+          </Typography>
+
+          {like.length > 0 && (
+            <Box mt={1} sx={{ display: "flex" }}>
+              {like.length === 1 && (
+                <Typography key={like[0].id} fontSize={14}>
+                  {`${like[0].user.firstName} ${like[0].user.lastName} likes this post.`}
+                </Typography>
+              )}
+              {like.length == 2 && (
+                <Typography fontSize={14}>
+                  {`${like[0].user.firstName} ${like[0].user.lastName} and ${like[1].user.firstName} ${like[1].user.lastName} like this post.`}
+                </Typography>
+              )}
+              {like.length > 2 && (
+                <Typography fontSize={14}>
+                  {`${like[0].user.firstName} ${like[0].user.lastName}, ${
+                    like[1].user.firstName
+                  } ${like[1].user.lastName} and ${like.length - 2} others.`}
+                </Typography>
+              )}
+            </Box>
+          )}
+          <CardActions disableSpacing sx={{ p: 0 }}>
+            <IconButton aria-label="add to favorites" onClick={handleClickLike}>
+              <FavoriteIcon sx={{ color: isLiked ? "#e91e63" : "inherit" }} />
+            </IconButton>
+            <IconButton aria-label="share">
+              <ChatBubbleIcon />
+            </IconButton>
+          </CardActions>
+        </CardContent>
+
+        <Menu
+          sx={{ mt: "45px" }}
+          id="menu-appbar"
+          anchorEl={anchorElUser}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={Boolean(anchorElUser)}
+          onClose={handleCloseUserMenu}
+        >
+          <MenuItem onClick={handleDelete}>
+            <ListItemIcon>
+              <Delete fontSize="small" />
+              <Typography textAlign="center">Delete</Typography>
+            </ListItemIcon>
+          </MenuItem>
+        </Menu>
+
+        {/* {comment && comment?.length > 0 && (
+          <CommentList comments={comment}></CommentList>
+        )}
+        {comment?.length == 2 && (
+          <Typography
+            onClick={() => {
+              console.log("show more");
+            }}
+          >
+            show more
+          </Typography>
+        )} */}
+
+        <Box component={"form"} onSubmit={onSubmit}>
+          <TextField
+            fullWidth
+            sx={{ p: 1 }}
+            {...register("comment", { required: true })}
+            InputProps={{
+              endAdornment: (
+                <IconButton type="submit">
+                  <SendIcon />
+                </IconButton>
+              ),
+            }}
+          ></TextField>
+        </Box>
+      </Card>
+      {open && (
+        <ModalPost
+          id={id}
+          firstName={firstName}
+          lastName={lastName}
+          userId={userId}
+          imageName={imageName}
+          profileImage={profileImage}
+          position={position}
+          contentText={contentText}
+          like={like}
+          createdAt={createdAt}
+          open={open}
+          setOpen={setOpen}
         />
       )}
-      <CardContent sx={{ pb: 0 }}>
-        <Typography variant="body2" color="text.secondary">
-          {contentText}
-        </Typography>
-
-        {like.length > 0 && (
-          <Box mt={1} sx={{ display: "flex" }}>
-            {like.length === 1 && (
-              <Typography key={like[0].id} fontSize={14}>
-                {`${like[0].user.firstName} ${like[0].user.lastName} likes this post.`}
-              </Typography>
-            )}
-            {like.length == 2 && (
-              <Typography fontSize={14}>
-                {`${like[0].user.firstName} ${like[0].user.lastName} and ${like[1].user.firstName} ${like[1].user.lastName} like this post.`}
-              </Typography>
-            )}
-            {like.length > 2 && (
-              <Typography fontSize={14}>
-                {`${like[0].user.firstName} ${like[0].user.lastName}, ${
-                  like[1].user.firstName
-                } ${like[1].user.lastName} and ${like.length - 2} others.`}
-              </Typography>
-            )}
-          </Box>
-        )}
-        <CardActions disableSpacing sx={{ p: 0 }}>
-          <IconButton aria-label="add to favorites" onClick={handleClickLike}>
-            <FavoriteIcon sx={{ color: isLiked ? "#e91e63" : "inherit" }} />
-          </IconButton>
-          <IconButton aria-label="share">
-            <ChatBubbleIcon />
-          </IconButton>
-        </CardActions>
-      </CardContent>
-
-      <Menu
-        sx={{ mt: "45px" }}
-        id="menu-appbar"
-        anchorEl={anchorElUser}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={Boolean(anchorElUser)}
-        onClose={handleCloseUserMenu}
-      >
-        <MenuItem onClick={handleDelete}>
-          <ListItemIcon>
-            <Delete fontSize="small" />
-            <Typography textAlign="center">Delete</Typography>
-          </ListItemIcon>
-        </MenuItem>
-      </Menu>
-
-      {comment && comment?.length > 0 && (
-        <CommentList comments={comment}></CommentList>
-      )}
-      {comment?.length == 2 && (
-        <Typography
-          onClick={() => {
-            console.log("show more");
-          }}
-        >
-          show more
-        </Typography>
-      )}
-
-      <Box component={"form"} onSubmit={onSubmit}>
-        <TextField
-          fullWidth
-          sx={{ p: 1 }}
-          {...register("comment", { required: true })}
-          InputProps={{
-            endAdornment: (
-              <IconButton type="submit">
-                <SendIcon />
-              </IconButton>
-            ),
-          }}
-        ></TextField>
-      </Box>
-    </Card>
+    </>
   );
 };
 

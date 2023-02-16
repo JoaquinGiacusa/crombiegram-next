@@ -34,7 +34,7 @@ const useContactPost = () => {
   const route = useRouter();
   const id = route.query.id;
 
-  const { data, error, isLoading, mutate } = useSWR<ContactDataProps>(
+  const { data, error, isLoading } = useSWR<ContactDataProps>(
     `/post/contact/${id}`,
     fetcher
   );

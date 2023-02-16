@@ -10,22 +10,9 @@ import { fetcher } from "@/utils/fetcher";
 import { usePost } from "@/hooks/usePost";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/router";
+import { CommentsProps } from "@/hooks/usePostComments";
 
-type CommentListProps = {
-  comments: {
-    id: string;
-    comment: string;
-    userId: string;
-    postId: string;
-    createdAt: Date;
-    user: {
-      firstName: string;
-      lastName: string;
-      profileImage?: string;
-      position?: string;
-    };
-  }[];
-};
+type CommentListProps = { comments: CommentsProps[] };
 
 const CommentList: React.FC<CommentListProps> = ({ comments }) => {
   const { mutate } = usePost();
@@ -44,7 +31,8 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
   return (
     <>
       <List>
-        {comments.map((comment) => {
+        {comments.flat().map((comment) => {
+          console.log("SFSRVSRFSRSFRSRFRSFRSS", comment);
           return (
             <Box key={comment.id}>
               <Divider />
