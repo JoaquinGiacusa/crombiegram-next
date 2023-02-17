@@ -148,7 +148,7 @@ const Post: React.FC<PostPropsType> = ({
     }
   }, [like, data?.id]);
 
-  const handleClickImage = () => {
+  const handleOpenModal = () => {
     setOpen(true);
   };
 
@@ -191,7 +191,7 @@ const Post: React.FC<PostPropsType> = ({
               "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" + imageName
             }
             alt="foto"
-            onClick={handleClickImage}
+            onClick={handleOpenModal}
           />
         )}
         <CardContent sx={{ pb: 0 }}>
@@ -254,18 +254,17 @@ const Post: React.FC<PostPropsType> = ({
           </MenuItem>
         </Menu>
 
-        {/* {comment && comment?.length > 0 && (
+        {comment && comment?.length > 0 && (
           <CommentList comments={comment}></CommentList>
         )}
-        {comment?.length == 2 && (
+        {comment?.length === 3 && (
           <Typography
-            onClick={() => {
-              console.log("show more");
-            }}
+            sx={{ fontSize: 16, cursor: "pointer" }}
+            onClick={handleOpenModal}
           >
-            show more
+            Show more comments
           </Typography>
-        )} */}
+        )}
 
         <Box component={"form"} onSubmit={onSubmit}>
           <TextField
