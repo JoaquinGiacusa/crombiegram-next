@@ -34,7 +34,7 @@ const ModalPost: React.FC<any> = ({
   setOpen,
 }) => {
   const router = useRouter();
-  const { data } = usePostComments(id);
+  const { data, mutate } = usePostComments(id);
   const {
     register,
     handleSubmit,
@@ -54,15 +54,13 @@ const ModalPost: React.FC<any> = ({
       body: JSON.stringify(body),
       credentials: "include",
     }).then((data) => {
-      //mutate();
+      mutate();
     });
   });
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-
-  console.log("Comment", data);
   return (
     <Modal
       sx={{
@@ -90,8 +88,23 @@ const ModalPost: React.FC<any> = ({
             />
           )}
         </Box>
-        <Box>
-          <Card>
+        <Box
+          sx={{
+            height: "700px",
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "#ffff",
+            width: !imageName ? "700px" : "auto",
+          }}
+        >
+          <Card
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              //justifyContent: "space-between",
+            }}
+          >
             <CardHeader
               avatar={
                 <Avatar
@@ -110,31 +123,25 @@ const ModalPost: React.FC<any> = ({
               onClick={() => router.push(`/contact/${id}`)}
               sx={{ cursor: "pointer" }}
             />
-            {data && data?.length > 0 && <CommentList comments={data} />}
-            {data?.length == 2 && (
-              <Typography
-                onClick={() => {
-                  console.log("show more");
-                }}
-              >
-                show more
-              </Typography>
-            )}
-            <Box component={"form"} onSubmit={onSubmit}>
-              <TextField
-                fullWidth
-                sx={{ p: 1 }}
-                {...register("comment", { required: true })}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton type="submit">
-                      <SendIcon />
-                    </IconButton>
-                  ),
-                }}
-              ></TextField>
-            </Box>
+            <Typography variant="body2" color="text.secondary" pl={2}>
+              {contentText}
+            </Typography>
+            {data && data?.flat().length > 0 && <CommentList comments={data} />}
           </Card>
+          <Box component={"form"} onSubmit={onSubmit}>
+            <TextField
+              fullWidth
+              sx={{ p: 1 }}
+              {...register("comment", { required: true })}
+              InputProps={{
+                endAdornment: (
+                  <IconButton type="submit">
+                    <SendIcon />
+                  </IconButton>
+                ),
+              }}
+            ></TextField>
+          </Box>
         </Box>
       </Stack>
     </Modal>

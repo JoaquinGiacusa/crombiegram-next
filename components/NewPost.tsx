@@ -94,7 +94,7 @@ const NewPost: React.FC = () => {
         }}
         open={open}
         onClose={(e) => {
-          setOpen(false), reset();
+          setOpen(false), reset(), setFile(null);
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -152,9 +152,6 @@ const NewPost: React.FC = () => {
             </Box>
           )}
           <Stack direction="row" gap={1} mb={2}>
-            <IconButton>
-              <EmojiEmotions color="primary" />
-            </IconButton>
             <input
               style={{ display: "none" }}
               type="file"
@@ -164,10 +161,6 @@ const NewPost: React.FC = () => {
 
             <IconButton onClick={() => inputFile.current!.click()}>
               <ImageIcon color="secondary" />
-            </IconButton>
-
-            <IconButton>
-              <PersonAdd color="error" />
             </IconButton>
           </Stack>
           <Box
@@ -181,9 +174,9 @@ const NewPost: React.FC = () => {
             <Button type="submit" variant="outlined">
               Crear
             </Button>
-            <Button variant="outlined">
+            {/* <Button variant="outlined">
               <DateRange />
-            </Button>
+            </Button> */}
           </Box>
         </Box>
       </Modal>

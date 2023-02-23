@@ -179,7 +179,7 @@ const Post: React.FC<PostPropsType> = ({
           subheader={
             <SubHeaderPost createdAt={createdAt} position={position} />
           }
-          onClick={() => router.push(`/contact/${id}`)}
+          onClick={() => router.push(`/contact/${userId}`)}
           sx={{ cursor: "pointer" }}
         />
 
@@ -195,7 +195,11 @@ const Post: React.FC<PostPropsType> = ({
           />
         )}
         <CardContent sx={{ pb: 0 }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            onClick={handleOpenModal}
+          >
             {contentText}
           </Typography>
 
@@ -255,7 +259,9 @@ const Post: React.FC<PostPropsType> = ({
         </Menu>
 
         {comment && comment?.length > 0 && (
-          <CommentList comments={comment}></CommentList>
+          <CommentList
+            comments={comment.flat().splice(comment.length - 2)}
+          ></CommentList>
         )}
         {comment?.length === 3 && (
           <Typography
