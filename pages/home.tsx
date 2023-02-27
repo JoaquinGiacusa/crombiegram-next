@@ -10,18 +10,12 @@ import { getCookie } from "cookies-next";
 import LoadingPost from "@/components/LoadingPost";
 import { fetcher } from "@/utils/fetcher";
 import { SWRConfiguration } from "swr";
-import InfiniteScroll from "react-infinite-scroll-component";
 import Button from "@mui/material/Button";
 
 function Home({ fallback }: { fallback: SWRConfiguration }) {
   const { data, error, isLoading, size, setSize } = usePost();
-  //@ts-ignore
-  const dataFlated = data?.flat();
-  console.log("sad", dataFlated);
+  console.log(data);
 
-  const isReachedEnd = data && data[data.length - 1]?.lenght < 5;
-
-  //useEffect(()=>)
   return (
     <MainLayout fallback={fallback}>
       <Box>

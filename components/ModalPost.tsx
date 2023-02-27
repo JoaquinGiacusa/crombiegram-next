@@ -34,7 +34,7 @@ const ModalPost: React.FC<any> = ({
   setOpen,
 }) => {
   const router = useRouter();
-  const { data, mutate } = usePostComments(id);
+  // const { data, mutate } = usePostComments(id);
   const {
     register,
     handleSubmit,
@@ -53,9 +53,7 @@ const ModalPost: React.FC<any> = ({
       method: "POST",
       body: JSON.stringify(body),
       credentials: "include",
-    }).then((data) => {
-      mutate();
-    });
+    }).then((data) => {});
   });
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -93,7 +91,7 @@ const ModalPost: React.FC<any> = ({
             height: "700px",
             display: "flex",
             flexDirection: "column",
-            backgroundColor: "#ffff",
+            // backgroundColor: "#ffff",
             width: !imageName ? "700px" : "auto",
           }}
         >
@@ -102,46 +100,48 @@ const ModalPost: React.FC<any> = ({
               height: "100%",
               display: "flex",
               flexDirection: "column",
-              //justifyContent: "space-between",
+              justifyContent: "space-between",
             }}
           >
-            <CardHeader
-              avatar={
-                <Avatar
-                  src={
-                    profileImage
-                      ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
-                      : ""
-                  }
-                  sx={{ width: 30, height: 30 }}
-                />
-              }
-              title={firstName + " " + lastName}
-              subheader={
-                <SubHeaderPost createdAt={createdAt} position={position} />
-              }
-              onClick={() => router.push(`/contact/${id}`)}
-              sx={{ cursor: "pointer" }}
-            />
-            <Typography variant="body2" color="text.secondary" pl={2}>
-              {contentText}
-            </Typography>
-            {data && data?.flat().length > 0 && <CommentList comments={data} />}
+            <Box>
+              <CardHeader
+                avatar={
+                  <Avatar
+                    src={
+                      profileImage
+                        ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${profileImage}`
+                        : ""
+                    }
+                    sx={{ width: 30, height: 30 }}
+                  />
+                }
+                title={firstName + " " + lastName}
+                subheader={
+                  <SubHeaderPost createdAt={createdAt} position={position} />
+                }
+                onClick={() => router.push(`/contact/${id}`)}
+                sx={{ cursor: "pointer" }}
+              />
+              <Typography variant="body2" color="text.secondary" pl={2}>
+                {contentText}
+              </Typography>
+              <CommentList postId={id} />
+            </Box>
+            <Box component={"form"} onSubmit={onSubmit}>
+              <TextField
+                fullWidth
+                sx={{ p: 1 }}
+                {...register("comment", { required: true })}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton type="submit">
+                      <SendIcon />
+                    </IconButton>
+                  ),
+                }}
+              ></TextField>
+            </Box>
           </Card>
-          <Box component={"form"} onSubmit={onSubmit}>
-            <TextField
-              fullWidth
-              sx={{ p: 1 }}
-              {...register("comment", { required: true })}
-              InputProps={{
-                endAdornment: (
-                  <IconButton type="submit">
-                    <SendIcon />
-                  </IconButton>
-                ),
-              }}
-            ></TextField>
-          </Box>
         </Box>
       </Stack>
     </Modal>

@@ -104,6 +104,7 @@ const NewPost: React.FC = () => {
           onSubmit={onSubmit}
           bgcolor={"background.default"}
           color={"text.primary"}
+          minWidth={400}
           p={3}
           borderRadius={5}
         >
@@ -132,8 +133,9 @@ const NewPost: React.FC = () => {
             sx={{ width: "100%" }}
             id="standard-multiline-static"
             multiline
-            minRows={3}
-            maxRows={7}
+            minRows={5}
+            maxRows={10}
+            fullWidth
             placeholder="What's on your mind?"
             variant="standard"
           />
