@@ -46,10 +46,10 @@ export const usePost = () => {
     pageIndex = pageIndex + 1;
     return `/post?page=${pageIndex}&size=5`;
   };
-
   const { data, error, isLoading, mutate, size, setSize } = useSWRInfinite(
     getKey,
     fetcher
   );
+  console.log("SIZE", size);
   return { data, error, isLoading, mutate, size, setSize };
 };
