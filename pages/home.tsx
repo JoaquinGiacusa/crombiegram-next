@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
@@ -10,15 +10,20 @@ import { getCookie } from "cookies-next";
 import LoadingPost from "@/components/LoadingPost";
 import { fetcher } from "@/utils/fetcher";
 import { SWRConfiguration } from "swr";
-import InfiniteScroll from "react-infinite-scroll-component";
 import Button from "@mui/material/Button";
 
 function Home({ fallback }: { fallback: SWRConfiguration }) {
-  const { data, error, isLoading, size, setSize } = usePost();
-  //@ts-ignore
-  const isReachedEnd = data && data[data.length - 1]?.lenght < 5;
-  console.log("FINAL", isReachedEnd);
+  const { data, error, isLoading, offset, setOffset } = usePost();
+  const [postsToShow, setPostsToShow] = useState([]);
+  const [prevData, setPrevData] = useState([]);
 
+  // useEffect(() => {
+  //   setPrevData(data);
+  //   if (prevData != [undefined]) {
+  //     setPostsToShow([...prevData, data]);
+  //   }
+  // }, [data]);
+  // console.log("xd", postsToShow);
   return (
     <MainLayout fallback={fallback}>
       <Box>
@@ -35,9 +40,9 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
         >
           {isLoading && <LoadingPost />}
 
-          <InfiniteScroll
+          {/* <InfiniteScroll
             dataLength={data?.flat().length ?? 0}
-            next={() => setSize(size + 1)}
+            next={() => setOffset(offset + 1)}
             hasMore={!isReachedEnd}
             loader={<h4>Loading...</h4>}
             endMessage={
@@ -45,29 +50,29 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
                 <b>You have seen it all</b>
               </p>
             }
-          >
-            {data &&
-              data?.flat().map((p) => {
-                return (
-                  <Post
-                    key={p.id}
-                    id={p.id}
-                    contentText={p.contentText}
-                    imageName={p.imageName}
-                    firstName={p.user.firstName}
-                    lastName={p.user.lastName}
-                    profileImage={p.user.profileImage}
-                    createdAt={p.createdAt}
-                    position={p.user.position}
-                    comment={p.comment}
-                    like={p.like}
-                    userId={p.userId}
-                  ></Post>
-                );
-              })}
-          </InfiniteScroll>
+          > */}
+          {data &&
+            data?.map((p) => {
+              return (
+                <Post
+                  key={p.id}
+                  id={p.id}
+                  contentText={p.contentText}
+                  imageName={p.imageName}
+                  firstName={p.user.firstName}
+                  lastName={p.user.lastName}
+                  profileImage={p.user.profileImage}
+                  createdAt={p.createdAt}
+                  position={p.user.position}
+                  comment={p.comment}
+                  like={p.like}
+                  userId={p.userId}
+                ></Post>
+              );
+            })}
+          {/* </InfiniteScroll> */}
           {!data && !isLoading && "No posts."}
-          {/* <Button onClick={() => setSize(size + 1)}>Show more</Button> */}
+          <Button onClick={() => setOffset(offset + 1)}>Show more</Button>
         </Box>
       </Box>
     </MainLayout>

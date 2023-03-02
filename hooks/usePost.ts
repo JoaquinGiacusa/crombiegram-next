@@ -1,6 +1,7 @@
 import { fetcher } from "utils/fetcher";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
+import { useState } from "react";
 
 type PostProps = {
   totalPost: number;
@@ -41,15 +42,25 @@ type PostProps = {
   }[];
 };
 
+// export const usePost = () => {
+//   const [offset, setOffset] = useState(1);
+
+//   const { data, error, isLoading, mutate } = useSWRInfinite(
+//     () => `/post?page=${offset}&size=5`,
+//     fetcher
+//   );
+//   const finalData = data?.flat();
+
+//   return { finalData, error, isLoading, mutate, offset, setOffset };
+// };
+
 export const usePost = () => {
-  const getKey = (pageIndex: number, previousPageData: any) => {
-    pageIndex = pageIndex + 1;
-    return `/post?page=${pageIndex}&size=5`;
-  };
-  const { data, error, isLoading, mutate, size, setSize } = useSWRInfinite(
-    getKey,
+  const [offset, setOffset] = useState(1);
+
+  const { data, error, isLoading, mutate } = useSWR(
+    `/post?page=${offset}&size=5`,
     fetcher
   );
-  console.log("SIZE", size);
-  return { data, error, isLoading, mutate, size, setSize };
+
+  return { data, error, isLoading, mutate, offset, setOffset };
 };
