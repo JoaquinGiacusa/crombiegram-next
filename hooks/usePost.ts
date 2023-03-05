@@ -1,11 +1,10 @@
 import { fetcher } from "utils/fetcher";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-type PostProps = {
-  totalPost: number;
-  totalPages: number;
+export type PostProps = {
+  totalCount: number;
   postList: {
     contentText: string;
     createdAt: Date;
@@ -38,29 +37,43 @@ type PostProps = {
         profileImage?: string;
         position?: string;
       };
-    }[];
+    };
   }[];
 };
 
 // export const usePost = () => {
 //   const [offset, setOffset] = useState(1);
 
-//   const { data, error, isLoading, mutate } = useSWRInfinite(
-//     () => `/post?page=${offset}&size=5`,
+//   const { data, error, isLoading, mutate } = useSWR<PostProps>(
+//     `/post?page=${offset}&size=5`,
 //     fetcher
 //   );
-//   const finalData = data?.flat();
 
-//   return { finalData, error, isLoading, mutate, offset, setOffset };
+//   return { data, error, isLoading, mutate, offset, setOffset };
 // };
 
 export const usePost = () => {
+  const [post, setPost] = useState([]);
   const [offset, setOffset] = useState(1);
+  const [totalPost, setTotalPost] = useState<number>();
 
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR<PostProps>(
     `/post?page=${offset}&size=5`,
-    fetcher
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
+  useEffect(() => {
+    if (data != undefined && !isLoading) {
+      setTotalPost(data!.totalCount);
+      //@ts-ignore
+      setPost([...post, ...data.postList]);
+    } else {
+    }
+  }, [data]);
 
-  return { data, error, isLoading, mutate, offset, setOffset };
+  return { post, offset, setOffset, isLoading, totalPost };
 };
