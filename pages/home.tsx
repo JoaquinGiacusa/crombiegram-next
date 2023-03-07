@@ -1,20 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
 import MainLayout from "@/components/layouts/mainLayout";
 import { GetServerSideProps } from "next";
-import { usePost } from "@/hooks/usePost";
+import { PostProps, usePost } from "@/hooks/usePost";
 import revalidateToken from "@/utils/revalidateAuth";
 import { getCookie } from "cookies-next";
 import LoadingPost from "@/components/LoadingPost";
 import { fetcher } from "@/utils/fetcher";
 import { SWRConfiguration } from "swr";
 import Button from "@mui/material/Button";
+import useOnScreen from "@/hooks/useOneScreen";
 
 function Home({ fallback }: { fallback: SWRConfiguration }) {
-  const { data, error, isLoading, size, setSize } = usePost();
-  console.log(data);
+  const { post, offset, setOffset, isLoading, totalPost } = usePost();
+  const ref = useRef<HTMLDivElement>(null);
+  const isVisible = useOnScreen(ref);
+
+  useEffect(() => {
+    if (isVisible && !isLoading) {
+      setOffset(offset + 1);
+    }
+  }, [isVisible]);
 
   return (
     <MainLayout fallback={fallback}>
@@ -32,20 +40,8 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
         >
           {isLoading && <LoadingPost />}
 
-          {/* <InfiniteScroll
-            dataLength={data?.length ?? 0}
-            next={() => setSize(size + 1)}
-            hasMore={!isReachedEnd}
-            loader={<h4>Loading...</h4>}
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
-          > */}
-          {data &&
-            //data?.postList.map((p) => {
-            data?.flat().map((p) => {
+          {post &&
+            post.map((p: any) => {
               return (
                 <Post
                   key={p.id}
@@ -63,9 +59,8 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
                 ></Post>
               );
             })}
-          {/* </InfiniteScroll> */}
-          {!data && !isLoading && "No posts."}
-          <Button onClick={() => setSize(size + 1)}>Show more</Button>
+          {totalPost !== post.length && <div ref={ref}></div>}
+          {!post && !isLoading && "No posts."}
         </Box>
       </Box>
     </MainLayout>
