@@ -13,15 +13,25 @@ import SubHeaderPost from "./SubHeaderPost";
 import Image from "next/image";
 import { fetcher } from "@/utils/fetcher";
 import { usePost } from "@/hooks/usePost";
-import { ListItemIcon, Menu, MenuItem, TextField } from "@mui/material";
+import {
+  Divider,
+  ListItem,
+  ListItemAvatar,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import CommentList from "./CommentList";
+
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/system/Box";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/router";
 import ModalPost from "./ModalPost";
+import moment from "moment";
 
 export type PostPropsType = {
   id: string;
@@ -258,11 +268,49 @@ const Post: React.FC<PostPropsType> = ({
           </MenuItem>
         </Menu>
 
-        {comment && comment?.length > 0 && (
-          <CommentList
-            comments={comment.flat().splice(comment.length - 2)}
-          ></CommentList>
-        )}
+        {comment &&
+          comment?.length > 0 &&
+          [comment[0]].map((c) => {
+            return (
+              <Box key={c.id}>
+                <Divider />
+                <ListItem key={c.id} alignItems="flex-start">
+                  <ListItemAvatar
+                    onClick={() => router.push(`/contact/${c.userId}`)}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <Avatar
+                      alt="profile-avatar"
+                      src={
+                        c.user.profileImage
+                          ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${c.user.profileImage}`
+                          : ""
+                      }
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    sx={{ margin: 0 }}
+                    primary={
+                      <>
+                        <Typography sx={{ fontSize: 18 }} display="inline">
+                          {`${c.user.firstName} ${c.user.lastName}`}
+                          {" - "}
+                        </Typography>
+                        <Typography
+                          sx={{ fontSize: 14, color: "gray" }}
+                          display="inline"
+                        >
+                          {moment(c.createdAt).fromNow()}
+                        </Typography>
+                      </>
+                    }
+                    secondary={c.comment}
+                  />
+                </ListItem>
+              </Box>
+            );
+          })}
+
         {comment?.length === 3 && (
           <Typography
             sx={{ fontSize: 16, cursor: "pointer" }}

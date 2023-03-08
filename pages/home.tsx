@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
@@ -60,6 +60,7 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
               );
             })}
           {totalPost !== post.length && <div ref={ref}></div>}
+          <Button onClick={() => setOffset(offset + 1)}>Show more</Button>
           {!post && !isLoading && "No posts."}
         </Box>
       </Box>

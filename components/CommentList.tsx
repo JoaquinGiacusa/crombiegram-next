@@ -21,14 +21,12 @@ import { useRouter } from "next/router";
 import { CommentsProps, usePostComments } from "@/hooks/usePostComments";
 import { useState } from "react";
 
-type CommentListProps = { comments: CommentsProps[] };
-
-const CommentList: React.FC<CommentListProps> = ({ comments }) => {
-  const { mutate } = usePost();
+const CommentList = ({ postId }: { postId: string }) => {
   const { data } = useUser();
   const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState(true);
   const [alert, setAlert] = useState(false);
+  const { data: comments, mutate, size, setSize } = usePostComments(postId);
 
   const router = useRouter();
   const handleDeleteComment = async (commentId: string) => {
@@ -116,8 +114,8 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
             );
           })}
       </List>
-      {comments && comments.flat().length > 5 && (
-        <Button onClick={() => console.log("show more")}>Show more</Button>
+      {comments && comments.flat().length == 6 && (
+        <Button onClick={() => setSize(size + 1)}>Show more</Button>
       )}
     </>
   );

@@ -75,5 +75,5 @@ export const usePost = () => {
     }
   }, [data]);
 
-  return { post, offset, setOffset, isLoading, totalPost };
+  return { post, offset, setOffset, isLoading, totalPost, mutate };
 };
