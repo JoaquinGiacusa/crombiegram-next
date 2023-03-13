@@ -63,7 +63,6 @@ function Login() {
         setCookie("authExpires", payload.expires, {
           maxAge: 60 * 60 * 24 * 7,
         });
-        console.log(payload);
         localStorage.setItem("authToken", payload.authCookie);
 
         setSeverity(true);

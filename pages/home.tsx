@@ -12,22 +12,33 @@ import { fetcher } from "@/utils/fetcher";
 import { SWRConfiguration } from "swr";
 import Button from "@mui/material/Button";
 import useOnScreen from "@/hooks/useOneScreen";
+import { Typography } from "@mui/material";
 
 function Home({ fallback }: { fallback: SWRConfiguration }) {
-  const { post, offset, setOffset, isLoading, totalPost } = usePost();
+  const {
+    data,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    size,
+    setSize,
+    moreToCharge,
+  } = usePost();
+
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
 
   useEffect(() => {
-    if (isVisible && !isLoading) {
-      setOffset(offset + 1);
+    if (!isLoading && !isValidating) {
+      setSize(size + 1);
     }
   }, [isVisible]);
 
   return (
     <MainLayout fallback={fallback}>
       <Box>
-        <NewPost />
+        <NewPost refresh={() => mutate()} />
         <Box
           sx={{
             display: "flex",
@@ -39,10 +50,12 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
           }}
         >
           {isLoading && <LoadingPost />}
-
-          {post &&
-            post.map((p: any) => {
-              return (
+          {data && data![0].length == 0 && (
+            <Typography>No pots to show.</Typography>
+          )}
+          {data &&
+            data!.map((posts, index) => {
+              return posts.map((p: any) => (
                 <Post
                   key={p.id}
                   id={p.id}
@@ -56,12 +69,12 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
                   comment={p.comment}
                   like={p.like}
                   userId={p.userId}
-                ></Post>
-              );
+                  refresh={() => mutate()}
+                />
+              ));
             })}
-          {totalPost !== post.length && <div ref={ref}></div>}
-          <Button onClick={() => setOffset(offset + 1)}>Show more</Button>
-          {!post && !isLoading && "No posts."}
+
+          {moreToCharge && <div style={{ paddingBottom: "30px" }} ref={ref} />}
         </Box>
       </Box>
     </MainLayout>

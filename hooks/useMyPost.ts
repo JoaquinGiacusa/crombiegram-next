@@ -1,6 +1,6 @@
 import { fetcher } from "@/utils/fetcher";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 
 export type useMyPostType = {
   id: string;
@@ -36,14 +36,29 @@ export type useMyPostType = {
   }[];
 }[];
 
-const useMyPost = () => {
+export const useMyPost = () => {
   const {
     data: allMyPost,
     error: errorMyPost,
     isLoading: isLoadingMyPost,
     mutate,
-  } = useSWR<useMyPostType>(`/post/me`, fetcher);
+    size,
+    setSize,
+  } = useSWRInfinite<useMyPostType>(
+    (pageIndex) => `/post/me?page=${pageIndex}&size=4`,
+    fetcher
+  );
+  const moreToCharge = size * 4 === allMyPost?.flat().length;
 
-  return { allMyPost, errorMyPost, isLoadingMyPost };
+  return {
+    allMyPost,
+    errorMyPost,
+    isLoadingMyPost,
+    mutate,
+    size,
+    setSize,
+    moreToCharge,
+  };
 };
+
 export default useMyPost;

@@ -62,6 +62,7 @@ export type PostPropsType = {
       position?: string;
     };
   }[];
+  refresh: () => void;
 };
 
 const Post: React.FC<PostPropsType> = ({
@@ -76,8 +77,8 @@ const Post: React.FC<PostPropsType> = ({
   position,
   comment,
   like,
+  refresh,
 }) => {
-  const { mutate } = usePost();
   const { data } = useUser();
   const [isLiked, setIsLiked] = useState<boolean>();
   const [open, setOpen] = useState(false);
@@ -98,7 +99,7 @@ const Post: React.FC<PostPropsType> = ({
       method: "DELETE",
     });
     if (jsonResponse) {
-      mutate();
+      refresh();
     }
   };
 
@@ -119,7 +120,7 @@ const Post: React.FC<PostPropsType> = ({
       body: JSON.stringify(body),
       credentials: "include",
     }).then((data) => {
-      mutate();
+      refresh();
     });
   });
 
@@ -134,7 +135,7 @@ const Post: React.FC<PostPropsType> = ({
       });
 
       if (res.like) {
-        mutate();
+        refresh();
       }
     }
 
@@ -147,7 +148,7 @@ const Post: React.FC<PostPropsType> = ({
         }),
       });
       if (res.message == "like has been destroyed") {
-        mutate();
+        refresh();
       }
     }
   };
@@ -185,12 +186,21 @@ const Post: React.FC<PostPropsType> = ({
               )}
             </>
           }
-          title={firstName + " " + lastName}
+          title={
+            <Typography
+              sx={{ cursor: "pointer", display: "inline-block" }}
+              onClick={() =>
+                router.push(
+                  data!.id == userId ? `/profile` : `/contact/${userId}`
+                )
+              }
+            >
+              {firstName + " " + lastName}
+            </Typography>
+          }
           subheader={
             <SubHeaderPost createdAt={createdAt} position={position} />
           }
-          onClick={() => router.push(`/contact/${userId}`)}
-          sx={{ cursor: "pointer" }}
         />
 
         {imageName && (
@@ -206,6 +216,7 @@ const Post: React.FC<PostPropsType> = ({
         )}
         <CardContent sx={{ pb: 0 }}>
           <Typography
+            sx={{ pb: 2 }}
             variant="body2"
             color="text.secondary"
             onClick={handleOpenModal}
@@ -270,7 +281,7 @@ const Post: React.FC<PostPropsType> = ({
 
         {comment &&
           comment?.length > 0 &&
-          [comment[0]].map((c) => {
+          comment.slice(-2).map((c) => {
             return (
               <Box key={c.id}>
                 <Divider />
@@ -293,8 +304,7 @@ const Post: React.FC<PostPropsType> = ({
                     primary={
                       <>
                         <Typography sx={{ fontSize: 18 }} display="inline">
-                          {`${c.user.firstName} ${c.user.lastName}`}
-                          {" - "}
+                          {`${c.user.firstName} ${c.user.lastName}`}&nbsp;&nbsp;
                         </Typography>
                         <Typography
                           sx={{ fontSize: 14, color: "gray" }}
@@ -313,7 +323,13 @@ const Post: React.FC<PostPropsType> = ({
 
         {comment?.length === 3 && (
           <Typography
-            sx={{ fontSize: 16, cursor: "pointer" }}
+            sx={{
+              fontSize: 14,
+              cursor: "pointer",
+              ml: 2,
+              mt: 1,
+              color: "#a09e9e",
+            }}
             onClick={handleOpenModal}
           >
             Show more comments

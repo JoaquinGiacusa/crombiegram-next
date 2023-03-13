@@ -17,14 +17,16 @@ import LoadingProfile from "@/components/LoadingProfile";
 import { fetcher } from "@/utils/fetcher";
 import useMyPost from "@/hooks/useMyPost";
 import { SWRConfiguration } from "swr";
+import { Button } from "@mui/material";
 
 const Profile = ({ fallback }: { fallback: SWRConfiguration }) => {
   const { data, isLoading, error } = useUser();
-  const { allMyPost, isLoadingMyPost } = useMyPost();
+  const { allMyPost, isLoadingMyPost, mutate, size, setSize, moreToCharge } =
+    useMyPost();
 
   return (
     <MainLayout fallback={fallback}>
-      <NewPost />
+      <NewPost refresh={() => mutate()} />
 
       <Box
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
@@ -81,26 +83,37 @@ const Profile = ({ fallback }: { fallback: SWRConfiguration }) => {
         {/* {isLoading && <LoadingProfile />} */}
 
         {allMyPost &&
-          allMyPost.map((p) => {
-            return (
-              <Post
-                key={p.id}
-                id={p.id}
-                contentText={p.contentText}
-                imageName={p.imageName}
-                firstName={p.user.firstName}
-                lastName={p.user.lastName}
-                profileImage={p.user.profileImage}
-                createdAt={p.createdAt}
-                position={p.user.position}
-                comment={p.comment}
-                like={p.like}
-                userId={p.userId}
-              />
-            );
+          allMyPost.map((posts) => {
+            return posts.map((p) => {
+              return (
+                <Post
+                  key={p.id}
+                  id={p.id}
+                  contentText={p.contentText}
+                  imageName={p.imageName}
+                  firstName={p.user.firstName}
+                  lastName={p.user.lastName}
+                  profileImage={p.user.profileImage}
+                  createdAt={p.createdAt}
+                  position={p.user.position}
+                  comment={p.comment}
+                  like={p.like}
+                  userId={p.userId}
+                  refresh={() => mutate()}
+                />
+              );
+            });
           })}
 
         {!allMyPost && !isLoadingMyPost && "No posts."}
+        {moreToCharge && (
+          <Button
+            sx={{ margin: "0 auto", mb: 3 }}
+            onClick={() => setSize(size + 1)}
+          >
+            Load more
+          </Button>
+        )}
       </Stack>
     </MainLayout>
   );

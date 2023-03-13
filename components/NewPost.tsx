@@ -20,7 +20,11 @@ import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import { usePost } from "@/hooks/usePost";
 
-const NewPost: React.FC = () => {
+type NewPostType = {
+  refresh: () => void;
+};
+
+const NewPost: React.FC<NewPostType> = ({ refresh }) => {
   const [open, setOpen] = useState(false);
 
   const [file, setFile] = useState<File | null>();
@@ -28,7 +32,6 @@ const NewPost: React.FC = () => {
   const inputFile = useRef<any>(null);
 
   const { data, error, isLoading } = useUser();
-  const { mutate } = usePost();
 
   const {
     register,
@@ -63,7 +66,7 @@ const NewPost: React.FC = () => {
     );
 
     if (jsonResponse) {
-      mutate();
+      refresh();
     }
 
     reset();
@@ -77,8 +80,8 @@ const NewPost: React.FC = () => {
         title="Crear Post"
         sx={{
           position: "fixed",
-          bottom: 30,
-          right: { xs: "calc(50% - 25px)", md: 30 },
+          bottom: 60,
+          right: 40,
           zIndex: 1111,
         }}
       >
@@ -105,6 +108,7 @@ const NewPost: React.FC = () => {
           bgcolor={"background.default"}
           color={"text.primary"}
           p={3}
+          minWidth={400}
           borderRadius={5}
         >
           <Box
@@ -138,18 +142,32 @@ const NewPost: React.FC = () => {
             variant="standard"
           />
           {file && (
-            <Box>
+            <Stack
+              sx={{ position: "relative", right: 1 }}
+              flexDirection={"column"}
+              alignItems="center"
+            >
               <Image
                 src={URL.createObjectURL(
                   new Blob([file], { type: "application/zip" })
                 )}
                 alt=""
-                width={150}
-                height={120}
+                width={350}
+                height={200}
                 style={{ marginTop: "15px" }}
               />
-              <Button onClick={() => setFile(null)}>x</Button>
-            </Box>
+              <Typography
+                sx={{
+                  position: "absolute",
+                  right: 10,
+                  top: 10,
+                  cursor: "pointer",
+                }}
+                onClick={() => setFile(null)}
+              >
+                x
+              </Typography>
+            </Stack>
           )}
           <Stack direction="row" gap={1} mb={2}>
             <input

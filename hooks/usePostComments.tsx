@@ -14,14 +14,15 @@ export type CommentsProps = {
     profileImage?: string;
     position?: string;
   };
-};
+}[];
 
 export const usePostComments = (postId: string) => {
-  const getKey = (pageIndex: number, previousPageData: any) => {
-    pageIndex = pageIndex + 1;
-    return `/comment/post/${postId}?page=${pageIndex}&size=6`;
-  };
   const { data, error, isLoading, mutate, size, setSize } =
-    useSWRInfinite<CommentsProps>(getKey, fetcher);
-  return { data, error, isLoading, mutate, size, setSize };
+    useSWRInfinite<CommentsProps>(
+      (pageIndex) => `/comment/post/${postId}?page=${pageIndex}&size=6`,
+      fetcher
+    );
+  const moreToCharge = size * 6 === data?.flat().length;
+
+  return { data, error, isLoading, mutate, size, setSize, moreToCharge };
 };

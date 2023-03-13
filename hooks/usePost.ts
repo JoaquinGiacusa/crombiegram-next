@@ -1,79 +1,61 @@
 import { fetcher } from "utils/fetcher";
-import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
-import { useEffect, useState } from "react";
 
 export type PostProps = {
-  totalCount: number;
-  postList: {
-    contentText: string;
-    createdAt: Date;
+  contentText: string;
+  createdAt: Date;
+  id: string;
+  imageName: string;
+  updatedAt: string;
+  userId: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+    position?: string;
+  };
+
+  like: {
     id: string;
-    imageName: string;
-    updatedAt: string;
+    postId: string;
+    user: { firstName: string; lastName: string; profileImage: string };
     userId: string;
+  }[];
+  comment: {
+    id: string;
+    comment: string;
+    userId: string;
+    postId: string;
+    createdAt: Date;
     user: {
       firstName: string;
       lastName: string;
-      profileImage: string;
+      profileImage?: string;
       position?: string;
     };
-
-    like: {
-      id: string;
-      postId: string;
-      user: { firstName: string; lastName: string; profileImage: string };
-      userId: string;
-    }[];
-    comment: {
-      id: string;
-      comment: string;
-      userId: string;
-      postId: string;
-      createdAt: Date;
-      user: {
-        firstName: string;
-        lastName: string;
-        profileImage?: string;
-        position?: string;
-      };
-    };
   }[];
+}[];
+
+const getKey = (pageIndex: number) => {
+  return `/post?size=5&page=${pageIndex}`;
 };
 
-// export const usePost = () => {
-//   const [offset, setOffset] = useState(1);
+const usePost = () => {
+  const { data, error, isLoading, isValidating, mutate, size, setSize } =
+    useSWRInfinite<PostProps>(getKey, fetcher);
 
-//   const { data, error, isLoading, mutate } = useSWR<PostProps>(
-//     `/post?page=${offset}&size=5`,
-//     fetcher
-//   );
+  const moreToCharge = size * 5 === data?.flat().length;
 
-//   return { data, error, isLoading, mutate, offset, setOffset };
-// };
-
-export const usePost = () => {
-  const [post, setPost] = useState([]);
-  const [offset, setOffset] = useState(1);
-  const [totalPost, setTotalPost] = useState<number>();
-
-  const { data, error, isLoading, mutate } = useSWR<PostProps>(
-    `/post?page=${offset}&size=5`,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
-  useEffect(() => {
-    if (data != undefined && !isLoading) {
-      setTotalPost(data!.totalCount);
-      //@ts-ignore
-      setPost([...post, ...data.postList]);
-    } else {
-    }
-  }, [data]);
-
-  return { post, offset, setOffset, isLoading, totalPost, mutate };
+  return {
+    data,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    size,
+    setSize,
+    moreToCharge,
+  };
 };
+
+export { usePost };

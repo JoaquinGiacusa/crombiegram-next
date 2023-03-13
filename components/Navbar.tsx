@@ -40,7 +40,7 @@ function ResponsiveAppBar() {
   };
 
   const { data, error, isLoading } = useUser();
-  // console.log(data);
+
   const Search = styled("div")(({ theme }) => ({
     position: "relative",
     borderRadius: theme.shape.borderRadius,
@@ -48,14 +48,9 @@ function ResponsiveAppBar() {
     "&:hover": {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-    // marginRight: theme.spacing(2),
     marginLeft: theme.spacing(2),
     width: "100%",
     maxWidth: "800px",
-    // [theme.breakpoints.up("sm")]: {
-    //   marginLeft: theme.spacing(3),
-    //   width: "auto",
-    // },
   }));
 
   const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -72,7 +67,6 @@ function ResponsiveAppBar() {
     color: "inherit",
     "& .MuiInputBase-input": {
       padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create("width"),
       width: "100%",
@@ -137,24 +131,10 @@ function ResponsiveAppBar() {
             </Link>
           </Typography>
         </Box>
-        <Search
-          sx={{
-            flexGrow: 1,
-            display: { xs: "none", md: "flex" },
-          }}
-        >
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search>
         <Box
           sx={{
             flexGrow: 1,
-            display: { xs: "flex", md: "none" },
+            display: { xs: "flex", sm: "none" },
           }}
         >
           <BottomAppBar />
@@ -177,28 +157,10 @@ function ResponsiveAppBar() {
               maxWidth: 200,
             }}
           >
-            <IconButton
-              color="primary"
-              key="home"
-              href="/home"
-              // onClick={handleCloseNavMenu}
-            >
+            <IconButton color="primary" key="home" href="/home">
               <HomeIcon fontSize="large" />
             </IconButton>
-            <IconButton
-              color="primary"
-              key="events"
-              href="/events"
-              // onClick={handleCloseNavMenu}
-            >
-              <CalendarMonthIcon fontSize="large" />
-            </IconButton>
-            <IconButton
-              color="primary"
-              key="network"
-              href="/network"
-              // onClick={handleCloseNavMenu}
-            >
+            <IconButton color="primary" key="network" href="/network">
               <GroupIcon fontSize="large" />
             </IconButton>
           </Box>

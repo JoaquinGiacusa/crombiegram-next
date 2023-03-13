@@ -35,6 +35,7 @@ const ModalPost: React.FC<any> = ({
 }) => {
   const router = useRouter();
   const { data, mutate } = usePostComments(id);
+
   const {
     register,
     handleSubmit,
