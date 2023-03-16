@@ -55,23 +55,7 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
           )}
           {data &&
             data!.map((posts, index) => {
-              return posts.map((p: any) => (
-                <Post
-                  key={p.id}
-                  id={p.id}
-                  contentText={p.contentText}
-                  imageName={p.imageName}
-                  firstName={p.user.firstName}
-                  lastName={p.user.lastName}
-                  profileImage={p.user.profileImage}
-                  createdAt={p.createdAt}
-                  position={p.user.position}
-                  comment={p.comment}
-                  like={p.like}
-                  userId={p.userId}
-                  refresh={() => mutate()}
-                />
-              ));
+              return posts.map((p: any) => <Post dataPost={p} />);
             })}
 
           {moreToCharge && <div style={{ paddingBottom: "30px" }} ref={ref} />}
