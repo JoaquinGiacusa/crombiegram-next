@@ -80,8 +80,8 @@ const NewPost: React.FC<NewPostType> = ({ refresh }) => {
         title="Crear Post"
         sx={{
           position: "fixed",
-          bottom: 60,
-          right: 40,
+          bottom: 30,
+          right: { xs: "calc(50% - 25px)", sm: 40 },
           zIndex: 1111,
         }}
       >

@@ -20,7 +20,7 @@ const BottomAppBar = () => {
             alignItems: "center",
 
             flexDirection: "row",
-            justifyContent: "center",
+            justifyContent: "space-evenly",
             gap: 7,
           }}
         >
@@ -29,12 +29,6 @@ const BottomAppBar = () => {
               <HomeIcon fontSize="large" />
             </IconButton>
           </Link>
-          <Link href={"/home"}>
-            <IconButton color="primary" key="events">
-              <CalendarMonthIcon fontSize="large" />
-            </IconButton>
-          </Link>
-
           <Link href={"/network"}>
             <IconButton color="primary" key="network">
               <GroupIcon fontSize="large" />
