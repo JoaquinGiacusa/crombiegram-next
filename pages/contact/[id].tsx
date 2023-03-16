@@ -17,14 +17,22 @@ import LoadingProfile from "@/components/LoadingProfile";
 import useContactPost from "@/hooks/useContactPost";
 import { fetcher } from "@/utils/fetcher";
 import { SWRConfiguration } from "swr";
+import Button from "@mui/material/Button";
 
 const Contact = ({ fallback }: { fallback: SWRConfiguration }) => {
   const { data, error, isLoading } = useContact();
-  const { data: contactPost } = useContactPost();
+  const {
+    contactPost,
+    errorMyPost,
+    isLoadingMyPost,
+    mutate,
+    size,
+    setSize,
+    moreToCharge,
+  } = useContactPost();
 
   return (
     <MainLayout fallback={fallback}>
-      <NewPost />
       <Box
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
@@ -81,26 +89,37 @@ const Contact = ({ fallback }: { fallback: SWRConfiguration }) => {
 
         {data &&
           contactPost &&
-          contactPost?.map((p) => {
-            return (
-              <Post
-                key={p.id}
-                id={p.id}
-                contentText={p.contentText}
-                imageName={p.imageName}
-                firstName={data.firstName}
-                lastName={data.lastName}
-                profileImage={data.profileImage}
-                createdAt={p.createdAt}
-                position={data.position}
-                comment={p.comment}
-                like={p.like}
-                userId={p.userId}
-              />
-            );
+          contactPost?.map((posts) => {
+            return posts.map((p) => {
+              return (
+                <Post
+                  key={p.id}
+                  id={p.id}
+                  contentText={p.contentText}
+                  imageName={p.imageName}
+                  firstName={data.firstName}
+                  lastName={data.lastName}
+                  profileImage={data.profileImage}
+                  createdAt={p.createdAt}
+                  position={data.position}
+                  comment={p.comment}
+                  like={p.like}
+                  userId={p.userId}
+                  refresh={() => mutate()}
+                />
+              );
+            });
           })}
 
         {!isLoading && !data && "No posts."}
+        {moreToCharge && (
+          <Button
+            sx={{ margin: "0 auto", mb: 3 }}
+            onClick={() => setSize(size + 1)}
+          >
+            Load more
+          </Button>
+        )}
       </Stack>
     </MainLayout>
   );

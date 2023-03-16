@@ -13,15 +13,25 @@ import SubHeaderPost from "./SubHeaderPost";
 import Image from "next/image";
 import { fetcher } from "@/utils/fetcher";
 import { usePost } from "@/hooks/usePost";
-import { ListItemIcon, Menu, MenuItem, TextField } from "@mui/material";
+import {
+  Divider,
+  ListItem,
+  ListItemAvatar,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import CommentList from "./CommentList";
+
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/system/Box";
 import { useForm } from "react-hook-form";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/router";
 import ModalPost from "./ModalPost";
+import moment from "moment";
 
 export type PostPropsType = {
   id: string;
@@ -52,6 +62,7 @@ export type PostPropsType = {
       position?: string;
     };
   }[];
+  refresh: () => void;
 };
 
 const Post: React.FC<PostPropsType> = ({
@@ -66,8 +77,8 @@ const Post: React.FC<PostPropsType> = ({
   position,
   comment,
   like,
+  refresh,
 }) => {
-  const { mutate } = usePost();
   const { data } = useUser();
   const [isLiked, setIsLiked] = useState<boolean>();
   const [open, setOpen] = useState(false);
@@ -88,7 +99,7 @@ const Post: React.FC<PostPropsType> = ({
       method: "DELETE",
     });
     if (jsonResponse) {
-      mutate();
+      refresh();
     }
   };
 
@@ -109,7 +120,7 @@ const Post: React.FC<PostPropsType> = ({
       body: JSON.stringify(body),
       credentials: "include",
     }).then((data) => {
-      mutate();
+      refresh();
     });
   });
 
@@ -124,7 +135,7 @@ const Post: React.FC<PostPropsType> = ({
       });
 
       if (res.like) {
-        mutate();
+        refresh();
       }
     }
 
@@ -137,7 +148,7 @@ const Post: React.FC<PostPropsType> = ({
         }),
       });
       if (res.message == "like has been destroyed") {
-        mutate();
+        refresh();
       }
     }
   };
@@ -175,12 +186,21 @@ const Post: React.FC<PostPropsType> = ({
               )}
             </>
           }
-          title={firstName + " " + lastName}
+          title={
+            <Typography
+              sx={{ cursor: "pointer", display: "inline-block" }}
+              onClick={() =>
+                router.push(
+                  data!.id == userId ? `/profile` : `/contact/${userId}`
+                )
+              }
+            >
+              {firstName + " " + lastName}
+            </Typography>
+          }
           subheader={
             <SubHeaderPost createdAt={createdAt} position={position} />
           }
-          onClick={() => router.push(`/contact/${userId}`)}
-          sx={{ cursor: "pointer" }}
         />
 
         {imageName && (
@@ -196,6 +216,7 @@ const Post: React.FC<PostPropsType> = ({
         )}
         <CardContent sx={{ pb: 0 }}>
           <Typography
+            sx={{ pb: 2 }}
             variant="body2"
             color="text.secondary"
             onClick={handleOpenModal}
@@ -258,14 +279,57 @@ const Post: React.FC<PostPropsType> = ({
           </MenuItem>
         </Menu>
 
-        {comment && comment?.length > 0 && (
-          <CommentList
-            comments={comment.flat().splice(comment.length - 2)}
-          ></CommentList>
-        )}
+        {comment &&
+          comment?.length > 0 &&
+          comment.slice(-2).map((c) => {
+            return (
+              <Box key={c.id}>
+                <Divider />
+                <ListItem key={c.id} alignItems="flex-start">
+                  <ListItemAvatar
+                    onClick={() => router.push(`/contact/${c.userId}`)}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <Avatar
+                      alt="profile-avatar"
+                      src={
+                        c.user.profileImage
+                          ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${c.user.profileImage}`
+                          : ""
+                      }
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    sx={{ margin: 0 }}
+                    primary={
+                      <>
+                        <Typography sx={{ fontSize: 18 }} display="inline">
+                          {`${c.user.firstName} ${c.user.lastName}`}&nbsp;&nbsp;
+                        </Typography>
+                        <Typography
+                          sx={{ fontSize: 14, color: "gray" }}
+                          display="inline"
+                        >
+                          {moment(c.createdAt).fromNow()}
+                        </Typography>
+                      </>
+                    }
+                    secondary={c.comment}
+                  />
+                </ListItem>
+              </Box>
+            );
+          })}
+
         {comment?.length === 3 && (
           <Typography
-            sx={{ fontSize: 16, cursor: "pointer" }}
+            sx={{
+              fontSize: 14,
+              cursor: "pointer",
+              ml: 2,
+              mt: 1,
+              color: "#a09e9e",
+            }}
             onClick={handleOpenModal}
           >
             Show more comments

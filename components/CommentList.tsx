@@ -21,14 +21,18 @@ import { useRouter } from "next/router";
 import { CommentsProps, usePostComments } from "@/hooks/usePostComments";
 import { useState } from "react";
 
-type CommentListProps = { comments: CommentsProps[] };
-
-const CommentList: React.FC<CommentListProps> = ({ comments }) => {
-  const { mutate } = usePost();
+const CommentList = ({ postId }: { postId: string }) => {
   const { data } = useUser();
   const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState(true);
   const [alert, setAlert] = useState(false);
+  const {
+    data: commentsList,
+    mutate,
+    size,
+    setSize,
+    moreToCharge,
+  } = usePostComments(postId);
 
   const router = useRouter();
   const handleDeleteComment = async (commentId: string) => {
@@ -49,75 +53,105 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
 
   return (
     <>
-      <List sx={{ overflowY: "auto" }}>
-        {comments &&
-          comments.flat().map((comment) => {
-            return (
-              <Box key={comment.id}>
-                <Divider />
-                <ListItem key={comment.id} alignItems="flex-start">
-                  <ListItemAvatar
-                    onClick={() => router.push(`/contact/${comment.userId}`)}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <Avatar
-                      alt="profile-avatar"
-                      src={
-                        comment.user.profileImage
-                          ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${comment.user.profileImage}`
-                          : ""
-                      }
-                    />
-                  </ListItemAvatar>
-                  <ListItemText
-                    sx={{ margin: 0 }}
-                    primary={
-                      <>
-                        <Typography sx={{ fontSize: 18 }} display="inline">
-                          {`${comment.user.firstName} ${comment.user.lastName}`}
-                          {" - "}
-                        </Typography>
-                        <Typography
-                          sx={{ fontSize: 14, color: "gray" }}
-                          display="inline"
-                        >
-                          {moment(comment.createdAt).fromNow()}
-                        </Typography>
-                      </>
-                    }
-                    secondary={comment.comment}
-                  />
-                  {data?.id === comment.userId && (
-                    <IconButton onClick={() => handleDeleteComment(comment.id)}>
-                      <DeleteIcon sx={{ fontSize: 18 }}></DeleteIcon>
-                    </IconButton>
-                  )}
-
-                  <Snackbar
-                    sx={{ alignItems: "center", justifyContent: "center" }}
-                    open={openAlert}
-                    autoHideDuration={2000}
-                    onClose={() => setOpenAlert(false)}
-                  >
-                    <Alert
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      variant="outlined"
-                      severity={severity ? "success" : "error"}
+      <List
+        sx={{
+          overflowY: "auto",
+          height: 470,
+          "&::-webkit-scrollbar": {
+            width: "10px",
+          },
+          "&::-webkit-scrollbar-track": {
+            "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.3)",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            "background-color": "darkgrey",
+            outline: "1px solid slategrey",
+          },
+        }}
+      >
+        {commentsList &&
+          commentsList!.map((comments) => {
+            return comments.map((comment) => {
+              return (
+                <Box key={comment.id}>
+                  <Divider />
+                  <ListItem key={comment.id} alignItems="flex-start">
+                    <ListItemAvatar
+                      onClick={() => router.push(`/contact/${comment.userId}`)}
+                      sx={{ cursor: "pointer" }}
                     >
-                      {alert}
-                    </Alert>
-                  </Snackbar>
-                </ListItem>
-              </Box>
-            );
+                      <Avatar
+                        alt="profile-avatar"
+                        src={
+                          comment.user.profileImage
+                            ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${comment.user.profileImage}`
+                            : ""
+                        }
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      sx={{ margin: 0 }}
+                      primary={
+                        <>
+                          <Typography sx={{ fontSize: 18 }} display="inline">
+                            {`${comment.user.firstName} ${comment.user.lastName}`}
+                            &nbsp;&nbsp;
+                          </Typography>
+                          <Typography
+                            sx={{ fontSize: 14, color: "gray" }}
+                            display="inline"
+                          >
+                            {moment(comment.createdAt).fromNow()}
+                          </Typography>
+                        </>
+                      }
+                      secondary={comment.comment}
+                    />
+                    {data?.id === comment.userId && (
+                      <IconButton
+                        onClick={() => handleDeleteComment(comment.id)}
+                      >
+                        <DeleteIcon sx={{ fontSize: 18 }}></DeleteIcon>
+                      </IconButton>
+                    )}
+
+                    <Snackbar
+                      sx={{ alignItems: "center", justifyContent: "center" }}
+                      open={openAlert}
+                      autoHideDuration={2000}
+                      onClose={() => setOpenAlert(false)}
+                    >
+                      <Alert
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        variant="outlined"
+                        severity={severity ? "success" : "error"}
+                      >
+                        {alert}
+                      </Alert>
+                    </Snackbar>
+                  </ListItem>
+                </Box>
+              );
+            });
           })}
       </List>
-      {comments && comments.flat().length > 5 && (
-        <Button onClick={() => console.log("show more")}>Show more</Button>
+      {moreToCharge && (
+        <Typography
+          sx={{
+            fontSize: 14,
+            cursor: "pointer",
+            ml: 2,
+            mt: 1,
+            color: "#a09e9e",
+          }}
+          onClick={() => setSize(size + 1)}
+        >
+          Show more comments
+        </Typography>
       )}
     </>
   );

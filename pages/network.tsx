@@ -25,7 +25,6 @@ function Network({ fallback }: { fallback: SWRConfiguration }) {
   return (
     <MainLayout fallback={fallback}>
       <Box>
-        <NewPost />
         <Box
           sx={{
             display: "flex",

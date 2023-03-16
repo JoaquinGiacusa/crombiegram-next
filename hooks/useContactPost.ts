@@ -1,6 +1,6 @@
 import { fetcher } from "@/utils/fetcher";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 
 export type ContactDataProps = {
   id: string;
@@ -30,15 +30,45 @@ export type ContactDataProps = {
   }[];
 }[];
 
-const useContactPost = () => {
+// const useContactPost = () => {
+//   const route = useRouter();
+//   const id = route.query.id;
+
+//   const { data, error, isLoading, mutate } = useSWR<ContactDataProps>(
+//     `/post/contact/${id}`,
+//     fetcher
+//   );
+
+//   return { data, error, isLoading, mutate };
+
+// };
+
+export const useContactPost = () => {
   const route = useRouter();
   const id = route.query.id;
-
-  const { data, error, isLoading } = useSWR<ContactDataProps>(
-    `/post/contact/${id}`,
+  const {
+    data: contactPost,
+    error: errorMyPost,
+    isLoading: isLoadingMyPost,
+    mutate,
+    size,
+    setSize,
+  } = useSWRInfinite<ContactDataProps>(
+    (pageIndex) => `/post/contact/${id}?page=${pageIndex}&size=4`,
     fetcher
   );
 
-  return { data, error, isLoading };
+  const moreToCharge = size * 4 === contactPost?.flat().length;
+
+  return {
+    contactPost,
+    errorMyPost,
+    isLoadingMyPost,
+    mutate,
+    size,
+    setSize,
+    moreToCharge,
+  };
 };
+
 export default useContactPost;

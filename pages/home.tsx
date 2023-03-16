@@ -1,31 +1,44 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Post from "../components/Post";
 import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
 import MainLayout from "@/components/layouts/mainLayout";
 import { GetServerSideProps } from "next";
-import { usePost } from "@/hooks/usePost";
+import { PostProps, usePost } from "@/hooks/usePost";
 import revalidateToken from "@/utils/revalidateAuth";
 import { getCookie } from "cookies-next";
 import LoadingPost from "@/components/LoadingPost";
 import { fetcher } from "@/utils/fetcher";
 import { SWRConfiguration } from "swr";
-import InfiniteScroll from "react-infinite-scroll-component";
 import Button from "@mui/material/Button";
+import useOnScreen from "@/hooks/useOneScreen";
+import { Typography } from "@mui/material";
 
 function Home({ fallback }: { fallback: SWRConfiguration }) {
-  const { data, error, isLoading, size, setSize } = usePost();
-  //@ts-ignore
-  const dataFlated = data?.flat();
-  console.log("sad", dataFlated);
+  const {
+    data,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    size,
+    setSize,
+    moreToCharge,
+  } = usePost();
 
-  const isReachedEnd = data && data[data.length - 1]?.lenght < 5;
+  const ref = useRef<HTMLDivElement>(null);
+  const isVisible = useOnScreen(ref);
 
-  //useEffect(()=>)
+  useEffect(() => {
+    if (!isLoading && !isValidating) {
+      setSize(size + 1);
+    }
+  }, [isVisible]);
+
   return (
     <MainLayout fallback={fallback}>
       <Box>
-        <NewPost />
+        <NewPost refresh={() => mutate()} />
         <Box
           sx={{
             display: "flex",
@@ -37,22 +50,12 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
           }}
         >
           {isLoading && <LoadingPost />}
-
-          {/* <InfiniteScroll
-            dataLength={data?.length ?? 0}
-            next={() => setSize(size + 1)}
-            hasMore={!isReachedEnd}
-            loader={<h4>Loading...</h4>}
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
-          > */}
+          {data && data![0].length == 0 && (
+            <Typography>No pots to show.</Typography>
+          )}
           {data &&
-            //data?.postList.map((p) => {
-            data?.flat().map((p) => {
-              return (
+            data!.map((posts, index) => {
+              return posts.map((p: any) => (
                 <Post
                   key={p.id}
                   id={p.id}
@@ -66,12 +69,12 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
                   comment={p.comment}
                   like={p.like}
                   userId={p.userId}
-                ></Post>
-              );
+                  refresh={() => mutate()}
+                />
+              ));
             })}
-          {/* </InfiniteScroll> */}
-          {!data && !isLoading && "No posts."}
-          <Button onClick={() => setSize(size + 1)}>Show more</Button>
+
+          {moreToCharge && <div style={{ paddingBottom: "30px" }} ref={ref} />}
         </Box>
       </Box>
     </MainLayout>

@@ -6,19 +6,21 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import GroupIcon from "@mui/icons-material/Group";
 import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
-import { Toolbar } from "@mui/material";
+import { Stack, Toolbar } from "@mui/material";
 import Link from "next/link";
 
 const BottomAppBar = () => {
   return (
     <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
       <Toolbar>
-        <Box
+        <Stack
           sx={{
             flexGrow: 1,
-            display: { xs: "flex", md: "none" },
+            display: { xs: "flex", sm: "none" },
             alignItems: "center",
-            justifyContent: "center",
+
+            flexDirection: "row",
+            justifyContent: "space-evenly",
             gap: 7,
           }}
         >
@@ -27,32 +29,12 @@ const BottomAppBar = () => {
               <HomeIcon fontSize="large" />
             </IconButton>
           </Link>
-          <Link href={"/home"}>
-            <IconButton color="primary" key="events">
-              <CalendarMonthIcon fontSize="large" />
-            </IconButton>
-          </Link>
-        </Box>
-        <Box
-          sx={{
-            flexGrow: 1,
-            display: { xs: "flex", md: "none" },
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 7,
-          }}
-        >
           <Link href={"/network"}>
             <IconButton color="primary" key="network">
               <GroupIcon fontSize="large" />
             </IconButton>
           </Link>
-          <Link href={"/events"}>
-            <IconButton color="primary" key="search">
-              <SearchIcon fontSize="large" />
-            </IconButton>
-          </Link>
-        </Box>
+        </Stack>
       </Toolbar>
     </AppBar>
   );
