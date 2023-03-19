@@ -334,7 +334,7 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
             );
           })}
 
-        {postData?.comment?.length === 3 && (
+        {postData?.comment && postData?.comment?.length > 2 && (
           <Typography
             sx={{
               fontSize: 14,

@@ -1,6 +1,7 @@
 import { fetcher } from "@/utils/fetcher";
 import { useRouter } from "next/router";
 import useSWRInfinite from "swr/infinite";
+import { PostProps } from "./usePost";
 
 export type ContactDataProps = {
   id: string;
@@ -53,7 +54,7 @@ export const useContactPost = () => {
     mutate,
     size,
     setSize,
-  } = useSWRInfinite<ContactDataProps>(
+  } = useSWRInfinite<PostProps[]>(
     (pageIndex) => `/post/contact/${id}?page=${pageIndex}&size=4`,
     fetcher,
     {
