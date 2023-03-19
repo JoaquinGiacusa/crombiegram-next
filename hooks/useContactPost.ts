@@ -55,7 +55,11 @@ export const useContactPost = () => {
     setSize,
   } = useSWRInfinite<ContactDataProps>(
     (pageIndex) => `/post/contact/${id}?page=${pageIndex}&size=4`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateAll: false,
+    }
   );
 
   const moreToCharge = size * 4 === contactPost?.flat().length;

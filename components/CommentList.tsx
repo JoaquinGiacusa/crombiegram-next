@@ -21,7 +21,13 @@ import { useRouter } from "next/router";
 import { CommentsProps, usePostComments } from "@/hooks/usePostComments";
 import { useState } from "react";
 
-const CommentList = ({ postId }: { postId: string }) => {
+const CommentList = ({
+  postId,
+  refresh,
+}: {
+  postId: string;
+  refresh: () => void;
+}) => {
   const { data } = useUser();
   const [openAlert, setOpenAlert] = useState(false);
   const [severity, setSeverity] = useState(true);
@@ -43,6 +49,8 @@ const CommentList = ({ postId }: { postId: string }) => {
       setOpenAlert(true);
       setAlert(resDeleteComment.message);
       setSeverity(true);
+      console.log("refresh");
+      refresh();
       mutate();
     } else {
       setOpenAlert(true);

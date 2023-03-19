@@ -12,7 +12,7 @@ import IconButton from "@mui/material/IconButton";
 import SubHeaderPost from "./SubHeaderPost";
 import Image from "next/image";
 import { fetcher } from "@/utils/fetcher";
-import { usePost } from "@/hooks/usePost";
+import { PostProps, usePost } from "@/hooks/usePost";
 import {
   Divider,
   ListItem,
@@ -34,38 +34,40 @@ import ModalPost from "./ModalPost";
 import moment from "moment";
 
 export type PostPropsType = {
-  id: string;
-  userId: string;
-  firstName: string;
-  lastName: string;
-  contentText: string;
-  imageName?: string;
-  profileImage: string;
-  createdAt: Date;
-  position?: string;
-  like: {
-    id: string;
-    postId: string;
-    user: { firstName: string; lastName: string; profileImage: string };
-    userId: string;
-  }[];
-  comment?: {
-    id: string;
-    comment: string;
-    userId: string;
-    postId: string;
-    createdAt: Date;
-    user: {
-      firstName: string;
-      lastName: string;
-      profileImage?: string;
-      position?: string;
-    };
-  }[];
-  refresh: () => void;
+  dataPost: PostProps;
 };
+// export type PostPropsType = {
+//   id: string;
+//   userId: string;
+//   firstName: string;
+//   lastName: string;
+//   contentText: string;
+//   imageName?: string;
+//   profileImage: string;
+//   createdAt: Date;
+//   position?: string;
+//   like: {
+//     id: string;
+//     postId: string;
+//     user: { firstName: string; lastName: string; profileImage: string };
+//     userId: string;
+//   }[];
+//   comment?: {
+//     id: string;
+//     comment: string;
+//     userId: string;
+//     postId: string;
+//     createdAt: Date;
+//     user: {
+//       firstName: string;
+//       lastName: string;
+//       profileImage?: string;
+//       position?: string;
+//     };
+//   }[];
+// };
 
-const Post: React.FC<any> = ({ dataPost }) => {
+const Post = ({ dataPost }: { dataPost: PostProps }) => {
   const { data } = useUser();
   const [isLiked, setIsLiked] = useState<boolean>();
   const [open, setOpen] = useState(false);
@@ -73,7 +75,7 @@ const Post: React.FC<any> = ({ dataPost }) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
-  const [postData, setPostData] = useState<PostPropsType>(dataPost);
+  const [postData, setPostData] = useState<PostProps>();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -83,11 +85,16 @@ const Post: React.FC<any> = ({ dataPost }) => {
     setAnchorElUser(null);
   };
 
+  useEffect(() => {
+    setPostData(dataPost);
+  }, [dataPost]);
+
   const handleDelete = async () => {
-    const jsonResponse = await fetcher(`/post/${postData.id}`, {
+    const jsonResponse = await fetcher(`/post/${postData?.id}`, {
       method: "DELETE",
     });
     if (jsonResponse) {
+      await updatePost();
       // refresh();
     }
   };
@@ -104,19 +111,20 @@ const Post: React.FC<any> = ({ dataPost }) => {
       comment: data.comment,
     };
     reset();
-    await fetcher(`/comment/post/${postData.id}`, {
+    await fetcher(`/comment/post/${postData?.id}`, {
       method: "POST",
       body: JSON.stringify(body),
       credentials: "include",
-    }).then((data) => {
+    }).then(async (data) => {
       // refresh();
+      await updatePost();
     });
   });
 
   const handleClickLike = async () => {
     setIsLiked(true);
     if (!isLiked) {
-      const res = await fetcher(`/like/post/${postData.id}`, {
+      const res = await fetcher(`/like/post/${postData?.id}`, {
         method: "POST",
         body: JSON.stringify({
           userId: data?.id,
@@ -125,12 +133,13 @@ const Post: React.FC<any> = ({ dataPost }) => {
 
       if (res.like) {
         // refresh();
+        await updatePost();
       }
     }
 
     if (isLiked) {
       setIsLiked(false);
-      const res = await fetcher(`/like/post/${postData.id}`, {
+      const res = await fetcher(`/like/post/${postData?.id}`, {
         method: "DELETE",
         body: JSON.stringify({
           userId: data?.id,
@@ -138,18 +147,25 @@ const Post: React.FC<any> = ({ dataPost }) => {
       });
       if (res.message == "like has been destroyed") {
         // refresh();
+        await updatePost();
       }
     }
   };
 
   useEffect(() => {
-    if (postData.like.some((l) => l.userId === data?.id)) {
+    if (postData?.like.some((l) => l.userId === data?.id)) {
       setIsLiked(true);
     }
-  }, [postData.like, data?.id]);
+  }, [postData?.like, data?.id]);
 
   const handleOpenModal = () => {
     setOpen(true);
+  };
+
+  const updatePost = async () => {
+    console.log("me actualize");
+    const post = await fetcher(`/post/${postData?.id}`);
+    setPostData(post);
   };
 
   return (
@@ -159,8 +175,8 @@ const Post: React.FC<any> = ({ dataPost }) => {
           avatar={
             <Avatar
               src={
-                postData.profileImage
-                  ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${postData.profileImage}`
+                postData?.user.profileImage
+                  ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${postData?.user.profileImage}`
                   : ""
               }
               sx={{ width: 30, height: 30 }}
@@ -168,7 +184,7 @@ const Post: React.FC<any> = ({ dataPost }) => {
           }
           action={
             <>
-              {data?.id === postData.userId && (
+              {data?.id === postData?.userId && (
                 <IconButton aria-label="settings" onClick={handleOpenUserMenu}>
                   <MoreVertIcon />
                 </IconButton>
@@ -180,30 +196,30 @@ const Post: React.FC<any> = ({ dataPost }) => {
               sx={{ cursor: "pointer", display: "inline-block" }}
               onClick={() =>
                 router.push(
-                  data!.id == postData.userId
+                  data!.id == postData?.userId
                     ? `/profile`
-                    : `/contact/${postData.userId}`
+                    : `/contact/${postData?.userId}`
                 )
               }
             >
-              {postData.firstName + " " + postData.lastName}
+              {postData?.user.firstName + " " + postData?.user.lastName}
             </Typography>
           }
           subheader={
             <SubHeaderPost
-              createdAt={postData.createdAt}
-              position={postData.position}
+              createdAt={postData?.createdAt as Date}
+              position={postData?.user.position}
             />
           }
         />
 
-        {postData.imageName && (
+        {postData?.imageName && (
           <Image
             width={500}
             height={500}
             src={
               "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
-              postData.imageName
+              postData?.imageName
             }
             alt="foto"
             onClick={handleOpenModal}
@@ -216,28 +232,28 @@ const Post: React.FC<any> = ({ dataPost }) => {
             color="text.secondary"
             onClick={handleOpenModal}
           >
-            {postData.contentText}
+            {postData?.contentText}
           </Typography>
 
-          {postData.like.length > 0 && (
+          {postData && postData?.like.length > 0 && (
             <Box mt={1} sx={{ display: "flex" }}>
-              {postData.like.length === 1 && (
-                <Typography key={postData.like[0].id} fontSize={14}>
-                  {`${postData.like[0].user.firstName} ${postData.like[0].user.lastName} likes this post.`}
+              {postData?.like.length === 1 && (
+                <Typography key={postData?.like[0].id} fontSize={14}>
+                  {`${postData?.like[0].user.firstName} ${postData?.like[0].user.lastName} likes this post.`}
                 </Typography>
               )}
-              {postData.like.length == 2 && (
+              {postData?.like.length == 2 && (
                 <Typography fontSize={14}>
-                  {`${postData.like[0].user.firstName} ${postData.like[0].user.lastName} and ${postData.like[1].user.firstName} ${postData.like[1].user.lastName} like this post.`}
+                  {`${postData?.like[0].user.firstName} ${postData?.like[0].user.lastName} and ${postData?.like[1].user.firstName} ${postData?.like[1].user.lastName} like this post.`}
                 </Typography>
               )}
-              {postData.like.length > 2 && (
+              {postData && postData?.like?.length > 2 && (
                 <Typography fontSize={14}>
-                  {`${postData.like[0].user.firstName} ${
-                    postData.like[0].user.lastName
-                  }, ${postData.like[1].user.firstName} ${
-                    postData.like[1].user.lastName
-                  } and ${postData.like.length - 2} others.`}
+                  {`${postData?.like[0].user.firstName} ${
+                    postData?.like[0].user.lastName
+                  }, ${postData?.like[1].user.firstName} ${
+                    postData?.like[1].user.lastName
+                  } and ${postData?.like.length - 2} others.`}
                 </Typography>
               )}
             </Box>
@@ -276,9 +292,9 @@ const Post: React.FC<any> = ({ dataPost }) => {
           </MenuItem>
         </Menu>
 
-        {postData.comment &&
-          postData.comment?.length > 0 &&
-          postData.comment.slice(-2).map((c) => {
+        {postData?.comment &&
+          postData?.comment?.length > 0 &&
+          postData?.comment.slice(-2).map((c) => {
             return (
               <Box key={c.id}>
                 <Divider />
@@ -318,7 +334,7 @@ const Post: React.FC<any> = ({ dataPost }) => {
             );
           })}
 
-        {postData.comment?.length === 3 && (
+        {postData?.comment?.length === 3 && (
           <Typography
             sx={{
               fontSize: 14,
@@ -350,18 +366,19 @@ const Post: React.FC<any> = ({ dataPost }) => {
       </Card>
       {open && (
         <ModalPost
-          id={postData.id}
-          firstName={postData.firstName}
-          lastName={postData.lastName}
-          userId={postData.userId}
-          imageName={postData.imageName}
-          profileImage={postData.profileImage}
-          position={postData.position}
-          contentText={postData.contentText}
-          like={postData.like}
-          createdAt={postData.createdAt}
+          id={postData?.id}
+          firstName={postData?.user.firstName}
+          lastName={postData?.user.lastName}
+          userId={postData?.userId}
+          imageName={postData?.imageName}
+          profileImage={postData?.user.profileImage}
+          position={postData?.user.position}
+          contentText={postData?.contentText}
+          like={postData?.like}
+          createdAt={postData?.createdAt}
           open={open}
           setOpen={setOpen}
+          refresh={updatePost}
         />
       )}
     </>
