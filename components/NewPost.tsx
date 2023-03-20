@@ -38,6 +38,7 @@ const NewPost: React.FC<NewPostType> = ({ refresh }) => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm({ defaultValues: { contentText: "" } });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -189,7 +190,11 @@ const NewPost: React.FC<NewPostType> = ({ refresh }) => {
               justifyContent: "center",
             }}
           >
-            <Button type="submit" variant="outlined">
+            <Button
+              type="submit"
+              variant="outlined"
+              disabled={!watch("contentText")}
+            >
               Crear
             </Button>
             {/* <Button variant="outlined">
