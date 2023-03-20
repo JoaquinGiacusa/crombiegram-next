@@ -32,6 +32,7 @@ import useUser from "@/hooks/useUser";
 import { useRouter } from "next/router";
 import ModalPost from "./ModalPost";
 import moment from "moment";
+import ConfirmDeletePost from "./ConfirmDeletePost";
 
 export type PostPropsType = {
   dataPost: PostProps;
@@ -71,6 +72,7 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
   const { data } = useUser();
   const [isLiked, setIsLiked] = useState<boolean>();
   const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
@@ -104,6 +106,7 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm();
 
   const onSubmit = handleSubmit(async (data) => {
@@ -162,6 +165,11 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
     setOpen(true);
   };
 
+
+  const handleDeleteModal = () => {
+    setOpenDelete(true);
+    }
+    
   const updatePost = async () => {
     console.log("me actualize");
     const post = await fetcher(`/post/${postData?.id}`);
@@ -211,6 +219,7 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
               position={postData?.user.position}
             />
           }
+          sx={{ cursor: "pointer" }}
         />
 
         {postData?.imageName && (
@@ -262,7 +271,7 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
             <IconButton aria-label="add to favorites" onClick={handleClickLike}>
               <FavoriteIcon sx={{ color: isLiked ? "#e91e63" : "inherit" }} />
             </IconButton>
-            <IconButton aria-label="share">
+            <IconButton aria-label="share" onClick={handleOpenModal}>
               <ChatBubbleIcon />
             </IconButton>
           </CardActions>
@@ -284,7 +293,7 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}
         >
-          <MenuItem onClick={handleDelete}>
+          <MenuItem onClick={handleDeleteModal}>
             <ListItemIcon>
               <Delete fontSize="small" />
               <Typography textAlign="center">Delete</Typography>
@@ -353,10 +362,11 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
           <TextField
             fullWidth
             sx={{ p: 1 }}
+            placeholder="Comment something..."
             {...register("comment", { required: true })}
             InputProps={{
               endAdornment: (
-                <IconButton type="submit">
+                <IconButton type="submit" disabled={!watch("comment")}>
                   <SendIcon />
                 </IconButton>
               ),
@@ -379,6 +389,15 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
           open={open}
           setOpen={setOpen}
           refresh={updatePost}
+        />
+      )}
+
+      {openDelete && (
+        <ConfirmDeletePost
+          id={id}
+          refresh={refresh}
+          openDelete={openDelete}
+          setOpenDelete={setOpenDelete}
         />
       )}
     </>
