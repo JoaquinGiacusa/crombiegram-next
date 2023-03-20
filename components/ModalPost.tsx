@@ -32,6 +32,7 @@ const ModalPost: React.FC<any> = ({
   like,
   open,
   setOpen,
+  refresh,
 }) => {
   const router = useRouter();
   const { data, mutate } = usePostComments(id);
@@ -56,6 +57,7 @@ const ModalPost: React.FC<any> = ({
       credentials: "include",
     }).then((data) => {
       mutate();
+      refresh();
     });
   });
 
@@ -127,7 +129,9 @@ const ModalPost: React.FC<any> = ({
               <Typography variant="body2" color="text.secondary" pl={2}>
                 {contentText}
               </Typography>
-              {data && data?.flat().length > 0 && <CommentList postId={id} />}
+              {data && data?.flat().length > 0 && (
+                <CommentList postId={id} refresh={refresh} />
+              )}
             </Box>
             <Box component={"form"} onSubmit={onSubmit}>
               <TextField

@@ -1,4 +1,5 @@
-const BASE_URL = "https://crombiegram.terapia-constalcion-familiar.com/api";
+// const BASE_URL = "https://crombiegram.terapia-constalcion-familiar.com/api";
+const BASE_URL = "http://localhost:3000/api";
 
 export function getSaveToken() {
   if (typeof window !== "undefined") {

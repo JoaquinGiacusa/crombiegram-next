@@ -76,6 +76,7 @@ const EditProfile = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
     control,
   } = useForm<FormEditUser>({ resolver: yupResolver(editUserSchema) });
   const onSubmit = handleSubmit(async (data) => {
@@ -297,7 +298,12 @@ const EditProfile = () => {
                 />
               </Box>
             </Box>
-            <Button variant="outlined" color="warning" type="submit">
+            <Button
+              variant="outlined"
+              color="warning"
+              type="submit"
+              // disabled={!watch("firstName")}
+            >
               Update
             </Button>
           </Box>

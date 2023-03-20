@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import NewPost from "../components/NewPost";
 import MainLayout from "@/components/layouts/mainLayout";
 import { GetServerSideProps } from "next";
-import { PostProps, usePost } from "@/hooks/usePost";
+import { usePost } from "@/hooks/usePost";
 import revalidateToken from "@/utils/revalidateAuth";
 import { getCookie } from "cookies-next";
 import LoadingPost from "@/components/LoadingPost";
@@ -55,23 +55,11 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
           )}
           {data &&
             data!.map((posts, index) => {
-              return posts.map((p: any) => (
-                <Post
-                  key={p.id}
-                  id={p.id}
-                  contentText={p.contentText}
-                  imageName={p.imageName}
-                  firstName={p.user.firstName}
-                  lastName={p.user.lastName}
-                  profileImage={p.user.profileImage}
-                  createdAt={p.createdAt}
-                  position={p.user.position}
-                  comment={p.comment}
-                  like={p.like}
-                  userId={p.userId}
-                  refresh={() => mutate()}
-                />
-              ));
+              return posts.map((p) => {
+                return (
+                  <Post key={p.id} dataPost={p} refresh={() => mutate()} />
+                );
+              });
             })}
 
           {moreToCharge && <div style={{ paddingBottom: "30px" }} ref={ref} />}
