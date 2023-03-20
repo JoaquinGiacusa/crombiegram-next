@@ -27,8 +27,8 @@ const ConfirmDeletePost: React.FC<ConfirmDeletePostType> = ({
     <Modal
       sx={{
         display: "flex",
-        alignItems: "center",
         justifyContent: "center",
+        alignItems: "center",
       }}
       open={openDelete}
       onClose={(e) => {
@@ -40,23 +40,25 @@ const ConfirmDeletePost: React.FC<ConfirmDeletePostType> = ({
       <Box
         sx={{
           display: "flex",
-          height: 200,
-          width: 400,
-          backgroundColor: "#a5b1c2",
+          height: 150,
+          width: 425,
+          backgroundColor: "background.paper",
           justifyContent: "center",
           alignItems: "center",
+          borderRadius: 2,
         }}
       >
-        <Stack>
+        <Stack gap={2}>
           <Typography
             sx={{
-              alignContent: "center",
               color: "primary",
+              display: "flex",
+              justifyContent: "center",
             }}
           >
             Are you sure to delete this post?
           </Typography>
-          <Stack direction="row">
+          <Stack direction="row" gap={2}>
             <Button onClick={handleDelete} variant="outlined">
               Yes
             </Button>
