@@ -85,7 +85,13 @@ const Profile = ({ fallback }: { fallback: SWRConfiguration }) => {
         {allMyPost &&
           allMyPost.map((posts) => {
             return posts.map((dataPost) => {
-              return <Post key={dataPost.id} dataPost={dataPost} />;
+              return (
+                <Post
+                  key={dataPost.id}
+                  dataPost={dataPost}
+                  refresh={() => mutate()}
+                />
+              );
             });
           })}
 

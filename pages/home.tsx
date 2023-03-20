@@ -56,7 +56,9 @@ function Home({ fallback }: { fallback: SWRConfiguration }) {
           {data &&
             data!.map((posts, index) => {
               return posts.map((p) => {
-                return <Post key={p.id} dataPost={p} />;
+                return (
+                  <Post key={p.id} dataPost={p} refresh={() => mutate()} />
+                );
               });
             })}
 

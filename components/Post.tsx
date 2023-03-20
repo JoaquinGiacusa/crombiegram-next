@@ -68,7 +68,13 @@ export type PostPropsType = {
 //   }[];
 // };
 
-const Post = ({ dataPost }: { dataPost: PostProps }) => {
+const Post = ({
+  dataPost,
+  refresh,
+}: {
+  dataPost: PostProps;
+  refresh: () => void;
+}) => {
   const { data } = useUser();
   const [isLiked, setIsLiked] = useState<boolean>();
   const [open, setOpen] = useState(false);
@@ -90,16 +96,6 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
   useEffect(() => {
     setPostData(dataPost);
   }, [dataPost]);
-
-  const handleDelete = async () => {
-    const jsonResponse = await fetcher(`/post/${postData?.id}`, {
-      method: "DELETE",
-    });
-    if (jsonResponse) {
-      await updatePost();
-      // refresh();
-    }
-  };
 
   const {
     register,
@@ -165,11 +161,10 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
     setOpen(true);
   };
 
-
   const handleDeleteModal = () => {
     setOpenDelete(true);
-    }
-    
+  };
+
   const updatePost = async () => {
     console.log("me actualize");
     const post = await fetcher(`/post/${postData?.id}`);
@@ -394,7 +389,7 @@ const Post = ({ dataPost }: { dataPost: PostProps }) => {
 
       {openDelete && (
         <ConfirmDeletePost
-          id={id}
+          id={postData?.id as string}
           refresh={refresh}
           openDelete={openDelete}
           setOpenDelete={setOpenDelete}

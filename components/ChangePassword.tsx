@@ -58,6 +58,7 @@ const ChangePassword = () => {
     handleSubmit: handleSubmitPsw,
     formState: { errors: errorsPws },
     reset,
+    watch,
   } = useForm<FormEditPassword>({ resolver: yupResolver(editPasswordSchema) });
   const onSubmitFormPassword = handleSubmitPsw(async (data) => {
     await fetcher("/user/me/password", {
@@ -159,6 +160,7 @@ const ChangePassword = () => {
             variant="outlined"
             color="info"
             type="submit"
+            disabled={!watch("currPassword")}
           >
             Update password
           </Button>

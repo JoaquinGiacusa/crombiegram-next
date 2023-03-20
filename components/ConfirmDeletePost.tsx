@@ -20,6 +20,7 @@ const ConfirmDeletePost: React.FC<ConfirmDeletePostType> = ({
       method: "DELETE",
     });
     if (jsonResponse) {
+      console.log("me eliminaron");
       refresh();
     }
   };
