@@ -41,7 +41,7 @@ const editUserSchema = yup.object({
   birthday: yup.date().required().typeError("Birthday is invalid."),
 });
 
-const EditProfile = () => {
+const EditProfile = ({ refreshPost }: { refreshPost: () => void }) => {
   const [open, setOpen] = useState(false);
   const [alert, setAlert] = useState(false);
   const [file, setFile] = useState<File | null>();
@@ -70,6 +70,7 @@ const EditProfile = () => {
     );
     if (jsonResponse) {
       mutate();
+      refreshPost();
     }
   };
   const {
@@ -138,6 +139,7 @@ const EditProfile = () => {
         >
           {file ? (
             <Image
+              style={{ borderRadius: "10px" }}
               src={
                 file
                   ? URL.createObjectURL(
@@ -151,6 +153,7 @@ const EditProfile = () => {
             />
           ) : (
             <Image
+              style={{ borderRadius: "10px" }}
               src={
                 data?.profileImage
                   ? "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +

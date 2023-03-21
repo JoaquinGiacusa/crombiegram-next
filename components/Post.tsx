@@ -37,36 +37,6 @@ import ConfirmDeletePost from "./ConfirmDeletePost";
 export type PostPropsType = {
   dataPost: PostProps;
 };
-// export type PostPropsType = {
-//   id: string;
-//   userId: string;
-//   firstName: string;
-//   lastName: string;
-//   contentText: string;
-//   imageName?: string;
-//   profileImage: string;
-//   createdAt: Date;
-//   position?: string;
-//   like: {
-//     id: string;
-//     postId: string;
-//     user: { firstName: string; lastName: string; profileImage: string };
-//     userId: string;
-//   }[];
-//   comment?: {
-//     id: string;
-//     comment: string;
-//     userId: string;
-//     postId: string;
-//     createdAt: Date;
-//     user: {
-//       firstName: string;
-//       lastName: string;
-//       profileImage?: string;
-//       position?: string;
-//     };
-//   }[];
-// };
 
 const Post = ({
   dataPost,
@@ -115,7 +85,6 @@ const Post = ({
       body: JSON.stringify(body),
       credentials: "include",
     }).then(async (data) => {
-      // refresh();
       await updatePost();
     });
   });
@@ -131,7 +100,6 @@ const Post = ({
       });
 
       if (res.like) {
-        // refresh();
         await updatePost();
       }
     }
@@ -145,7 +113,6 @@ const Post = ({
         }),
       });
       if (res.message == "like has been destroyed") {
-        // refresh();
         await updatePost();
       }
     }
@@ -166,7 +133,6 @@ const Post = ({
   };
 
   const updatePost = async () => {
-    console.log("me actualize");
     const post = await fetcher(`/post/${postData?.id}`);
     setPostData(post);
   };

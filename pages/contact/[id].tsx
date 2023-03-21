@@ -30,7 +30,7 @@ const Contact = ({ fallback }: { fallback: SWRConfiguration }) => {
     setSize,
     moreToCharge,
   } = useContactPost();
-  console.log(contactPost);
+
   return (
     <MainLayout fallback={fallback}>
       <Box
@@ -90,9 +90,8 @@ const Contact = ({ fallback }: { fallback: SWRConfiguration }) => {
         {data &&
           contactPost &&
           contactPost?.map((posts) => {
-            console.log(222, posts);
             return posts.map((p) => {
-              return <Post key={p.id} dataPost={p} />;
+              return <Post key={p.id} dataPost={p} refresh={() => mutate()} />;
             });
           })}
 

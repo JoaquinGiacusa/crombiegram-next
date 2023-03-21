@@ -31,19 +31,6 @@ export type ContactDataProps = {
   }[];
 }[];
 
-// const useContactPost = () => {
-//   const route = useRouter();
-//   const id = route.query.id;
-
-//   const { data, error, isLoading, mutate } = useSWR<ContactDataProps>(
-//     `/post/contact/${id}`,
-//     fetcher
-//   );
-
-//   return { data, error, isLoading, mutate };
-
-// };
-
 export const useContactPost = () => {
   const route = useRouter();
   const id = route.query.id;

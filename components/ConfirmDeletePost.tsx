@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { fetcher } from "@/utils/fetcher";
 import { Box, Button, Modal, Stack, Typography } from "@mui/material";
+import { mutate } from "swr";
 
 type ConfirmDeletePostType = {
   id: string;
@@ -20,7 +21,6 @@ const ConfirmDeletePost: React.FC<ConfirmDeletePostType> = ({
       method: "DELETE",
     });
     if (jsonResponse) {
-      console.log("me eliminaron");
       refresh();
     }
   };

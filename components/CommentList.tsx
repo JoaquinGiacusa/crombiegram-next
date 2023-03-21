@@ -49,7 +49,7 @@ const CommentList = ({
       setOpenAlert(true);
       setAlert(resDeleteComment.message);
       setSeverity(true);
-      console.log("refresh");
+
       refresh();
       mutate();
     } else {

@@ -42,7 +42,7 @@ const Profile = ({ fallback }: { fallback: SWRConfiguration }) => {
           elevation={10}
         >
           <Image src="/images/colors.png" height={160} width={700} alt="" />
-          <EditProfile />
+          <EditProfile refreshPost={() => mutate()} />
           <Avatar
             src={
               data?.profileImage
