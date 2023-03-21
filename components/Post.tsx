@@ -33,6 +33,7 @@ import { useRouter } from "next/router";
 import ModalPost from "./ModalPost";
 import moment from "moment";
 import ConfirmDeletePost from "./ConfirmDeletePost";
+import MobileModalPost from "./MobileModalPost";
 
 export type PostPropsType = {
   dataPost: PostProps;
@@ -54,6 +55,7 @@ const Post = ({
     null
   );
   const [postData, setPostData] = useState<PostProps>();
+  const [width, setWidth] = useState(0);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -137,6 +139,12 @@ const Post = ({
     setPostData(post);
   };
 
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setWidth(window.innerWidth);
+    });
+  }, []);
+
   return (
     <>
       <Card sx={{ width: "100%", maxWidth: "500px" }}>
@@ -148,7 +156,14 @@ const Post = ({
                   ? `https://crombiegram-s3.s3.sa-east-1.amazonaws.com/${postData?.user.profileImage}`
                   : ""
               }
-              sx={{ width: 30, height: 30 }}
+              sx={{ width: 30, height: 30, cursor: "pointer" }}
+              onClick={() =>
+                router.push(
+                  data!.id == postData?.userId
+                    ? `/profile`
+                    : `/contact/${postData?.userId}`
+                )
+              }
             />
           }
           action={
@@ -180,21 +195,27 @@ const Post = ({
               position={postData?.user.position}
             />
           }
-          sx={{ cursor: "pointer" }}
         />
-
-        {postData?.imageName && (
-          <Image
-            width={500}
-            height={500}
-            src={
-              "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
-              postData?.imageName
-            }
-            alt="foto"
-            onClick={handleOpenModal}
-          />
-        )}
+        <Box
+          position="relative"
+          sx={{
+            width: { xs: "100%", sm: 500 },
+            height: { xs: 400, sm: 500 },
+            margin: "0px auto",
+          }}
+        >
+          {postData?.imageName && (
+            <Image
+              fill
+              src={
+                "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
+                postData?.imageName
+              }
+              alt="foto"
+              onClick={handleOpenModal}
+            />
+          )}
+        </Box>
         <CardContent sx={{ pb: 0 }}>
           <Typography
             sx={{ pb: 2 }}
@@ -335,23 +356,40 @@ const Post = ({
           ></TextField>
         </Box>
       </Card>
-      {open && (
-        <ModalPost
-          id={postData?.id}
-          firstName={postData?.user.firstName}
-          lastName={postData?.user.lastName}
-          userId={postData?.userId}
-          imageName={postData?.imageName}
-          profileImage={postData?.user.profileImage}
-          position={postData?.user.position}
-          contentText={postData?.contentText}
-          like={postData?.like}
-          createdAt={postData?.createdAt}
-          open={open}
-          setOpen={setOpen}
-          refresh={updatePost}
-        />
-      )}
+      {open &&
+        (width < 500 ? (
+          <MobileModalPost
+            id={postData?.id}
+            firstName={postData?.user.firstName}
+            lastName={postData?.user.lastName}
+            userId={postData?.userId}
+            imageName={postData?.imageName}
+            profileImage={postData?.user.profileImage}
+            position={postData?.user.position}
+            contentText={postData?.contentText}
+            like={postData?.like}
+            createdAt={postData?.createdAt}
+            open={open}
+            setOpen={setOpen}
+            refresh={updatePost}
+          />
+        ) : (
+          <ModalPost
+            id={postData?.id}
+            firstName={postData?.user.firstName}
+            lastName={postData?.user.lastName}
+            userId={postData?.userId}
+            imageName={postData?.imageName}
+            profileImage={postData?.user.profileImage}
+            position={postData?.user.position}
+            contentText={postData?.contentText}
+            like={postData?.like}
+            createdAt={postData?.createdAt}
+            open={open}
+            setOpen={setOpen}
+            refresh={updatePost}
+          />
+        ))}
 
       {openDelete && (
         <ConfirmDeletePost

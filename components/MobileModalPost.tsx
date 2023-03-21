@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Avatar,
   Card,
@@ -10,7 +11,6 @@ import {
 import { Box, Stack } from "@mui/system";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React from "react";
 import CommentList from "./CommentList";
 import SubHeaderPost from "./SubHeaderPost";
 import { useForm } from "react-hook-form";
@@ -18,7 +18,7 @@ import { fetcher } from "@/utils/fetcher";
 import SendIcon from "@mui/icons-material/Send";
 import { usePostComments } from "@/hooks/usePostComments";
 
-const ModalPost: React.FC<any> = ({
+const MobileModalPost: React.FC<any> = ({
   id,
   userId,
   firstName,
@@ -78,36 +78,18 @@ const ModalPost: React.FC<any> = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Stack direction={{ xs: "column", sm: "row" }}>
-        <Box
-          position="relative"
-          sx={{
-            width: 500,
-            height: 700,
-            margin: "0px auto",
-          }}
-        >
-          {imageName && (
-            <Image
-              fill
-              src={
-                "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" + imageName
-              }
-              alt="foto"
-            />
-          )}
-        </Box>
+      <Stack direction="column">
         <Box
           sx={{
-            height: "700px",
+            height: "90vh",
             display: "flex",
             flexDirection: "column",
-            width: !imageName ? "700px" : "auto",
+            width: !imageName ? "100%" : "auto",
           }}
         >
           <Card
             sx={{
-              height: "100%",
+              height: "90vh",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
@@ -133,13 +115,36 @@ const ModalPost: React.FC<any> = ({
                 onClick={() => router.push(`/contact/${userId}`)}
                 sx={{ cursor: "pointer" }}
               />
+
+              <Box
+                position="relative"
+                sx={{
+                  width: "100%",
+                  height: 300,
+                  margin: "0px auto",
+                }}
+              >
+                {imageName && (
+                  <Image
+                    fill
+                    src={
+                      "https://crombiegram-s3.s3.sa-east-1.amazonaws.com/" +
+                      imageName
+                    }
+                    alt="foto"
+                  />
+                )}
+              </Box>
               <Typography variant="body2" color="text.secondary" pl={2}>
                 {contentText}
               </Typography>
-              {data && data?.flat().length > 0 && (
-                <CommentList postId={id} refresh={refresh} />
-              )}
+              <Box>
+                {data && data?.flat().length > 0 && (
+                  <CommentList postId={id} refresh={refresh} />
+                )}
+              </Box>
             </Box>
+
             <Box component={"form"} onSubmit={onSubmit}>
               <TextField
                 fullWidth
@@ -160,4 +165,5 @@ const ModalPost: React.FC<any> = ({
     </Modal>
   );
 };
-export default ModalPost;
+
+export default MobileModalPost;

@@ -64,7 +64,8 @@ const CommentList = ({
       <List
         sx={{
           overflowY: "auto",
-          height: 470,
+          width: "100%",
+          height: { xs: 230, sm: 470 },
           "&::-webkit-scrollbar": {
             width: "10px",
           },

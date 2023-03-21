@@ -72,6 +72,7 @@ const NewPost: React.FC<NewPostType> = ({ refresh }) => {
 
     reset();
     setOpen(false);
+    setFile(null);
   });
 
   return (
@@ -197,9 +198,6 @@ const NewPost: React.FC<NewPostType> = ({ refresh }) => {
             >
               Crear
             </Button>
-            {/* <Button variant="outlined">
-              <DateRange />
-            </Button> */}
           </Box>
         </Box>
       </Modal>

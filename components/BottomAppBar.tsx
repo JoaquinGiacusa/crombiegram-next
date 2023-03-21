@@ -18,7 +18,6 @@ const BottomAppBar = () => {
             flexGrow: 1,
             display: { xs: "flex", sm: "none" },
             alignItems: "center",
-
             flexDirection: "row",
             justifyContent: "space-evenly",
             gap: 7,
