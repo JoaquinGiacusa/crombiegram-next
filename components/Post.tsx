@@ -196,15 +196,15 @@ const Post = ({
             />
           }
         />
-        <Box
-          position="relative"
-          sx={{
-            width: { xs: "100%", sm: 500 },
-            height: { xs: 400, sm: 500 },
-            margin: "0px auto",
-          }}
-        >
-          {postData?.imageName && (
+        {postData?.imageName && (
+          <Box
+            position="relative"
+            sx={{
+              width: { xs: "100%", sm: 500 },
+              height: { xs: 400, sm: 500 },
+              margin: "0px auto",
+            }}
+          >
             <Image
               fill
               src={
@@ -214,8 +214,8 @@ const Post = ({
               alt="foto"
               onClick={handleOpenModal}
             />
-          )}
-        </Box>
+          </Box>
+        )}
         <CardContent sx={{ pb: 0 }}>
           <Typography
             sx={{ pb: 2 }}

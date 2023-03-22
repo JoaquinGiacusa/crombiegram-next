@@ -79,15 +79,15 @@ const ModalPost: React.FC<any> = ({
       aria-describedby="modal-modal-description"
     >
       <Stack direction={{ xs: "column", sm: "row" }}>
-        <Box
-          position="relative"
-          sx={{
-            width: 500,
-            height: 700,
-            margin: "0px auto",
-          }}
-        >
-          {imageName && (
+        {imageName && (
+          <Box
+            position="relative"
+            sx={{
+              width: 500,
+              height: 700,
+              margin: "0px auto",
+            }}
+          >
             <Image
               fill
               src={
@@ -95,8 +95,8 @@ const ModalPost: React.FC<any> = ({
               }
               alt="foto"
             />
-          )}
-        </Box>
+          </Box>
+        )}
         <Box
           sx={{
             height: "700px",

@@ -116,15 +116,15 @@ const MobileModalPost: React.FC<any> = ({
                 sx={{ cursor: "pointer" }}
               />
 
-              <Box
-                position="relative"
-                sx={{
-                  width: "100%",
-                  height: 300,
-                  margin: "0px auto",
-                }}
-              >
-                {imageName && (
+              {imageName && (
+                <Box
+                  position="relative"
+                  sx={{
+                    width: "100%",
+                    height: 300,
+                    margin: "0px auto",
+                  }}
+                >
                   <Image
                     fill
                     src={
@@ -133,9 +133,14 @@ const MobileModalPost: React.FC<any> = ({
                     }
                     alt="foto"
                   />
-                )}
-              </Box>
-              <Typography variant="body2" color="text.secondary" pl={2}>
+                </Box>
+              )}
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                pl={2}
+                sx={{ marginTop: 4, marginBottom: 1 }}
+              >
                 {contentText}
               </Typography>
               <Box>
