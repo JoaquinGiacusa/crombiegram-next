@@ -55,7 +55,7 @@ const Post = ({
     null
   );
   const [postData, setPostData] = useState<PostProps>();
-  const [width, setWidth] = useState(0);
+  const [width, setWidth] = useState(1200);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
